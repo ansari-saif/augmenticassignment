@@ -4,6 +4,7 @@ import controllerPost from "./post";
 import controllerPut from "./put";
 import controllerGetByJobId from "./getByJobId";
 import controllerGetByStatus from "./getByStatus";
+import getTotalCandidatesPerJobOpening from "./getTotalCandidatesPerJobOpening";
 
 export {
   controllerDelete,
@@ -12,4 +13,5 @@ export {
   controllerPut,
   controllerGetByJobId,
   controllerGetByStatus,
+  getTotalCandidatesPerJobOpening,
 };
