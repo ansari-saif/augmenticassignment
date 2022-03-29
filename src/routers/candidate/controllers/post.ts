@@ -2,15 +2,15 @@
 
 import { Request, Response } from "express";
 import { Candidate } from "../../../models";
-import { validateCandidate } from "../../../validators";
+// import { validateCandidate } from "../../../validators";
 
 export default async function controllerPost(req: Request, res: Response) {
   const data = req.body;
-  const errors = validateCandidate(data);
-  if (errors.length) {
-    res.status(400).json({ errors });
-    return;
-  }
+  // const errors = validateCandidate(data);
+  // if (errors.length) {
+  //   res.status(400).json({ errors });
+  //   return;
+  // }
   const candidate = await Candidate.create(data);
   if (candidate) {
     res.status(201).json(candidate);

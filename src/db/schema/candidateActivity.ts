@@ -9,7 +9,6 @@ const candidateActivitySchema = new Schema<ICandidateActivity>(
   {
     note: {
       type: String,
-      required: true,
     },
     candidate: {
       type: Schema.Types.ObjectId,
