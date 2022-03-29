@@ -5,7 +5,7 @@ const validatePolicy = (policy: IPolicy) => {
   const errors: Array<{ message: string }> = [];
   if (!policy.name) errors.push({ message: "Name is required" });
   if (!policy.description) errors.push({ message: "Description is required" });
-  if (!policy.department) errors.push({ message: "Department is required" });
+  // if (!policy.department) errors.push({ message: "Department is required" });
   return errors;
 };
 

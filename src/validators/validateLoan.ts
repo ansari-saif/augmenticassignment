@@ -7,6 +7,7 @@ const validateLoan = (loan: ILoan) => {
   if (!loan.date) errors.push({ message: "Date is required" });
   if (!loan.amount) errors.push({ message: "Amount is required" });
   if (!loan.paidBy) errors.push({ message: "PaidBy is required" });
+  if (!loan.status) errors.push({ message: "Status is required" });
   return errors;
 };
 

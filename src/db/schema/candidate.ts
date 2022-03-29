@@ -14,7 +14,7 @@ const candidateSchema = new Schema<ICandidate>(
   {
     name: {
       type: String,
-      // required: true,
+      required: true,
     },
     job: {
       type: Schema.Types.ObjectId,
@@ -22,23 +22,23 @@ const candidateSchema = new Schema<ICandidate>(
     },
     message: {
       type: String,
-      // required: true,
+      required: true,
     },
     resume: {
       type: String,
-      // required: true,
+      required: true,
     },
     mobile: {
       type: String,
-      // required: true,
+      required: true,
     },
     email: {
       type: String,
-      // required: true,
+      required: true,
     },
     status: {
       type: String,
-      // required: true,
+      required: true,
     },
   },
   {
