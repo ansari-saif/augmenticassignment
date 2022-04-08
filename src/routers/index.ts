@@ -35,6 +35,7 @@ import salePaymentRouter from "./salePayment";
 import saleReportRouter from "./saleReport";
 import taxRouter from "./tax";
 import ticketsRouter from "./tickets";
+import timesheetRouter from "./timesheet";
 import vendorRouter from "./vendor";
 import vendorCreditRouter from "./vendorCredit";
 
@@ -77,4 +78,5 @@ router.use("/leave", auth, leaveRouter);
 router.use("/report", auth, saleReportRouter);
 router.use("/bill", auth, billRouter);
 router.use("/documents", auth, documentsRouter);
+router.use("/timesheets", auth, timesheetRouter);
 export default router;

@@ -21,6 +21,7 @@ import verifyProject from "./verifyProject";
 import verifyTask from "./verifyTasks";
 import validateActivities from "./validateActivities";
 import validateDocument from "./validateDocument";
+import validateTimesheet from "./validateTimesheet";
 
 export {
   verifyProject,
@@ -46,4 +47,5 @@ export {
   validatePayment,
   validateActivities,
   validateDocument,
+  validateTimesheet,
 };
