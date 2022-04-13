@@ -11,6 +11,6 @@ export default async function generalLedgerPost(
   const generalLedger = new GeneralLedger(data);
   generalLedger.save((err, generalLedger) => {
     if (err) return res.status(400).send(err);
-    return res.status(200).send(generalLedger);
+    return res.status(201).json(generalLedger);
   });
 }

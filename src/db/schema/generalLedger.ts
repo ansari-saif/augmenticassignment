@@ -10,7 +10,7 @@ interface IGenralLedger extends Document {
   journalId : number,
   referenceId : string,
   notes : string,
-  journalType : boolean,
+  journalType : string,
   currency : CURRENCY,
   transaction : {
     account : string,
@@ -25,8 +25,7 @@ interface IGenralLedger extends Document {
 const generalLedgerSchema = new Schema<IGenralLedger>(
   {
     date : { 
-      type: Date,
-      default: () => new Date(Date.now())
+      type: Date
     },
     journalId : {
       type: Number,
@@ -34,7 +33,7 @@ const generalLedgerSchema = new Schema<IGenralLedger>(
     },
     referenceId: String,
     notes : String,
-    journalType: Boolean,
+    journalType: String,
     currency: {
       type: String,
       default: CURRENCY.INR,
