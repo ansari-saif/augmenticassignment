@@ -1,4 +1,4 @@
-import { Document, Schema } from "mongoose";
+import { Document, Schema, Types } from "mongoose";
 
 enum CURRENCY {
   INR = "INR",
@@ -12,6 +12,11 @@ interface IGenralLedger extends Document {
   notes : string,
   journalType : string,
   currency : CURRENCY,
+  category: string,
+  clientName: {
+    userId: Types.ObjectId,
+    name: string
+  },
   transaction : {
     account : string,
     description: string,
@@ -38,6 +43,11 @@ const generalLedgerSchema = new Schema<IGenralLedger>(
       type: String,
       default: CURRENCY.INR,
       enum: Object.values(CURRENCY)
+    },
+    category: String,
+    clientName: {
+      userId: Types.ObjectId,
+      name: String
     },
     transaction : [{
       account: String,
