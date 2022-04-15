@@ -13,7 +13,7 @@ export default async function controllerPut(req: Request, res: Response) {
   }
   const { id } = req.params;
   if (id) {
-    const timesheet = await Timesheet.findOneAndUpdate({ employee: id }, data);
+    const timesheet = await Timesheet.findOneAndUpdate({ _id: id }, data);
     if (timesheet) {
       res.status(200).json(timesheet);
     } else {

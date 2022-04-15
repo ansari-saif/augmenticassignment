@@ -8,12 +8,13 @@ interface RequestWithUser extends Request {
 }
 
 export default async function controllerPost(
-  req: RequestWithUser,
+  // req: RequestWithUser,
+  req: Request,
   res: Response
 ) {
-  const employee = req.user;
+  // const employee = req.user;
   const data = req.body;
-  const leave = new Leave({ ...data, employee: employee._id });
+  const leave = new Leave(data);
   leave.save((err, leave) => {
     if (err) return res.status(400).send(err);
     res.status(201).json(leave);

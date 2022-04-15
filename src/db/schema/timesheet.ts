@@ -20,7 +20,7 @@ const timesheetSchema = new Schema<ITimesheet>(
     date: Date,
     hours: Number,
     description: String,
-    sessions: [{ id: Number, from: Date, upto: Date }],
+    sessions: [{ sessionId: Number, from: Date, upto: Date }],
   },
   {
     timestamps: true,

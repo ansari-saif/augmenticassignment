@@ -9,10 +9,14 @@ interface RequestWithUser extends Request {
 }
 
 export default async function controllerGet(
-  req: RequestWithUser,
+  // req: RequestWithUser,
+  req: Request,
   res: Response
 ) {
-  const employee = req.user;
-  const employeeLeaves = await Leave.find({ employee: employee._id });
+  // const employee = req.user;
+  // const employeeLeaves = await Leave.find({ employee: employee._id });
+
+  const query = req.params.id ? {employee: req.params.id} : {};
+  const employeeLeaves = await Leave.find(query).populate("leaveType");
   res.status(200).json(employeeLeaves);
 }

@@ -2,26 +2,28 @@ import { Document, Schema, Types } from "mongoose";
 import { Approval } from "../../models";
 
 interface Ileave extends Document {
-  employee: Types.ObjectId;
+  employee: number;
   leaveType: Types.ObjectId;
   fromDate: Date;
   toDate: Date;
   reason: string;
-  approvedBy: Types.ObjectId;
+  approvedBy: number;
   approvedDate: Date;
   approved: boolean;
+  status: string;
 }
 
 const leaveSchema = new Schema<Ileave>(
   {
     leaveType: { type: Schema.Types.ObjectId, ref: "LeaveType" },
-    employee: { type: Schema.Types.ObjectId, ref: "Employee" },
+    employee: { type: Number, required: true },
     fromDate: Date,
     toDate: Date,
     reason: String,
-    approvedBy: { type: Schema.Types.ObjectId, ref: "Employee" },
+    approvedBy: Number,
     approvedDate: Date,
     approved: Boolean,
+    status: String,
   },
   {
     timestamps: true,
