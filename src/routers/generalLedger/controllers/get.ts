@@ -14,12 +14,6 @@ export async function userTypeGet(req: Request, res: Response) {
   const vendor = await Vendor.find().select("name");
   const customer = await Customer.find().select("name");
 
-  // let employee = employeeList.map(emp => {
-  //   let name = emp.firstName + " " + emp.lastName;
-  //   // console.log(name);
-  //   return { ...emp, name }
-  // });
-
   const userTypeList = {
     vendor,
     customer,
