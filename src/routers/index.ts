@@ -37,7 +37,6 @@ import saleReportRouter from "./saleReport";
 import taxRouter from "./tax";
 import ticketsRouter from "./tickets";
 import timesheetRouter from "./timesheet";
-import userTypeRouter from "./userType";
 import vendorRouter from "./vendor";
 import vendorCreditRouter from "./vendorCredit";
 
@@ -82,5 +81,4 @@ router.use("/bill", auth, billRouter);
 router.use("/documents", auth, documentsRouter);
 router.use("/timesheets", auth, timesheetRouter);
 router.use("/generalledger", auth, generalLedgerRouter);
-router.use("/usertype", auth, userTypeRouter);
 export default router;
