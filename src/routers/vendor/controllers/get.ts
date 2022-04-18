@@ -1,12 +1,12 @@
 // create an express get route for the vendor model
 
 import { Request, Response } from "express";
-import { Vendor } from "../../../models";
+import { Project, Vendor } from "../../../models";
 
 export default async function controllerGet(req: Request, res: Response) {
   const { id } = req.params;
   if (id) {
-    const vendor = await Vendor.findById(id).populate("expenses");
+    const vendor = await Vendor.findById(id).populate("expenses projectList");
     if (vendor) {
       res.json(vendor);
     } else {
@@ -17,3 +17,4 @@ export default async function controllerGet(req: Request, res: Response) {
     res.json(vendors);
   }
 }
+

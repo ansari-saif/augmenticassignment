@@ -6,7 +6,7 @@ import { Vendor } from "../../../models";
 export default async function controllerPut(req: Request, res: Response) {
   const { id } = req.params;
   if (id) {
-    const vendor = await Vendor.findByIdAndUpdate(id, req.body);
+    const vendor = await Vendor.findByIdAndUpdate(id, req.body, { new : true }).populate("projectList");
     if (vendor) {
       res.json(vendor);
     } else {

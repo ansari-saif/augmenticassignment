@@ -1,6 +1,6 @@
 // Vendor schema is similar to customer schema.
 
-import { Document, Schema } from "mongoose";
+import { Document, Schema, Types } from "mongoose";
 import { Vendor } from "../../models";
 
 interface IVendor extends Document {
@@ -9,6 +9,8 @@ interface IVendor extends Document {
   phone: string;
   company: string;
   address: string;
+  vendorType: string;
+  projectList: Types.ObjectId[];
   vendorCredits: number[];
   expenses: number[];
   bills: number[];
@@ -22,7 +24,9 @@ const vendorSchema = new Schema<IVendor>(
     phone: String,
     company: String,
     address: String,
+    vendorType: String,
     vendorCredits: [{ type: Number, ref: "VendorCredit" }],
+    projectList: [{ type: Schema.Types.ObjectId, ref: "Project" }],
     expenses: [{ type: Number, ref: "Expense" }],
     bills: [{ type: Number, ref: "Bill" }],
     description: String,
