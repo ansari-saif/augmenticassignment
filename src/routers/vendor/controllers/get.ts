@@ -6,7 +6,14 @@ import { Project, Vendor } from "../../../models";
 export default async function controllerGet(req: Request, res: Response) {
   const { id } = req.params;
   if (id) {
-    const vendor = await Vendor.findById(id).populate("expenses projectList");
+    const populateObj = {
+      path: "comments",
+      populate: {
+        path: "createdBy",
+        select: "firstName lastName"
+      }
+    };
+    const vendor = await Vendor.findById(id).populate("expenses projectList").populate(populateObj);
     if (vendor) {
       res.json(vendor);
     } else {

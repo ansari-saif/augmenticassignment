@@ -46,6 +46,11 @@ interface IVendor extends Document {
     phone: number;
     mobile: number;
   }[],
+  comments: {
+    comment: string;
+    date: Date;
+    createdBy: number;
+  }[],
   projectList: Types.ObjectId[];
   vendorCredits: number[];
   expenses: number[];
@@ -96,6 +101,11 @@ const vendorSchema = new Schema<IVendor>(
       email: String,
       phone: Number,
       mobile: Number
+    }],
+    comments: [{
+      comment: String,
+      date: Date,
+      createdBy: { type: Number, ref: "Employee" },
     }],
     vendorCredits: [{ type: Number, ref: "VendorCredit" }],
     projectList: [{ type: Schema.Types.ObjectId, ref: "Project" }],
