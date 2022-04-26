@@ -11,7 +11,7 @@ export default async function controllerGet(req: Request, res: Response) {
       res.status(404).json({ message: "timesheet not found" });
     }
   } else {
-    const { page = 1, limit = 100 } = req.query;
+    const { page = 1, limit = 100, date = null } = req.query;
     const timesheets = await Timesheet.find({})
       .limit(parseInt(limit as string))
       .skip(parseInt(limit as string) * (parseInt(page as string) - 1));
