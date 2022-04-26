@@ -5,12 +5,24 @@ import fileUpload from "express-fileupload";
 
 const app = require("express")();
 
+const whitelist = ["http://127.0.0.1:8001", "https://hrm-xi.vercel.app"];
+const corsOptions = {
+  origin: function (origin: any, callback: any) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
+
 app.use(express.json({ limit: "50mb" }));
 app.use(
-  cors({
-    origin: "http://127.0.0.1:8001",
-    methods: "GET,POST,PUT,PATCH,DELETE",
-  })
+  // cors({
+  //   origin: "http://127.0.0.1:8001",
+  //   methods: "GET,POST,PUT,PATCH,DELETE",
+  // })
+  cors(corsOptions)
 );
 app.use(fileUpload());
 
