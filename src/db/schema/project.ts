@@ -35,6 +35,7 @@ interface IProject extends Document {
   description: string;
   leads: Types.ObjectId[];
   members: number[];
+  vendor: Types.ObjectId;
   priority: PRIORITY;
   progress: number;
   type: string;
@@ -58,6 +59,7 @@ const projectSchema = new Schema<IProject>(
     description: String,
     leads: [{ type: Schema.Types.ObjectId, ref: "Lead" }],
     members: [{ type: Number, ref: "Employee" }],
+    vendor: { type: Schema.Types.ObjectId, ref: "Vendor" },
     priority: { type: String, enum: Object.values(PRIORITY) },
     progress: Number,
     type: String,

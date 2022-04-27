@@ -40,6 +40,7 @@ import ticketsRouter from "./tickets";
 import timesheetRouter from "./timesheet";
 import vendorRouter from "./vendor";
 import vendorCreditRouter from "./vendorCredit";
+import vendorTransaction from "./vendorTransaction";
 
 const router = Router();
 
@@ -83,4 +84,5 @@ router.use("/documents", auth, documentsRouter);
 router.use("/timesheets", auth, timesheetRouter);
 router.use("/roleaccessprem", auth, roleAccessPremRouter);
 router.use("/generalledger", auth, generalLedgerRouter);
+router.use("/vendortrx", auth, vendorTransaction);
 export default router;
