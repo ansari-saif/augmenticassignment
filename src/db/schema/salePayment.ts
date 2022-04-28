@@ -7,15 +7,20 @@ interface Customer {
   email: string;
 }
 
+interface invoice {
+  id: Types.ObjectId;
+  paidAmount: number;
+  withholdingTax: number;
+}
+
 type invoiceId = Types.ObjectId;
 
 interface ISalePayment extends Document {
-  invoice: Types.ObjectId;
+  invoice: Array<invoice>;
   customer: Customer;
   paymentDate: Date;
   paymentAmount: number;
   paymentMode: string;
-  invoices: Array<invoiceId>;
   TdsTaxAcc: string;
   amountReceived: number;
   bankCharges: number;
@@ -30,7 +35,11 @@ interface ISalePayment extends Document {
 
 const salePaymentSchema = new Schema<ISalePayment>(
   {
-    invoice: { type: Number, ref: "SaleInvoice" },
+    invoice: [{ 
+      id: {type: Schema.Types.ObjectId, ref: "SaleInvoice" },
+      paidAmount: { type: Number, default: 0 },
+      withholdingTax: { type: Number, default: 0 }
+    }],
     customer: { 
       id: { type: Schema.Types.ObjectId, ref: "Customer" },
       name: String,
@@ -40,9 +49,6 @@ const salePaymentSchema = new Schema<ISalePayment>(
     paymentAmount: Number,
     paymentMode: String,
     TdsTaxAcc: String,
-    invoices: [
-      { type: Schema.Types.ObjectId, ref: "SaleInvoice"}
-    ],
     amountReceived: Number,
     bankCharges: { type: Number, default: 0 },
     depositTo: String,

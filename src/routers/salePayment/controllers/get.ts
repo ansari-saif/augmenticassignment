@@ -15,6 +15,6 @@ export default async function controllerGet(req: Request, res: Response) {
     return res.status(200).json(salePayment);
   }
   const salePayments = await SalePayment.find({})
-    // .populate("invoice")
+    .populate("invoice")
   return res.status(200).json(salePayments);
 }
