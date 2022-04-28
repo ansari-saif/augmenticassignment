@@ -5,6 +5,12 @@ import { Customer } from "../../../models";
 
 export default async function controllerPost(req: Request, res: Response) {
   const data = req.body;
+  const contactPersons: Array<any> = [];
+  Object.entries(data.contactPersons).map(([key, value]) => {
+    contactPersons.push(value);
+  });
+  data.contactPersons = contactPersons;
+  console.log(data);
   const customer = new Customer({
     ...data,
   });

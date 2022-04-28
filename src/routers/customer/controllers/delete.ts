@@ -11,5 +11,8 @@ export default async function controllerDelete(req: Request, res: Response) {
   if (!customer) {
     return res.status(404).send({ message: "Customer not found" });
   }
+  console.log("Deleted")
+  console.log(customer)
+  console.log("Deleted")
   return res.status(200).send(customer);
 }

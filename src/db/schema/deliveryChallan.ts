@@ -1,5 +1,4 @@
 import { Document, Schema, Types } from "mongoose";
-import { SaleEstimate } from "../../models/saleEstimate";
 
 interface Item {
   item: string;
@@ -15,41 +14,30 @@ interface Customer {
   email: string;
 }
 
-interface ISaleEstimate extends Document {
-  employee: Number;
-  project: String;
-  tax: String;
-  estimateDate: Date;
-  expiryDate: Date;
-  taxAmount: number;
+interface IDeliveryChallan extends Document {
+  challanDate: Date;
   discount: string;
   amount: number;
+  challanType: string;
   customerNotes: string;
   termsAndConditions: string;
   items: Item[];
-  // 
-  estimate: string;
+  deliveryChallan: string;
   reference: string;
-  subject: string;
   grandTotal: number;
   customer: Customer; 
 }
 
-const saleEstimateSchema = new Schema(
+const deliveryChallanSchema = new Schema<IDeliveryChallan>(
   {
-    employee: { type: Number, ref: "Employee" },
-    project: { type: String, ref: "Project" },
-    tax: { type: String, ref: "Tax" },
-    estimateDate: Date,
-    expiryDate: Date,
-    taxAmount: Number,
+    challanDate: Date,
     discount: String,
     amount: Number,
+    challanType: String,
     customerNotes: String,
     termsAndConditions: String,
-    estimate: String,
+    deliveryChallan: String,
     reference: String,
-    subject: String,
     grandTotal: Number,
     customer: 
       {
@@ -71,14 +59,4 @@ const saleEstimateSchema = new Schema(
   { timestamps: true }
 );
 
-saleEstimateSchema.pre("save", function (next) {
-  if (this.isNew) {
-    SaleEstimate.countDocuments({}, (err: any, count: any) => {
-      if (err) return next(err);
-      this._id = count + 1;
-      next();
-    });
-  } else next();
-});
-
-export { ISaleEstimate, saleEstimateSchema };
+export { IDeliveryChallan, deliveryChallanSchema };
