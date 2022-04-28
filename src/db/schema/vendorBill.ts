@@ -77,4 +77,12 @@ const vendorBillSchema = new Schema<IVendorBill>(
   }
 );
 
+// vendorBillSchema.post("updateOne", function(next){
+//   if(this.balanceDue <= 0){
+//     this.status = "PAID";
+//   }
+//   console.log(this);
+//   next();
+// })
+
 export { IVendorBill, vendorBillSchema }
