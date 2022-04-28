@@ -1,5 +1,4 @@
 import { Document, Schema, Types } from "mongoose";
-import { SaleEstimate } from "../../models/saleEstimate";
 
 interface Item {
   item: string;
@@ -10,50 +9,48 @@ interface Item {
 }
 
 interface Customer {
-  id: string;
+  id: Types.ObjectId;
   name: string;
   email: string;
 }
 
-interface ISaleEstimate extends Document {
+interface ISalesOrder extends Document {
   employee: Number;
   project: String;
-  tax: String;
-  estimateDate: Date;
-  expiryDate: Date;
-  taxAmount: number;
+  orderDate: Date;
+  shipmentDate: Date;
+  delivery: string;
   discount: string;
   amount: number;
+  paymentTerms: string;
   customerNotes: string;
   termsAndConditions: string;
   items: Item[];
   // 
-  estimate: string;
+  salesOrder: string;
   reference: string;
-  subject: string;
   grandTotal: number;
   customer: Customer; 
 }
 
-const saleEstimateSchema = new Schema(
+const salesOrderSchema = new Schema<ISalesOrder>(
   {
     employee: { type: Number, ref: "Employee" },
     project: { type: String, ref: "Project" },
-    tax: { type: String, ref: "Tax" },
-    estimateDate: Date,
-    expiryDate: Date,
-    taxAmount: Number,
+    delivery: String,
+    orderDate: Date,
+    shipmentDate: Date,
     discount: String,
     amount: Number,
+    paymentTerms: String,
     customerNotes: String,
     termsAndConditions: String,
-    estimate: String,
+    salesOrder: String,
     reference: String,
-    subject: String,
     grandTotal: Number,
     customer: 
       {
-        id: { type: String, ref: "Customer" },
+        id: { type: Schema.Types.ObjectId, ref: "Customer" },
         name: String,
         email: String,
       }
@@ -71,14 +68,4 @@ const saleEstimateSchema = new Schema(
   { timestamps: true }
 );
 
-saleEstimateSchema.pre("save", function (next) {
-  if (this.isNew) {
-    SaleEstimate.countDocuments({}, (err: any, count: any) => {
-      if (err) return next(err);
-      this._id = count + 1;
-      next();
-    });
-  } else next();
-});
-
-export { ISaleEstimate, saleEstimateSchema };
+export { ISalesOrder, salesOrderSchema };

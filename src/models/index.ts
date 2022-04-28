@@ -18,6 +18,8 @@ import { GoalType } from "./goalType";
 import { Goal } from "./goal";
 import { SaleEstimate } from "./saleEstimate";
 import { SaleInvoice } from "./saleInvoice";
+import { DeliveryChallan } from './deliveryChallan'
+import { SalesOrder } from "./salesOrder"
 import { Leave } from "./leave";
 import { Lead } from "./lead";
 import { Approval } from "./model";
@@ -46,6 +48,8 @@ export {
   Goal,
   SaleEstimate,
   SaleInvoice,
+  DeliveryChallan,
+  SalesOrder,
   Leave,
   Lead,
   Approval,

@@ -15,8 +15,7 @@ export default async function controllerGet(req: Request, res: Response) {
     return res.status(200).send(customer);
   } else {
     const customers = await Customer.find()
-      .populate("creditNotes")
-      .populate("invoices");
+    console.log(customers);
     return res.status(200).send(customers);
   }
 }
