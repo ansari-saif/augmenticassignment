@@ -1,7 +1,9 @@
 import { Document, Schema, Types } from "mongoose";
+import { VendorBill } from "../../models/VendorBill";
 
 interface IVendorBillPayment extends Document {
   vendorId : Types.ObjectId;
+  paymentNo: number;
   paymentMade: number;
   paymentDate: Date;
   paymentMode: string;
@@ -27,6 +29,7 @@ interface IVendorBillPayment extends Document {
 
 const vendorBillPaymentSchema = new Schema<IVendorBillPayment>({
   vendorId: { type: Schema.Types.ObjectId, ref: "Vendor" },
+  paymentNo: Number,
   paymentMade: Number,
   paymentDate: Date,
   paymentMode: String,
@@ -48,6 +51,26 @@ const vendorBillPaymentSchema = new Schema<IVendorBillPayment>({
   amountRefunded: Number,
   amountExcess: Number,
   notes: String,
+});
+
+vendorBillPaymentSchema.pre("save", async function(next){
+  try {
+    
+    if(this.vendorBill){
+      this.vendorBill.forEach(async (vb) => {
+        if(vb.billPaymentAmount != 0){
+          if(vb.balanceDue <= 0){
+            await VendorBill.findByIdAndUpdate(vb._id, { balanceDue: vb.balanceDue, status: "PAID" }, { new: true });
+          } else{
+            await VendorBill.findByIdAndUpdate(vb._id, { balanceDue: vb.balanceDue }, { new: true });
+          }
+        }
+      })
+    }
+    next();
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 export { IVendorBillPayment, vendorBillPaymentSchema }
