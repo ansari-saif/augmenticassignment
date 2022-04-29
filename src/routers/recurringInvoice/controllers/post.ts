@@ -12,6 +12,7 @@ export default async function controllerPost(req: Request, res: Response) {
     res.status(400).json({ errors });
     return;
   }
+  
   const invoice = new RecurringInvoice(data);
   invoice.save((err, goal) => {
     if (err) {

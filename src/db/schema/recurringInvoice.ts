@@ -14,6 +14,11 @@ interface Customer {
   email: Types.ObjectId;
 }
 
+interface ChildInvoice {
+  id: Types.ObjectId;
+  date: Date;
+}
+
 interface IRecurringInvoice extends Document {
   adjustments: number;
   amount: number;
@@ -31,6 +36,7 @@ interface IRecurringInvoice extends Document {
   profileName: string;
   startDate: Date;
   termsAndConditions: string;
+  childInvoices: ChildInvoice[];
   // 
   paidAmount: number;
   withholdingTax: number;
@@ -72,6 +78,12 @@ const recurringInvoiceSchema = new Schema<IRecurringInvoice>(
         amount: Number,
       },
     ],
+    childInvoices: [
+      {
+        id: { type: Schema.Types.ObjectId, ref: "SaleInvoice" },
+        date: Date,
+      }
+    ]
   },
   { timestamps: true }
 );
