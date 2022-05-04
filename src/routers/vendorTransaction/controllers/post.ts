@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { PurchaseOrder } from "../../../models/purchaseOrder";
 import { VendorBill } from "../../../models/VendorBill";
 import { VendorBillPayment } from "../../../models/vendorBillPayment";
 import { VendorExpense } from "../../../models/vendorExpense";
@@ -35,6 +36,18 @@ export const vendorExpensePost = async(req: Request, res: Response) => {
     
   } catch (err) {
     res.status(500).json({ msg: "Server Error: Expense Data wasn't able to stored" });
+  }
+
+}
+
+export const vendorPurchaseOrderPost = async(req: Request, res: Response) => {
+  try {
+    const purchaseOrder = await PurchaseOrder.create(req.body);
+
+    res.status(200).json(purchaseOrder);
+    
+  } catch (err) {
+    res.status(500).json({ msg: "Server Error: Purchase Order Data wasn't able to stored" });
   }
 
 }

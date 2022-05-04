@@ -1,0 +1,92 @@
+import { Document, Schema, Types } from "mongoose";
+
+
+interface IPurchaseOrder extends Document {
+  vendorId: Types.ObjectId;
+  deliveryTo: string;
+  organisationData: {
+    name: string;
+    address: string;
+  };
+  customerId: Types.ObjectId;
+  purchaseOrderNo: string;
+  referenceId: string;
+  purchareOrderDate: Date;
+  expentedDeliveryDate: Date;
+  paymentTerms: string;
+  shipmentPreference: string;
+  discountType: string;
+  transaction: {
+    itemDetails: string;
+    account: string;
+    quantity: number;
+    rate: number;
+    discount: {discountType: string; discountValue: number;};
+    amount: number;
+  }[];
+  subTotal: number;
+  discount: {
+    discountType: string;
+    discountValue: number;
+  };
+  discountAccount: string;
+  discountAmount: number;
+  taxSystem: string;
+  taxType: string;
+  taxAmount: number;
+  adjustment: {
+    adjustmentName: string;
+    adjustmentValue: number;
+  };
+  total: number;
+  notes: string;
+  termsAndConditions: string;
+  status: string;
+  billedStatus: string;
+}
+
+const purchaseOrderSchema = new Schema<IPurchaseOrder>({
+  vendorId: { type: Schema.Types.ObjectId, ref: "Vendor" },
+  deliveryTo: String,
+  organisationData: {
+    name: String,
+    address: String,
+  },
+  customerId: { type: Schema.Types.ObjectId, ref: "Customer" },
+  purchaseOrderNo: String,
+  referenceId: String,
+  purchareOrderDate: Date,
+  expentedDeliveryDate: Date,
+  paymentTerms: String,
+  shipmentPreference: String,
+  discountType: String,
+  transaction: [{
+    itemDetails: String,
+    account: String,
+    quantity: Number,
+    rate: Number,
+    discount: {discountType: String, discountValue: Number},
+    amount: Number,
+  }],
+  subTotal: Number,
+  discount: {
+    discountType: String,
+    discountValue: Number,
+  },
+  discountAccount: String,
+  discountAmount: Number,
+  taxSystem: String,
+  taxType: String,
+  taxAmount: Number,
+  adjustment: {
+    adjustmentName: String,
+    adjustmentValue: Number,
+  },
+  total: Number,
+  notes: String,
+  termsAndConditions: String,
+  status: String,
+  billedStatus: String,
+});
+
+export { IPurchaseOrder, purchaseOrderSchema }

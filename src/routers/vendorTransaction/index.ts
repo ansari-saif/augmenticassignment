@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { getVendorBillPayment, getVendorBills, getVendorExpense } from "./controllers/get";
-import { vendorBillPaymentPost, vendorBillPost, vendorExpensePost } from "./controllers/post";
+import { getVendorBillPayment, getVendorBills, getVendorExpense, getVendorPurchaseOrder } from "./controllers/get";
+import { vendorBillPaymentPost, vendorBillPost, vendorExpensePost, vendorPurchaseOrderPost } from "./controllers/post";
 
 const vendorTransaction = Router();
 
@@ -17,5 +17,8 @@ vendorTransaction.post('/createvendorbillpayment', vendorBillPaymentPost);
 vendorTransaction.get('/getvendorexpense', getVendorExpense);
 vendorTransaction.post('/createvendorexpense', vendorExpensePost);
 
+// Purchase Order 
+vendorTransaction.get('/getvendorpurchaseorder', getVendorPurchaseOrder);
+vendorTransaction.post('/createpurchaseorder', vendorPurchaseOrderPost);
 
 export default vendorTransaction;
