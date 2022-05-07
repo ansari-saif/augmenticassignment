@@ -16,7 +16,7 @@ interface IVendorBill extends Document {
     discount: {discountType: string; discountValue: number;};
     customerDetails: Types.ObjectId;
     amount: number;
-  };
+  }[];
   subTotal: number;
   discount: {
     discountType: string;
@@ -47,7 +47,7 @@ const vendorBillSchema = new Schema<IVendorBill>(
     dueDate: Date,
     paymentTerms: String,
     discountType: String,
-    transaction: {
+    transaction: [{
       itemDetails: String,
       account: String,
       quantity: Number,
@@ -55,7 +55,7 @@ const vendorBillSchema = new Schema<IVendorBill>(
       discount: {discountType: String, discountValue: Number,},
       customerDetails: { type: Schema.Types.ObjectId, ref: "Vendor" },
       amount: Number,
-    },
+    }],
     subTotal: Number,
     discount: {
       discountType: String,
