@@ -7,7 +7,7 @@ import { VendorExpense } from "../../../models/vendorExpense";
 
 export const getVendorBills = async (req: Request, res: Response) => {
   try {
-    const vendorBills = await VendorBill.find(req.query).populate({path: "vendorId", select: "name"});
+    const vendorBills = await VendorBill.find(req.query).populate({path: "vendorId", select: "name billAddress"});
 
     res.status(200).json(vendorBills);
     
