@@ -35,6 +35,7 @@ interface IVendorBill extends Document {
   balanceDue: number;
   status: string;
   notes: string;
+  pdf_url?:string;
 }
 
 
@@ -74,6 +75,7 @@ const vendorBillSchema = new Schema<IVendorBill>(
     balanceDue: Number,
     status: String,
     notes: String,
+    pdf_url : String,
   }
 );
 

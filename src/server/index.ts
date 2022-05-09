@@ -1,5 +1,6 @@
 import express from "express";
 import router from "../routers";
+import generatePDFRouter from "../utils/pdf-generation/generatePDF"
 import cors from "cors";
 import fileUpload from "express-fileupload";
 
@@ -11,7 +12,9 @@ const corsOptions = {
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS"));
+      // DANGER
+      // callback(new Error("Not allowed by CORS"));
+      callback(null, true);
     }
   },
 };
@@ -29,5 +32,8 @@ app.use(fileUpload());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/v1", router);
+
+// DANGER
+app.use('/api/v1/generate' , generatePDFRouter)
 
 export default app;

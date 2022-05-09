@@ -1,15 +1,31 @@
 import { Request, Response } from "express";
+import path from "path";
 import { PurchaseOrder } from "../../../models/purchaseOrder";
 import { VendorBill } from "../../../models/VendorBill";
 import { VendorBillPayment } from "../../../models/vendorBillPayment";
 import { VendorCredit } from "../../../models/vendorCredit";
 import { VendorExpense } from "../../../models/vendorExpense";
+import { generateBillPDF } from "../../../utils/pdf-generation/generatePDF";
+// import uploadFileToCloud from "../../../utils/uploadToCloud"
+import putFile from "../../../utils/s3"
+import fs from 'fs';
 
 export const vendorBillPost = async(req: Request, res: Response) => {
   try {
-    const vendorBill = await VendorBill.create(req.body);
+    const vendorBill : any = await VendorBill.create(req.body);
+    // UPLOAD FILE TO CLOUD 
+    const uploadedVendorBill = await VendorBill.findOne({_id : vendorBill._id}).populate({path: "vendorId", select: "name billAddress"});
+  
+    const pathToFile = await generateBillPDF(uploadedVendorBill.toJSON());
+    const file = await fs.readFileSync(pathToFile);
+    // console.log(pathToFile);
+    await putFile(file, `${uploadedVendorBill._id}.pdf` );
 
-    res.status(200).json(vendorBill);
+    await VendorBill.updateOne({_id : vendorBill._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
+
+    await fs.rmSync(pathToFile);
+
+    res.status(200).json({...vendorBill._doc , pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf` });
     
   } catch (err) {
     res.status(500).json({ msg: "Server Error: Bill wasn't created" })

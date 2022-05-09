@@ -1,19 +1,19 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 const s3 = new S3Client({
-  endpoint: "https://sgp1.digitaloceanspaces.com",
-  region: "sgp1",
+  endpoint: "https://fra1.digitaloceanspaces.com",
+  region: "fra1",
   credentials: {
-    accessKeyId: "4B7JJC3JNTRRZHAXN3MM",
-    secretAccessKey: "IQTFn+YoVbKPGylAqct/o6pvidHot0Eofv0WX3BfaTc",
+    accessKeyId: "AGEQ4MEVV2OQFRJ7OTJ6",
+    secretAccessKey: "FF5h2Tb55NBsAS+7pHiSk4bt11Yj6YB/xpn+8tfeamc",
   },
 });
 
-const putFile = async (file: Buffer, fileName: string) => {
+const putFile = async (file: any, fileName: string) => {
   try {
     const data = await s3.send(
       new PutObjectCommand({
-        Bucket: "kn-m",
+        Bucket: "knmulti",
         Key: fileName,
         Body: file,
         ACL: "public-read",
