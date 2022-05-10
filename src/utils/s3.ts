@@ -17,6 +17,8 @@ const putFile = async (file: any, fileName: string) => {
         Key: fileName,
         Body: file,
         ACL: "public-read",
+        ContentDisposition:"inline",
+        ContentType:"application/pdf"
       })
     );
     return data;
