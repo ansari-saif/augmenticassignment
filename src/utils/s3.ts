@@ -19,6 +19,8 @@ const putFile = async (file: any, fileName: string) => {
         Key: fileName,
         Body: file,
         ACL: "public-read",
+        ContentDisposition:"inline",
+        ContentType:"application/pdf"
       })
     );
     // console.log("Success, Object Created.", data);
