@@ -1,6 +1,8 @@
 import { Router } from "express";
+import { vendorBilldelete } from "./controllers/delete";
 import { getVendorBillPayment, getVendorBills, getVendorCredit, getVendorExpense, getVendorPurchaseOrder } from "./controllers/get";
 import { vendorBillPaymentPost, vendorBillPost, vendorCreditPost, vendorExpensePost, vendorPurchaseOrderPost } from "./controllers/post";
+import { vendorBillPut } from "./controllers/put";
 
 const vendorTransaction = Router();
 
@@ -8,6 +10,8 @@ const vendorTransaction = Router();
 // bills 
 vendorTransaction.get('/getvendorbills', getVendorBills);
 vendorTransaction.post('/createvendorbill', vendorBillPost);
+vendorTransaction.put('/updatevendorbill/:id', vendorBillPut);
+vendorTransaction.delete('/removevendorbill/:id', vendorBilldelete);
 
 // bill Payment 
 vendorTransaction.get('/getvendorbillpayment', getVendorBillPayment);
