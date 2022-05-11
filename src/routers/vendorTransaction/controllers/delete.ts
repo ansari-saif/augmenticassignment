@@ -20,7 +20,35 @@ export const vendorBilldelete = async(req: Request, res: Response) => {
     res.status(200).json({ msg: `${req.params.id} vendor bill has been deleted` });
     
   } catch (err) {
-    res.status(500).json({ msg: "Server Error: Bill wasn't created" })
+    res.status(500).json({ msg: "Server Error: Bill wasn't deleted" })
+  }
+
+}
+
+export const vendorBillPaymentdelete = async(req: Request, res: Response) => {
+  try {
+    await VendorBillPayment.findByIdAndDelete(req.params.id);
+    // DELETE FILE TO CLOUD 
+    // await deleteFile(`${req.params.id}.pdf`);
+
+    res.status(200).json({ msg: `${req.params.id} vendor bill payment has been deleted` });
+    
+  } catch (err) {
+    res.status(500).json({ msg: "Server Error: Bill payment wasn't deleted" })
+  }
+
+}
+
+export const vendorPurchaseOrderdelete = async(req: Request, res: Response) => {
+  try {
+    await PurchaseOrder.findByIdAndDelete(req.params.id);
+    // DELETE FILE TO CLOUD 
+    // await deleteFile(`${req.params.id}.pdf`);
+
+    res.status(200).json({ msg: `${req.params.id} vendor purchase order has been deleted` });
+    
+  } catch (err) {
+    res.status(500).json({ msg: "Server Error: purchase order wasn't deleted" })
   }
 
 }

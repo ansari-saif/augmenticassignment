@@ -37,3 +37,27 @@ export const vendorBillPut = async(req: Request, res: Response) => {
   }
 
 }
+
+export const vendorBillPaymentPut = async(req: Request, res: Response) => {
+  try {
+    const vendorBillPayment = await VendorBillPayment.findByIdAndUpdate(req.params.id, req.body, { new : true });
+
+    res.status(200).json(vendorBillPayment);
+    
+  } catch (err) {
+    res.status(500).json({ msg: "Server Error: Bill Payment cannot be Updated" })
+  }
+
+}
+
+export const vendorPurchaseOrderPut = async(req: Request, res: Response) => {
+  try {
+    const purchaseOrder = await PurchaseOrder.findByIdAndUpdate(req.params.id, req.body, { new : true });
+
+    res.status(200).json(purchaseOrder);
+    
+  } catch (err) {
+    res.status(500).json({ msg: "Server Error: Purchase Order Data wasn't able to update" });
+  }
+
+}

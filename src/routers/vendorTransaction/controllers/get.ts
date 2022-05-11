@@ -18,7 +18,7 @@ export const getVendorBills = async (req: Request, res: Response) => {
 
 export const getVendorBillPayment = async (req: Request, res: Response) => {
   try {
-    const vendorBillPayment = await VendorBillPayment.find(req.query).populate({path: "vendorId", select: "name"});
+    const vendorBillPayment = await VendorBillPayment.find(req.query).populate({path: "vendorId", select: "name billAddress"});
 
     res.status(200).json(vendorBillPayment);
     
@@ -40,7 +40,7 @@ export const getVendorExpense = async (req: Request, res: Response) => {
 
 export const getVendorPurchaseOrder = async (req: Request, res: Response) => {
   try {
-    const purchaseOrder = await PurchaseOrder.find(req.query).populate({path: "vendorId", select: "name"}).populate({path: "customerId", select: "displayName"});
+    const purchaseOrder = await PurchaseOrder.find(req.query).populate({path: "vendorId", select: "name billAddress"}).populate({path: "customerId", select: "displayName billingAddress"});
 
     res.status(200).json(purchaseOrder);
     
