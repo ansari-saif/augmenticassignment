@@ -1,4 +1,6 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, DeleteObjectRequest, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import fs from "fs";
+import { generateBillPDF } from "./pdf-generation/generatePDF";
 
 const s3 = new S3Client({
   endpoint: "https://fra1.digitaloceanspaces.com",
@@ -21,10 +23,40 @@ const putFile = async (file: any, fileName: string) => {
         ContentType:"application/pdf"
       })
     );
+    // console.log("Success, Object Created.", data);
     return data;
   } catch (err) {
     console.log("Error", err);
   }
 };
+
+export const deleteFile = async(fileName: string) => {
+  try {
+    const data = await s3.send(new DeleteObjectCommand({
+      Bucket: "knmulti",
+      Key: fileName,
+    }));
+    // console.log("Success, Object deleted.", data);
+    return data;
+  } catch (err) {
+    console.log("Error", err);
+  }
+}
+
+export const updateFile = async(modelName: any, modelData: any, populateObject: any) => {
+  // UPLOAD FILE TO CLOUD 
+  const uploadedData = await modelName.findOne({_id : modelData._id}).populate({ ...populateObject });
+
+  await deleteFile(`${uploadedData._id}.pdf`);
+
+  const pathToFile = await generateBillPDF(uploadedData.toJSON());
+  const file = await fs.readFileSync(pathToFile);
+  // console.log(pathToFile);
+  await putFile(file, `${uploadedData._id}.pdf` );
+
+  await modelName.updateOne({_id : modelData._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedData._id}.pdf`})
+
+  await fs.rmSync(pathToFile);
+}
 
 export default putFile;

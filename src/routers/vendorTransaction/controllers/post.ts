@@ -33,6 +33,18 @@ export const vendorBillPost = async(req: Request, res: Response) => {
 
 }
 
+// export const uploadVendorBillFill = async(req: Request, res: Response) => {
+//   try {
+    
+//     await putFile(file, `` );
+
+    
+//   } catch (err) {
+//     res.status(500).json({ msg: "Server Error: Bill wasn't created" })
+//   }
+
+// }
+
 export const vendorBillPaymentPost = async(req: Request, res: Response) => {
   try {
     const vendorBillPayment = await VendorBillPayment.create(req.body);
