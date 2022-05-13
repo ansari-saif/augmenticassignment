@@ -2,7 +2,10 @@ import { Document, Schema, Types } from "mongoose";
 
 interface IVendorExpense extends Document {
   expenseDate: Date;
+  employeeId: number;
   expenseAccount: string;
+  ratePerKM: number;
+  distance: number;
   expenseAmount: number;
   paymentThrough: string;
   vendorId?: Types.ObjectId;
@@ -21,7 +24,10 @@ interface IVendorExpense extends Document {
 
 const vendorExpenseSchema = new Schema<IVendorExpense>({
   expenseDate: Date,
+  employeeId: { type: Number, ref:"Employee" },
   expenseAccount: String,
+  ratePerKM: Number,
+  distance: Number,
   expenseAmount: Number,
   paymentThrough: String,
   vendorId: { type: Schema.Types.ObjectId, ref:"Vendor" },

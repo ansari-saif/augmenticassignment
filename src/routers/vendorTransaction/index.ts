@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { deleteVendorFile, vendorBilldelete, vendorBillPaymentdelete, vendorPurchaseOrderdelete } from "./controllers/delete";
+import { deleteVendorFile, vendorBilldelete, vendorBillPaymentdelete, vendorExpensedelete, vendorPurchaseOrderdelete } from "./controllers/delete";
 import { getVendorBillPayment, getVendorBills, getVendorCredit, getVendorExpense, getVendorPurchaseOrder } from "./controllers/get";
 import { uploadVendorFile, vendorBillPaymentPost, vendorBillPost, vendorCreditPost, vendorExpensePost, vendorPurchaseOrderPost } from "./controllers/post";
 import { vendorBillPaymentPut, vendorBillPut, vendorExpensePut, vendorPurchaseOrderPut } from "./controllers/put";
@@ -23,6 +23,7 @@ vendorTransaction.delete('/removevendorbillpayment/:id', vendorBillPaymentdelete
 vendorTransaction.get('/getvendorexpense', getVendorExpense);
 vendorTransaction.post('/createvendorexpense', vendorExpensePost);
 vendorTransaction.put('/updatevendorexpense/:id', vendorExpensePut);
+vendorTransaction.delete('/removevendorexpense/:id', vendorExpensedelete);
 
 // Purchase Order 
 vendorTransaction.get('/getvendorpurchaseorder', getVendorPurchaseOrder);
