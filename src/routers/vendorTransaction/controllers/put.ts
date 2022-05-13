@@ -50,6 +50,18 @@ export const vendorBillPaymentPut = async(req: Request, res: Response) => {
 
 }
 
+export const vendorExpensePut = async(req: Request, res: Response) => {
+  try {
+    const vendorExpense = await VendorExpense.findByIdAndUpdate(req.params.id, req.body, { new : true });
+
+    res.status(200).json(vendorExpense);
+    
+  } catch (err) {
+    res.status(500).json({ msg: "Server Error: Expense Data wasn't Updated" });
+  }
+
+}
+
 export const vendorPurchaseOrderPut = async(req: Request, res: Response) => {
   try {
     const purchaseOrder = await PurchaseOrder.findByIdAndUpdate(req.params.id, req.body, { new : true });

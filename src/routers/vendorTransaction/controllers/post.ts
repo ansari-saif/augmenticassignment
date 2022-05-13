@@ -9,6 +9,7 @@ import { generateBillPDF } from "../../../utils/pdf-generation/generatePDF";
 // import uploadFileToCloud from "../../../utils/uploadToCloud"
 import putFile from "../../../utils/s3"
 import fs from 'fs';
+import fileUpload from "express-fileupload";
 
 export const vendorBillPost = async(req: Request, res: Response) => {
   try {
@@ -33,17 +34,6 @@ export const vendorBillPost = async(req: Request, res: Response) => {
 
 }
 
-// export const uploadVendorBillFill = async(req: Request, res: Response) => {
-//   try {
-    
-//     await putFile(file, `` );
-
-    
-//   } catch (err) {
-//     res.status(500).json({ msg: "Server Error: Bill wasn't created" })
-//   }
-
-// }
 
 export const vendorBillPaymentPost = async(req: Request, res: Response) => {
   try {
@@ -89,6 +79,41 @@ export const vendorCreditPost = async(req: Request, res: Response) => {
     
   } catch (err) {
     res.status(500).json({ msg: "Server Error: Vendor Credit Data wasn't able to stored" });
+  }
+
+}
+
+export const uploadVendorFile = async(req: Request, res: Response) => {
+  try { 
+
+    if(req.files === null){
+      return res.status(400).json({ msg: 'No file uploaded' });
+    }
+
+    const file = req.files?.file as fileUpload.UploadedFile;
+
+    const fileName = `purchasefile_${Date.now()}_${file?.name}`;
+
+    file?.mv(`${__dirname}/${fileName}`, err => {
+      console.error(err);
+      return
+    });
+    
+    await putFile(`${__dirname}/${fileName}`, `${fileName}`, file );
+
+    fs?.unlink(`${__dirname}/${fileName}`, (err => {
+      if(err) { console.log(err)
+        return
+      }
+      else {
+        console.log("Deleted");
+      }
+    }));
+
+    res.status(200).json({ fileName: fileName, filePath: `https://knmulti.fra1.digitaloceanspaces.com/${fileName}` });
+    
+  } catch (err) {
+    res.status(500).json({ msg: "Server Error: File was not uploaded" });
   }
 
 }

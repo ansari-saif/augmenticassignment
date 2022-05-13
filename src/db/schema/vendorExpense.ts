@@ -5,13 +5,18 @@ interface IVendorExpense extends Document {
   expenseAccount: string;
   expenseAmount: number;
   paymentThrough: string;
-  vendorId: Types.ObjectId;
+  vendorId?: Types.ObjectId;
   invoiceId: string;
   notes: string;
-  customerId: Types.ObjectId;
+  customerId?: Types.ObjectId;
   isBillable: boolean;
-  projectId: Types.ObjectId;
+  projectId?: Types.ObjectId;
   markUpBy: number;
+  fileInfos: {
+    fileName: string;
+    filePath: string;
+  }[];
+  pdf_url?: string;
 }
 
 const vendorExpenseSchema = new Schema<IVendorExpense>({
@@ -26,6 +31,11 @@ const vendorExpenseSchema = new Schema<IVendorExpense>({
   isBillable: Boolean,
   projectId: { type: Schema.Types.ObjectId, ref:"Project" },
   markUpBy: Number,
+  fileInfos: [{
+    fileName: String,
+    filePath: String,
+  }],
+  pdf_url: String,
 });
 
 export { IVendorExpense, vendorExpenseSchema }
