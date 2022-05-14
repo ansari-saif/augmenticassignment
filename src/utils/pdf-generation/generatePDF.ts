@@ -30,4 +30,27 @@ export const generateBillPDF = async (billData: any) => {
   return document.path;
 };
 
+export const generatePurchaseOrderPDF = async (purchaseOrderData: any) => {
+  const html = fs.readFileSync(path.join(__dirname , "Purchase_Order_Template.html"), "utf8");
+  // console.log(purchaseOrderData)
+  const document = {
+    html: html,
+    data: {
+      purchaseOrderData : purchaseOrderData,
+    },
+    path: path.join(__dirname , `generated/${purchaseOrderData.billNo}.pdf`),
+    type: "",
+  };
+
+  const options = {
+    format: "A4",
+    orientation: "portrait",
+    border: "5mm",
+  };
+
+  const res = await pdf.create(document, options);
+  console.log("FILE CREATED")
+  return document.path;
+};
+
 export default generatePDFRouter;

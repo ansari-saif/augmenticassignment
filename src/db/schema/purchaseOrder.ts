@@ -43,6 +43,11 @@ interface IPurchaseOrder extends Document {
   termsAndConditions: string;
   status: string;
   billedStatus: string;
+  fileInfos: {
+    fileName: string;
+    filePath: string;
+  }[];
+  pdf_url?:string;
 }
 
 const purchaseOrderSchema = new Schema<IPurchaseOrder>({
@@ -87,6 +92,11 @@ const purchaseOrderSchema = new Schema<IPurchaseOrder>({
   termsAndConditions: String,
   status: String,
   billedStatus: String,
+  fileInfos: [{
+    fileName: String,
+    filePath: String,
+  }],
+  pdf_url: String,
 });
 
 export { IPurchaseOrder, purchaseOrderSchema }
