@@ -41,9 +41,23 @@ export const vendorBillPaymentdelete = async(req: Request, res: Response) => {
 
 export const vendorPurchaseOrderdelete = async(req: Request, res: Response) => {
   try {
-    await PurchaseOrder.findByIdAndDelete(req.params.id);
+
+    const purchaseOrder : any = await PurchaseOrder.findById(req.params.id);
+
+    if(!purchaseOrder){
+      return res.status(404).json({ msg: "vendor purchase order not found" });
+    }
+
     // DELETE FILE TO CLOUD 
-    // await deleteFile(`${req.params.id}.pdf`);
+    if(purchaseOrder?.fileInfos){
+      await purchaseOrder?.fileInfos.forEach((f : any) => {
+        if(f?.fileName){
+          deleteFile(`${f?.fileName}`);
+        }
+      });
+    }
+
+    await PurchaseOrder.findByIdAndDelete(req.params.id);
 
     res.status(200).json({ msg: `${req.params.id} vendor purchase order has been deleted` });
     
@@ -62,6 +76,7 @@ export const vendorExpensedelete = async(req: Request, res: Response) => {
       return res.status(404).json({ msg: "vendor expense not found" });
     }
 
+    // DELETE FILE TO CLOUD 
     if(vendorExpense?.fileInfos){
       await vendorExpense?.fileInfos.forEach((f : any) => {
         if(f?.fileName){
