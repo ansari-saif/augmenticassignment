@@ -5,7 +5,7 @@ import { VendorBill } from "../../../models/VendorBill";
 import { VendorBillPayment } from "../../../models/vendorBillPayment";
 import { VendorCredit } from "../../../models/vendorCredit";
 import { VendorExpense } from "../../../models/vendorExpense";
-import { generateBillPDF } from "../../../utils/pdf-generation/generatePDF";
+import { generateBillPDF, generatePurchaseOrderPDF } from "../../../utils/pdf-generation/generatePDF";
 // import uploadFileToCloud from "../../../utils/uploadToCloud"
 import putFile from "../../../utils/s3"
 import fs from 'fs';
@@ -61,9 +61,22 @@ export const vendorExpensePost = async(req: Request, res: Response) => {
 
 export const vendorPurchaseOrderPost = async(req: Request, res: Response) => {
   try {
-    const purchaseOrder = await PurchaseOrder.create(req.body);
+    const purchaseOrder : any = await PurchaseOrder.create(req.body);
+    // UPLOAD FILE TO CLOUD 
+    const uploadedpurchaseOrder = await PurchaseOrder.findOne({_id : purchaseOrder._id}).populate({path: "vendorId", select: "name billAddress"});
+  
+    const pathToFile = await generatePurchaseOrderPDF(uploadedpurchaseOrder.toJSON());
+    const file = await fs.readFileSync(pathToFile);
+    // console.log(pathToFile);
+    await putFile(file, `${uploadedpurchaseOrder._id}.pdf` );
 
-    res.status(200).json(purchaseOrder);
+    await PurchaseOrder.updateOne({_id : purchaseOrder._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedpurchaseOrder._id}.pdf`})
+
+    await fs.rmSync(pathToFile);
+
+    res.status(200).json({...purchaseOrder._doc , pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedpurchaseOrder._id}.pdf` });
+
+    // res.status(200).json(purchaseOrder);
     
   } catch (err) {
     res.status(500).json({ msg: "Server Error: Purchase Order Data wasn't able to stored" });
