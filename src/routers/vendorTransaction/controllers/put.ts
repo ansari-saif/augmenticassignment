@@ -14,23 +14,32 @@ import fs from 'fs';
 export const vendorBillPut = async(req: Request, res: Response) => {
   try {
     const vendorBill : any = await VendorBill.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    // UPLOAD FILE TO CLOUD 
-    const uploadedVendorBill = await VendorBill.findOne({_id : vendorBill._id}).populate({path: "vendorId", select: "name billAddress"});
 
-    await deleteFile(`${uploadedVendorBill._id}.pdf`);
+    // If only related files are added 
+    if(req.body.fileInfos){
+
+      return res.status(200).json(vendorBill);
+
+    } else {
+      
+      // UPLOAD FILE TO CLOUD 
+      const uploadedVendorBill = await VendorBill.findOne({_id : vendorBill._id}).populate({path: "vendorId", select: "name billAddress"});
   
-    const pathToFile = await generateBillPDF(uploadedVendorBill.toJSON());
-    const file = await fs.readFileSync(pathToFile);
-    // console.log(pathToFile);
-    await putFile(file, `${uploadedVendorBill._id}.pdf` );
-
-    await VendorBill.updateOne({_id : vendorBill._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
-
-    await fs.rmSync(pathToFile);
-
-    // await updateFile(VendorBill, vendorBill, {path: "vendorId", select: "name billAddress"});
-
-    res.status(200).json({...vendorBill._doc , pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf` });
+      await deleteFile(`${uploadedVendorBill._id}.pdf`);
+    
+      const pathToFile = await generateBillPDF(uploadedVendorBill.toJSON());
+      const file = await fs.readFileSync(pathToFile);
+      // console.log(pathToFile);
+      await putFile(file, `${uploadedVendorBill._id}.pdf` );
+  
+      await VendorBill.updateOne({_id : vendorBill._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
+  
+      await fs.rmSync(pathToFile);
+  
+      // await updateFile(VendorBill, vendorBill, {path: "vendorId", select: "name billAddress"});
+  
+      res.status(200).json({...vendorBill._doc , pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf` });
+    }
     
   } catch (err) {
     res.status(500).json({ msg: "Server Error: Bill wasn't created" })

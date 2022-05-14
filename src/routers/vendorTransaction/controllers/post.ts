@@ -119,7 +119,7 @@ export const uploadVendorFile = async(req: Request, res: Response) => {
         return
       }
       else {
-        console.log("Deleted");
+        console.log("Folder file Deleted");
       }
     }));
 
