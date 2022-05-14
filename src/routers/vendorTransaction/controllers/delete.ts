@@ -13,8 +13,23 @@ import fs from 'fs';
 
 export const vendorBilldelete = async(req: Request, res: Response) => {
   try {
-    await VendorBill.findByIdAndDelete(req.params.id);
+    const vendorBill : any = await VendorBill.findById(req.params.id);
+
+    if(!vendorBill){
+      return res.status(404).json({ msg: "vendor bill not found" });
+    }
+
     // DELETE FILE TO CLOUD 
+    if(vendorBill?.fileInfos){
+      await vendorBill?.fileInfos.forEach((f : any) => {
+        if(f?.fileName){
+          deleteFile(`${f?.fileName}`);
+        }
+      });
+    }
+
+    await VendorBill.findByIdAndDelete(req.params.id);
+    // DELETE PDF TO CLOUD 
     await deleteFile(`${req.params.id}.pdf`);
 
     res.status(200).json({ msg: `${req.params.id} vendor bill has been deleted` });
@@ -59,6 +74,9 @@ export const vendorPurchaseOrderdelete = async(req: Request, res: Response) => {
 
     await PurchaseOrder.findByIdAndDelete(req.params.id);
 
+    // DELETE PDF TO CLOUD 
+    await deleteFile(`${req.params.id}.pdf`);
+
     res.status(200).json({ msg: `${req.params.id} vendor purchase order has been deleted` });
     
   } catch (err) {
@@ -86,8 +104,9 @@ export const vendorExpensedelete = async(req: Request, res: Response) => {
     }
 
     await VendorExpense.findByIdAndDelete(req.params.id);
+
     // DELETE FILE TO CLOUD 
-    // await deleteFile(`${req.params.id}.pdf`);
+    await deleteFile(`${req.params.id}.pdf`);
 
     res.status(200).json({ msg: `${req.params.id} vendor expense has been deleted` });
     
