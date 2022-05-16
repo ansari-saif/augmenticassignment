@@ -11,7 +11,7 @@ const s3 = new S3Client({
   },
 });
 
-const putFile = async (file: any, fileName: string) => {
+const putFile = async (file: any, fileName: string, filedata: any = {mimetype: `application/pdf`}) => {
   try {
     const data = await s3.send(
       new PutObjectCommand({
@@ -20,13 +20,13 @@ const putFile = async (file: any, fileName: string) => {
         Body: file,
         ACL: "public-read",
         ContentDisposition:"inline",
-        ContentType:"application/pdf"
+        ContentType:`${filedata?.mimetype}`
       })
     );
     // console.log("Success, Object Created.", data);
     return data;
   } catch (err) {
-    console.log("Error", err);
+    console.log("Errorr", err);
   }
 };
 

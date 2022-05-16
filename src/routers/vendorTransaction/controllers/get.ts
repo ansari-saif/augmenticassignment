@@ -40,7 +40,7 @@ export const getVendorExpense = async (req: Request, res: Response) => {
 
 export const getVendorPurchaseOrder = async (req: Request, res: Response) => {
   try {
-    const purchaseOrder = await PurchaseOrder.find(req.query).populate({path: "vendorId", select: "name billAddress"}).populate({path: "customerId", select: "displayName billingAddress"});
+    const purchaseOrder = await PurchaseOrder.find(req.query).populate({path: "vendorId", select: "name billAddress"}).populate({path: "customerId", select: "displayName shippingAddress"});
 
     res.status(200).json(purchaseOrder);
     

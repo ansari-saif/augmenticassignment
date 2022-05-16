@@ -16,7 +16,7 @@ dashboardRouter.get("/", async (req, res) => {
   const invoices = await SaleInvoice.find({})
     .limit(5)
     .populate("customer")
-    .populate("project");
+    // .populate("project");
   const payments = await SalePayment.find({}).limit(5).populate("invoice");
 
   return res.status(200).json({
