@@ -5,7 +5,7 @@ import { VendorBill } from "../../../models/VendorBill";
 import { VendorBillPayment } from "../../../models/vendorBillPayment";
 import { VendorCredit } from "../../../models/vendorCredit";
 import { VendorExpense } from "../../../models/vendorExpense";
-import { generateBillPDF, generatePurchaseOrderPDF } from "../../../utils/pdf-generation/generatePDF";
+import { generateBillPDF, generatePurchaseOrderPDF, generateVendorCreditPDF} from "../../../utils/pdf-generation/generatePDF";
 // import uploadFileToCloud from "../../../utils/uploadToCloud"
 import putFile from "../../../utils/s3"
 import fs from 'fs';
@@ -86,9 +86,23 @@ export const vendorPurchaseOrderPost = async(req: Request, res: Response) => {
 
 export const vendorCreditPost = async(req: Request, res: Response) => {
   try {
-    const vendorCredit = await VendorCredit.create(req.body);
+    const vendorCredit : any = await VendorCredit.create(req.body);
 
-    res.status(200).json(vendorCredit);
+    // res.status(200).json(vendorCredit);
+
+    // UPLOAD FILE TO CLOUD 
+    const uploadedVendorCredit = await VendorCredit.findOne({_id : vendorCredit._id}).populate({path: "vendorId", select: "name billAddress"});
+  
+    const pathToFile : any = await generateVendorCreditPDF(uploadedVendorCredit.toJSON());
+    const file = await fs.readFileSync(pathToFile);
+    // console.log(pathToFile);
+    await putFile(file, `${uploadedVendorCredit._id}.pdf` );
+
+    await VendorCredit.updateOne({_id : vendorCredit._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorCredit._id}.pdf`});
+
+    await fs.rmSync(pathToFile);
+
+    res.status(200).json({...vendorCredit._doc , pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorCredit._id}.pdf` });
     
   } catch (err) {
     res.status(500).json({ msg: "Server Error: Vendor Credit Data wasn't able to stored" });

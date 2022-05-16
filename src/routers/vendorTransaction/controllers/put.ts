@@ -106,3 +106,14 @@ export const vendorPurchaseOrderPut = async(req: Request, res: Response) => {
   }
 
 }
+
+export const vendorCreditPut = async (req: Request, res: Response) => {
+  try {
+    const vendorCredit = await VendorCredit.findByIdAndUpdate(req.params.id, req.body, { new : true });
+
+    res.status(200).json(vendorCredit);
+    
+  } catch (err) {
+    res.status(500).json({ msg: "Server Error: Credit Data wasn't Updated" });
+  }
+}
