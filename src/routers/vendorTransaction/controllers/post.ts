@@ -63,7 +63,7 @@ export const vendorPurchaseOrderPost = async(req: Request, res: Response) => {
   try {
     const purchaseOrder : any = await PurchaseOrder.create(req.body);
     // UPLOAD FILE TO CLOUD 
-    const uploadedpurchaseOrder = await PurchaseOrder.findOne({_id : purchaseOrder._id}).populate({path: "vendorId", select: "name billAddress"});
+    const uploadedpurchaseOrder = await PurchaseOrder.findOne({_id : purchaseOrder._id}).populate({path: "vendorId", select: "name billAddress"}).populate({path: "customerId", select: "displayName shippingAddress"});
   
     const pathToFile = await generatePurchaseOrderPDF(uploadedpurchaseOrder.toJSON());
     const file = await fs.readFileSync(pathToFile);

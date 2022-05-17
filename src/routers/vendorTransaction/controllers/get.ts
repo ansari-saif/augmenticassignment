@@ -51,7 +51,7 @@ export const getVendorPurchaseOrder = async (req: Request, res: Response) => {
 
 export const getVendorCredit = async (req: Request, res: Response) => {
   try {
-    const vendorCredit = await VendorCredit.find(req.query).populate({path: "vendorId", select: "name"});
+    const vendorCredit = await VendorCredit.find(req.query).populate({path: "vendorId", select: "name billAddress"});
 
     res.status(200).json(vendorCredit);
     

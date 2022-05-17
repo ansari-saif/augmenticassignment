@@ -137,7 +137,7 @@ export const vendorCreditdelete = async(req: Request, res: Response) => {
     await VendorCredit.findByIdAndDelete(req.params.id);
 
     // DELETE FILE TO CLOUD 
-    // await deleteFile(`${req.params.id}.pdf`);
+    await deleteFile(`${req.params.id}.pdf`);
 
     res.status(200).json({ msg: `${req.params.id} vendor credit has been deleted` });
     
