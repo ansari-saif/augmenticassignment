@@ -116,6 +116,37 @@ export const vendorExpensedelete = async(req: Request, res: Response) => {
 
 }
 
+export const vendorCreditdelete = async(req: Request, res: Response) => {
+  try {
+
+    const vendorCredit : any = await VendorCredit.findById(req.params.id);
+
+    if(!vendorCredit){
+      return res.status(404).json({ msg: "vendor credit not found" });
+    }
+
+    // DELETE FILE TO CLOUD 
+    if(vendorCredit?.fileInfos){
+      await vendorCredit?.fileInfos.forEach((f : any) => {
+        if(f?.fileName){
+          deleteFile(`${f?.fileName}`);
+        }
+      });
+    }
+
+    await VendorCredit.findByIdAndDelete(req.params.id);
+
+    // DELETE FILE TO CLOUD 
+    await deleteFile(`${req.params.id}.pdf`);
+
+    res.status(200).json({ msg: `${req.params.id} vendor credit has been deleted` });
+    
+  } catch (err) {
+    res.status(500).json({ msg: "Server Error: vendor credit wasn't deleted" })
+  }
+
+}
+
 export const deleteVendorFile = async(req: Request, res: Response) => {
   try {
 
