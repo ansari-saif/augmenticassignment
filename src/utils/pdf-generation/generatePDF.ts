@@ -15,7 +15,7 @@ export const generateBillPDF = async (billData: any) => {
     data: {
       billData : billData,
     },
-    path: path.join(__dirname , `generated/${billData.billNo}.pdf`),
+    path: path.join(__dirname , `generated/${billData._id}.pdf`),
     type: "",
   };
 
@@ -38,7 +38,7 @@ export const generatePurchaseOrderPDF = async (purchaseOrderData: any) => {
     data: {
       purchaseOrderData : purchaseOrderData,
     },
-    path: path.join(__dirname , `generated/${purchaseOrderData.billNo}.pdf`),
+    path: path.join(__dirname , `generated/${purchaseOrderData._id}.pdf`),
     type: "",
   };
 
@@ -52,5 +52,35 @@ export const generatePurchaseOrderPDF = async (purchaseOrderData: any) => {
   console.log("FILE CREATED")
   return document.path;
 };
+
+export const generateVendorCreditPDF = async (creditData: any) => {
+  try {
+    const html = fs.readFileSync(path.join(__dirname , "Vendor_Credit_Template.html"), "utf8");
+    // console.log(creditData)
+    const document = {
+      html: html,
+      data: {
+        creditData : creditData,
+      },
+      path: path.join(__dirname , `generated/${creditData._id}.pdf`),
+      type: "",
+    };
+  
+    const options = {
+      format: "A4",
+      orientation: "portrait",
+      border: "5mm",
+    };
+  
+    const res = await pdf.create(document, options);
+    console.log("FILE CREATED");
+    return document.path;
+    
+  } catch (err) {
+    console.error(err);
+  
+  }
+};
+
 
 export default generatePDFRouter;

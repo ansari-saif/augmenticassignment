@@ -5,7 +5,7 @@ import { VendorBill } from "../../../models/VendorBill";
 import { VendorBillPayment } from "../../../models/vendorBillPayment";
 import { VendorCredit } from "../../../models/vendorCredit";
 import { VendorExpense } from "../../../models/vendorExpense";
-import { generateBillPDF, generatePurchaseOrderPDF } from "../../../utils/pdf-generation/generatePDF";
+import { generateBillPDF, generatePurchaseOrderPDF, generateVendorCreditPDF } from "../../../utils/pdf-generation/generatePDF";
 // import uploadFileToCloud from "../../../utils/uploadToCloud"
 import putFile, { deleteFile, updateFile } from "../../../utils/s3"
 import fs from 'fs';
@@ -83,7 +83,7 @@ export const vendorPurchaseOrderPut = async(req: Request, res: Response) => {
     } else {
       
       // UPLOAD FILE TO CLOUD 
-      const uploadedpurchaseOrder = await PurchaseOrder.findOne({_id : purchaseOrder._id}).populate({path: "vendorId", select: "name billAddress"});
+      const uploadedpurchaseOrder = await PurchaseOrder.findOne({_id : purchaseOrder._id}).populate({path: "vendorId", select: "name billAddress"}).populate({path: "customerId", select: "displayName shippingAddress"});
   
       await deleteFile(`${uploadedpurchaseOrder._id}.pdf`);
     
@@ -105,4 +105,41 @@ export const vendorPurchaseOrderPut = async(req: Request, res: Response) => {
     res.status(500).json({ msg: "Server Error: Purchase Order Data wasn't able to update" });
   }
 
+}
+
+export const vendorCreditPut = async (req: Request, res: Response) => {
+  try {
+    const vendorCredit : any = await VendorCredit.findByIdAndUpdate(req.params.id, req.body, { new : true });
+
+    // res.status(200).json(vendorCredit);
+
+    // If only related files are added 
+    if(req.body.fileInfos){
+
+      return res.status(200).json(vendorCredit);
+
+    } else {
+      
+      // UPLOAD FILE TO CLOUD 
+      const uploadedVendorCredit = await VendorCredit.findOne({_id : vendorCredit._id}).populate({path: "vendorId", select: "name billAddress"});
+  
+      await deleteFile(`${uploadedVendorCredit._id}.pdf`);
+    
+      const pathToFile : any = await generateVendorCreditPDF(uploadedVendorCredit.toJSON());
+      const file = await fs.readFileSync(pathToFile);
+      // console.log(pathToFile);
+      await putFile(file, `${uploadedVendorCredit._id}.pdf` );
+  
+      await VendorCredit.updateOne({_id : vendorCredit._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorCredit._id}.pdf`})
+  
+      await fs.rmSync(pathToFile);
+  
+      // await updateFile(purchaseOrder, purchaseOrder, {path: "vendorId", select: "name billAddress"});
+  
+      res.status(200).json({...vendorCredit._doc , pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorCredit._id}.pdf` });
+    }
+    
+  } catch (err) {
+    res.status(500).json({ msg: "Server Error: Credit Data wasn't Updated" });
+  }
 }

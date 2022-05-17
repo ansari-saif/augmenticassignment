@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Purchase Order</title>
+    <title>Vendor Credit</title>
     <style>
         * {
             margin: 0;
@@ -21,6 +21,7 @@
         .header {
             display: -webkit-flex !important;
             -webkit-justify-content: space-between !important;
+            justify-content: space-between !important;
             align-items: flex-start !important;
             -webkit-flex-wrap: wrap;
             flex-wrap: wrap;
@@ -30,8 +31,10 @@
             display: -webkit-flex !important;
             flex-direction: column !important;
             -webkit-flex-flow: column;
+            flex-flow: column;
             align-items: flex-start !important;
             -webkit-justify-content: space-between !important;
+            justify-content: space-between !important;
             -webkit-flex-wrap: wrap;
             flex-wrap: wrap;
         }
@@ -40,7 +43,9 @@
             display: -webkit-flex !important;
             flex-direction: column !important;
             -webkit-flex-flow: column;
+            flex-flow: column;
             -webkit-justify-content: space-between !important;
+            justify-content: space-between !important;
             align-items: flex-end !important;
             -webkit-flex-wrap: wrap;
             flex-wrap: wrap;
@@ -55,6 +60,7 @@
         .information {
             display: -webkit-flex !important;
             -webkit-justify-content: space-between !important;
+            justify-content: space-between !important;
             margin-top: 80px !important;
             -webkit-flex-wrap: wrap;
             flex-wrap: wrap;
@@ -107,6 +113,7 @@
             margin: 80px auto !important;
             display: -webkit-grid;
             -webkit-place-content: center !important;
+            place-content: center !important;
         }
 
         .footer {
@@ -114,6 +121,7 @@
             -webkit-flex-wrap: wrap;
             flex-wrap: wrap;
             -webkit-justify-content: space-between;
+            justify-content: space-between;
             align-items: flex-end;
             margin-top: 50px;
         }
@@ -140,49 +148,51 @@
                     Hanspal, Bhubaneshwar, Odisha 752101
                 </p>
             </div>
-            <div class="overview">
-                <h1>Purchase Order</h1>
-                <p>Purchase Order # {{this.purchaseOrderData.purchaseOrderNo}}</p>
-                <!-- <span>Balance Due</span>
-                <h2>₹{{this.purchaseOrderData.balanceDue}}</h2> -->
+            <div>
+                <h2>Vendor Credit</h2>
+                <p>Vendor Credit # {{this.creditData.creditOrder}}</p>
+                <br />
+                <span>Balance Due</span>
+                <h2>₹{{this.creditData.balance}}</h2>
+                
             </div>
 
         </div>
         <div class="information">
-            <div>
+            <div class="w-200">
                 <p>Vendor Address</p>
-                <b>{{this.purchaseOrderData.vendorId.name}}</b>
-                <p>{{this.purchaseOrderData.vendorId.billAddress.address}} , {{this.purchaseOrderData.vendorId.billAddress.city}} , <br>
-                    {{this.purchaseOrderData.vendorId.billAddress.state}}, {{this.purchaseOrderData.vendorId.billAddress.country}} ,
-                    {{this.purchaseOrderData.vendorId.billAddress.pincode}}</p>
+                <b>{{this.creditData.vendorId.name}}</b>
+                <p>{{this.creditData.vendorId.billAddress.address}} , {{this.creditData.vendorId.billAddress.city}} , <br>
+                    {{this.creditData.vendorId.billAddress.state}}, {{this.creditData.vendorId.billAddress.country}} ,
+                    {{this.creditData.vendorId.billAddress.pincode}}</p>
                 <br />
-                <p>Deliver To</p>
-                <b>{{this.purchaseOrderData.customerId.displayName}}</b>
+                <!-- <p>Deliver To</p>
+                <b>{{this.creditData.customerId.name}}</b> -->
 
-                <!-- <p>{{this.purchaseOrderData.vendorId.billAddress.address}} , {{this.purchaseOrderData.vendorId.billAddress.city}} , <br>
-                    {{this.purchaseOrderData.vendorId.billAddress.state}}, {{this.purchaseOrderData.vendorId.billAddress.country}} ,
-                    {{this.purchaseOrderData.vendorId.billAddress.pincode}}</p> -->
+                <!-- <p>{{this.creditData.vendorId.billAddress.address}} , {{this.creditData.vendorId.billAddress.city}} , <br>
+                    {{this.creditData.vendorId.billAddress.state}}, {{this.creditData.vendorId.billAddress.country}} ,
+                    {{this.creditData.vendorId.billAddress.pincode}}</p> -->
             </div>
             <div class="info_2">
                 <div class="flex justify-between w-200">
                     <div class="right">Status : </div>
-                    <div>{{this.purchaseOrderData.status}}</div>
+                    <div>{{this.creditData.status}}</div>
                 </div>
-                <div class="flex justify-between w-200">
+                <!-- <div class="flex justify-between w-200">
                     <div class="right">Shipment preference : </div>
-                    <div>{{this.purchaseOrderData.shipmentPreference}}</div>
-                </div>
-                <div class="flex justify-between w-200">
+                    <div>{{this.creditData.shipmentPreference}}</div>
+                </div> -->
+                <div class="flex">
                     <div class="right">Date : </div>
-                    <div>{{this.purchaseOrderData.purchareOrderDate}}</div>
+                    <div>{{this.creditData.vendorCreditDate}}</div>
                 </div>
-                <div class="flex justify-between w-200">
+                <!-- <div class="flex justify-between w-200">
                     <div class="right">Delivery Date : </div>
-                    <div>{{this.purchaseOrderData.expentedDeliveryDate}}</div>
-                </div>
-                <div class="flex justify-between w-200">
+                    <div>{{this.creditData.expentedDeliveryDate}}</div>
+                </div> -->
+                <div class="flex">
                     <div class="right">Ref# : </div>
-                    <div>{{this.purchaseOrderData.referenceId}}</div>
+                    <div>{{this.creditData.orderNo}}</div>
                 </div>
 
             </div>
@@ -197,7 +207,7 @@
                     <td>Rate</td>
                     <td>Amount</td>
                 </thead>
-                {{#each this.purchaseOrderData.transaction}}
+                {{#each this.creditData.transaction}}
                 <tr>
                     <td>{{this._id}}</td>
                     <td>{{this.itemDetails}}</td>
@@ -214,28 +224,26 @@
             <div class="info_2">
                 <div class="flex justify-between w-200">
                     <div class="right">Sub Total : </div>
-                    <div>{{this.purchaseOrderData.subTotal}}</div>
+                    <div>{{this.creditData.subTotal}}</div>
                 </div>
                 <div class="flex justify-between w-200">
                     <div class="right">Discount : </div>
-                    <div>{{this.purchaseOrderData.discountAmount}}</div>
+                    <div>{{this.creditData.discountAmount}}</div>
                 </div>
                 <div class="flex justify-between w-200">
-                    <div class="right">{{this.purchaseOrderData.adjustment.adjustmentName}} : </div>
-                    <div>{{this.purchaseOrderData.adjustment.adjustmentValue}}</div>
+                    <div class="right">{{this.creditData.adjustment.adjustmentName}} : </div>
+                    <div>{{this.creditData.adjustment.adjustmentValue}}</div>
                 </div>
-                <div class="flex justify-between w-200">
-                    <div class="right">Tax : </div>
-                    <div>{{this.purchaseOrderData.taxAmount}} ({{this.purchaseOrderData.taxType}})</div>
-                </div>
+                
                 <div class="flex justify-between w-200">
                     <div class="right bold">Total : </div>
-                    <div class="bold">₹{{this.purchaseOrderData.total}}</div>
+                    <div class="bold">₹{{this.creditData.total}}</div>
                 </div>
-                <!-- <div class="flex justify-between w-200 bg-gray">
-                    <div class="right bold">Balance Due : </div>
-                    <div class="bold">₹{{this.purchaseOrderData.balanceDue}}</div>
-                </div> -->
+                
+                <div class="flex justify-between w-200 bg-gray">
+                    <div class="right bold">Credit Remaining : </div>
+                    <div class="bold">₹{{this.creditData.balance}}</div>
+                </div>
             </div>
         </div>
 
@@ -243,14 +251,7 @@
             <div>
                 Notes
             </div>
-            <div>{{this.purchaseOrderData.notes}}</div>
-        </div>
-        <br />
-        <div>
-            <div>
-                Terms & Conditions
-            </div>
-            <div>{{this.purchaseOrderData.termsAndConditions}}</div>
+            <div>{{this.creditData.notes}}</div>
         </div>
 
         <div class="signature">

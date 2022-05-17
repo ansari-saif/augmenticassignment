@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { deleteVendorFile, vendorBilldelete, vendorBillPaymentdelete, vendorExpensedelete, vendorPurchaseOrderdelete } from "./controllers/delete";
+import { deleteVendorFile, vendorBilldelete, vendorBillPaymentdelete, vendorCreditdelete, vendorExpensedelete, vendorPurchaseOrderdelete } from "./controllers/delete";
 import { getVendorBillPayment, getVendorBills, getVendorCredit, getVendorExpense, getVendorPurchaseOrder } from "./controllers/get";
 import { uploadVendorFile, vendorBillPaymentPost, vendorBillPost, vendorCreditPost, vendorExpensePost, vendorPurchaseOrderPost } from "./controllers/post";
-import { vendorBillPaymentPut, vendorBillPut, vendorExpensePut, vendorPurchaseOrderPut } from "./controllers/put";
+import { vendorBillPaymentPut, vendorBillPut, vendorCreditPut, vendorExpensePut, vendorPurchaseOrderPut } from "./controllers/put";
 
 const vendorTransaction = Router();
 
@@ -34,6 +34,8 @@ vendorTransaction.delete('/removepurchaseorder/:id', vendorPurchaseOrderdelete);
 // Vendor Credit
 vendorTransaction.get('/getvendorcredit', getVendorCredit);
 vendorTransaction.post('/createvendorcredit', vendorCreditPost);
+vendorTransaction.put('/updatevendorcredit/:id', vendorCreditPut);
+vendorTransaction.delete('/removevendorcredit/:id', vendorCreditdelete);
 
 // Upload File 
 vendorTransaction.post('/upload', uploadVendorFile);

@@ -30,6 +30,11 @@ interface IVendorCredit extends Document {
   balance: number;
   notes: string;
   status: string;
+  fileInfos: {
+    fileName: string;
+    filePath: string;
+  }[];
+  pdf_url?:string;
 }
 
 const vendorCreditSchema = new Schema<IVendorCredit>(
@@ -60,6 +65,11 @@ const vendorCreditSchema = new Schema<IVendorCredit>(
     balance: Number,
     notes: String,
     status: String,
+    fileInfos: [{
+      fileName: String,
+      filePath: String,
+    }],
+    pdf_url: String,
   }
 );
 
