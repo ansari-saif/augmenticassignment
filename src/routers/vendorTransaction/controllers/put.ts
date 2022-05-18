@@ -9,6 +9,7 @@ import { generateBillPDF, generatePurchaseMadePDF, generatePurchaseOrderPDF, gen
 // import uploadFileToCloud from "../../../utils/uploadToCloud"
 import putFile, { deleteFile, updateFile } from "../../../utils/s3"
 import fs from 'fs';
+import { RecurringExpense } from "../../../models/recurringExpense";
 
 
 export const vendorBillPut = async(req: Request, res: Response) => {
@@ -165,4 +166,16 @@ export const vendorCreditPut = async (req: Request, res: Response) => {
   } catch (err) {
     res.status(500).json({ msg: "Server Error: Credit Data wasn't Updated" });
   }
+}
+
+export const vendorRecurringExpensePut = async(req: Request, res: Response) => {
+  try {
+    const vendorRecurringExpense = await RecurringExpense.findByIdAndUpdate(req.params.id, req.body, { new : true });
+
+    res.status(200).json(vendorRecurringExpense);
+    
+  } catch (err) {
+    res.status(500).json({ msg: "Server Error: Recurring Expense Data wasn't Updated" });
+  }
+
 }

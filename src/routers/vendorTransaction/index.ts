@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { deleteVendorFile, vendorBilldelete, vendorBillPaymentdelete, vendorCreditdelete, vendorExpensedelete, vendorPurchaseOrderdelete } from "./controllers/delete";
-import { getVendorBillPayment, getVendorBills, getVendorCredit, getVendorExpense, getVendorPurchaseOrder } from "./controllers/get";
-import { uploadVendorFile, vendorBillPaymentPost, vendorBillPost, vendorCreditPost, vendorExpensePost, vendorPurchaseOrderPost } from "./controllers/post";
-import { vendorBillPaymentPut, vendorBillPut, vendorCreditPut, vendorExpensePut, vendorPurchaseOrderPut } from "./controllers/put";
+import { deleteVendorFile, vendorBilldelete, vendorBillPaymentdelete, vendorCreditdelete, vendorExpensedelete, vendorPurchaseOrderdelete, vendorRecurringExpensedelete } from "./controllers/delete";
+import { getRecurringExpense, getVendorBillPayment, getVendorBills, getVendorCredit, getVendorExpense, getVendorPurchaseOrder } from "./controllers/get";
+import { uploadVendorFile, vendorBillPaymentPost, vendorBillPost, vendorCreditPost, vendorExpensePost, vendorPurchaseOrderPost, vendorRecurringExpensePost } from "./controllers/post";
+import { vendorBillPaymentPut, vendorBillPut, vendorCreditPut, vendorExpensePut, vendorPurchaseOrderPut, vendorRecurringExpensePut } from "./controllers/put";
 
 const vendorTransaction = Router();
 
@@ -36,6 +36,12 @@ vendorTransaction.get('/getvendorcredit', getVendorCredit);
 vendorTransaction.post('/createvendorcredit', vendorCreditPost);
 vendorTransaction.put('/updatevendorcredit/:id', vendorCreditPut);
 vendorTransaction.delete('/removevendorcredit/:id', vendorCreditdelete);
+
+// Recurring Expense 
+vendorTransaction.get('/getrecurringexpense', getRecurringExpense);
+vendorTransaction.post('/createrecurringexpense', vendorRecurringExpensePost);
+vendorTransaction.put('/updaterecurringexpense/:id', vendorRecurringExpensePut);
+vendorTransaction.delete('/removerecurringexpense/:id', vendorRecurringExpensedelete);
 
 // Upload File 
 vendorTransaction.post('/upload', uploadVendorFile);

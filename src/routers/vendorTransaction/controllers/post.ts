@@ -10,6 +10,7 @@ import { generateBillPDF, generatePurchaseMadePDF, generatePurchaseOrderPDF, gen
 import putFile from "../../../utils/s3"
 import fs from 'fs';
 import fileUpload from "express-fileupload";
+import { RecurringExpense } from "../../../models/recurringExpense";
 
 export const vendorBillPost = async(req: Request, res: Response) => {
   try {
@@ -118,6 +119,18 @@ export const vendorCreditPost = async(req: Request, res: Response) => {
     
   } catch (err) {
     res.status(500).json({ msg: "Server Error: Vendor Credit Data wasn't able to stored" });
+  }
+
+}
+
+export const vendorRecurringExpensePost = async(req: Request, res: Response) => {
+  try {
+    const vendorRecurringExpense = await RecurringExpense.create(req.body);
+
+    res.status(200).json(vendorRecurringExpense);
+    
+  } catch (err) {
+    res.status(500).json({ msg: "Server Error: Recurring Expense Data wasn't able to stored" });
   }
 
 }

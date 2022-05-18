@@ -9,6 +9,7 @@ import { generateBillPDF } from "../../../utils/pdf-generation/generatePDF";
 // import uploadFileToCloud from "../../../utils/uploadToCloud"
 import putFile, { deleteFile, updateFile } from "../../../utils/s3"
 import fs from 'fs';
+import { RecurringExpense } from "../../../models/recurringExpense";
 
 
 export const vendorBilldelete = async(req: Request, res: Response) => {
@@ -159,6 +160,25 @@ export const vendorCreditdelete = async(req: Request, res: Response) => {
     
   } catch (err) {
     res.status(500).json({ msg: "Server Error: vendor credit wasn't deleted" })
+  }
+
+}
+
+export const vendorRecurringExpensedelete = async(req: Request, res: Response) => {
+  try {
+
+    const vendorRecurringExpense  = await RecurringExpense.findById(req.params.id);
+
+    if(!vendorRecurringExpense){
+      return res.status(404).json({ msg: "vendor recurring expense not found" });
+    }
+
+    await RecurringExpense.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({ msg: `${req.params.id} vendor recurring expense has been deleted` });
+    
+  } catch (err) {
+    res.status(500).json({ msg: "Server Error: recurring expense wasn't deleted" })
   }
 
 }
