@@ -54,7 +54,7 @@ export const generatePurchaseOrderPDF = async (purchaseOrderData: any) => {
 };
 
 export const generateVendorCreditPDF = async (creditData: any) => {
-  try {
+
     const html = fs.readFileSync(path.join(__dirname , "Vendor_Credit_Template.html"), "utf8");
     // console.log(creditData)
     const document = {
@@ -76,10 +76,29 @@ export const generateVendorCreditPDF = async (creditData: any) => {
     console.log("FILE CREATED");
     return document.path;
     
-  } catch (err) {
-    console.error(err);
-  
-  }
+};
+
+export const generatePurchaseMadePDF = async (payInfo: any) => {
+  const html = fs.readFileSync(path.join(__dirname , "Purchase_Made_Template.html"), "utf8");
+  // console.log(payInfo)
+  const document = {
+    html: html,
+    data: {
+      payInfo : payInfo,
+    },
+    path: path.join(__dirname , `generated/${payInfo._id}.pdf`),
+    type: "",
+  };
+
+  const options = {
+    format: "A4",
+    orientation: "portrait",
+    border: "5mm",
+  };
+
+  const res = await pdf.create(document, options);
+  console.log("FILE CREATED")
+  return document.path;
 };
 
 

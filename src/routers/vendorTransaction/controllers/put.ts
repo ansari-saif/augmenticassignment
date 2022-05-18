@@ -5,7 +5,7 @@ import { VendorBill } from "../../../models/VendorBill";
 import { VendorBillPayment } from "../../../models/vendorBillPayment";
 import { VendorCredit } from "../../../models/vendorCredit";
 import { VendorExpense } from "../../../models/vendorExpense";
-import { generateBillPDF, generatePurchaseOrderPDF, generateVendorCreditPDF } from "../../../utils/pdf-generation/generatePDF";
+import { generateBillPDF, generatePurchaseMadePDF, generatePurchaseOrderPDF, generateVendorCreditPDF } from "../../../utils/pdf-generation/generatePDF";
 // import uploadFileToCloud from "../../../utils/uploadToCloud"
 import putFile, { deleteFile, updateFile } from "../../../utils/s3"
 import fs from 'fs';
@@ -49,9 +49,32 @@ export const vendorBillPut = async(req: Request, res: Response) => {
 
 export const vendorBillPaymentPut = async(req: Request, res: Response) => {
   try {
-    const vendorBillPayment = await VendorBillPayment.findByIdAndUpdate(req.params.id, req.body, { new : true });
+    const vendorBillPayment : any = await VendorBillPayment.findByIdAndUpdate(req.params.id, req.body, { new : true });
 
-    res.status(200).json(vendorBillPayment);
+    // If only related files are added 
+    if(req.body.fileInfos){
+
+      return res.status(200).json(vendorBillPayment);
+
+    } else {
+      
+      // UPLOAD FILE TO CLOUD 
+      const uploadedVendorBillPay = await VendorBillPayment.findOne({_id : vendorBillPayment._id}).populate({path: "vendorId", select: "name billAddress"});
+  
+      await deleteFile(`${uploadedVendorBillPay._id}.pdf`);
+    
+      const pathToFile = await generatePurchaseMadePDF(uploadedVendorBillPay.toJSON());
+      const file = await fs.readFileSync(pathToFile);
+      // console.log(pathToFile);
+      await putFile(file, `${uploadedVendorBillPay._id}.pdf` );
+  
+      await VendorBillPayment.updateOne({_id : vendorBillPayment._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBillPay._id}.pdf`})
+  
+      await fs.rmSync(pathToFile);
+
+  
+      res.status(200).json({...vendorBillPayment._doc , pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBillPay._id}.pdf` });
+    }
     
   } catch (err) {
     res.status(500).json({ msg: "Server Error: Bill Payment cannot be Updated" })
