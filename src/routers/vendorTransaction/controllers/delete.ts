@@ -42,9 +42,25 @@ export const vendorBilldelete = async(req: Request, res: Response) => {
 
 export const vendorBillPaymentdelete = async(req: Request, res: Response) => {
   try {
-    await VendorBillPayment.findByIdAndDelete(req.params.id);
+    const vendorBillPayment : any = await VendorBillPayment.findById(req.params.id);
+
+    if(!vendorBillPayment){
+      return res.status(404).json({ msg: "vendor bill payment not found" });
+    }
+
     // DELETE FILE TO CLOUD 
-    // await deleteFile(`${req.params.id}.pdf`);
+    if(vendorBillPayment?.fileInfos){
+      await vendorBillPayment?.fileInfos.forEach((f : any) => {
+        if(f?.fileName){
+          deleteFile(`${f?.fileName}`);
+        }
+      });
+    }
+
+    await VendorBillPayment.findByIdAndDelete(req.params.id);
+
+    // DELETE FILE TO CLOUD 
+    await deleteFile(`${req.params.id}.pdf`);
 
     res.status(200).json({ msg: `${req.params.id} vendor bill payment has been deleted` });
     
