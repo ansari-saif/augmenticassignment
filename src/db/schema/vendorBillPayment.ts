@@ -25,6 +25,11 @@ interface IVendorBillPayment extends Document {
   amountRefunded: number;
   amountExcess: number;
   notes: string;
+  fileInfos: {
+    fileName: string;
+    filePath: string;
+  }[];
+  pdf_url?:string;
 }
 
 const vendorBillPaymentSchema = new Schema<IVendorBillPayment>({
@@ -51,6 +56,11 @@ const vendorBillPaymentSchema = new Schema<IVendorBillPayment>({
   amountRefunded: Number,
   amountExcess: Number,
   notes: String,
+  fileInfos: [{
+    fileName: String,
+    filePath: String,
+  }],
+  pdf_url : String,
 });
 
 vendorBillPaymentSchema.pre("save", async function(next){
