@@ -10,7 +10,6 @@ interface IRecurringExpense extends Document {
   expenseAmount: number;
   paymentThrough: string;
   vendorId?: Types.ObjectId;
-  invoiceId: string;
   notes: string;
   customerId?: Types.ObjectId;
   isBillable: boolean;
@@ -29,7 +28,6 @@ const recurringExpenseSchema = new Schema<IRecurringExpense>({
   expenseAmount: Number,
   paymentThrough: String,
   vendorId: { type: Schema.Types.ObjectId, ref:"Vendor" },
-  invoiceId: String,
   notes: String,
   customerId: { type: Schema.Types.ObjectId, ref:"Customer" },
   isBillable: Boolean,
