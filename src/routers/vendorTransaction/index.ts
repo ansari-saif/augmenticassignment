@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { deleteVendorFile, vendorBilldelete, vendorBillPaymentdelete, vendorCreditdelete, vendorExpensedelete, vendorPurchaseOrderdelete, vendorRecurringExpensedelete } from "./controllers/delete";
-import { getRecurringExpense, getVendorBillPayment, getVendorBills, getVendorCredit, getVendorExpense, getVendorPurchaseOrder } from "./controllers/get";
-import { uploadVendorFile, vendorBillPaymentPost, vendorBillPost, vendorCreditPost, vendorExpensePost, vendorPurchaseOrderPost, vendorRecurringExpensePost } from "./controllers/post";
-import { vendorBillPaymentPut, vendorBillPut, vendorCreditPut, vendorExpensePut, vendorPurchaseOrderPut, vendorRecurringExpensePut } from "./controllers/put";
+import { deleteVendorFile, vendorBilldelete, vendorBillPaymentdelete, vendorCreditdelete, vendorExpensedelete, vendorPurchaseOrderdelete, vendorRecurringBilldelete, vendorRecurringExpensedelete } from "./controllers/delete";
+import { getRecurringBill, getRecurringExpense, getVendorBillPayment, getVendorBills, getVendorCredit, getVendorExpense, getVendorPurchaseOrder } from "./controllers/get";
+import { uploadVendorFile, vendorBillPaymentPost, vendorBillPost, vendorCreditPost, vendorExpensePost, vendorPurchaseOrderPost, vendorRecurringBillPost, vendorRecurringExpensePost } from "./controllers/post";
+import { vendorBillPaymentPut, vendorBillPut, vendorCreditPut, vendorExpensePut, vendorPurchaseOrderPut, vendorRecurringBillPut, vendorRecurringExpensePut } from "./controllers/put";
 
 const vendorTransaction = Router();
 
@@ -42,6 +42,12 @@ vendorTransaction.get('/getrecurringexpense', getRecurringExpense);
 vendorTransaction.post('/createrecurringexpense', vendorRecurringExpensePost);
 vendorTransaction.put('/updaterecurringexpense/:id', vendorRecurringExpensePut);
 vendorTransaction.delete('/removerecurringexpense/:id', vendorRecurringExpensedelete);
+
+// Recurring Bill 
+vendorTransaction.get('/getrecurringbill', getRecurringBill);
+vendorTransaction.post('/createrecurringbill', vendorRecurringBillPost);
+vendorTransaction.put('/updaterecurringbill/:id', vendorRecurringBillPut);
+vendorTransaction.delete('/removerecurringbill/:id', vendorRecurringBilldelete);
 
 // Upload File 
 vendorTransaction.post('/upload', uploadVendorFile);

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { PurchaseOrder } from "../../../models/purchaseOrder";
+import { RecurringBill } from "../../../models/recurringBill";
 import { RecurringExpense } from "../../../models/recurringExpense";
 import { VendorBill } from "../../../models/VendorBill";
 import { VendorBillPayment } from "../../../models/vendorBillPayment";
@@ -69,5 +70,16 @@ export const getRecurringExpense = async (req: Request, res: Response) => {
     
   } catch (err) {
     res.status(500).json({ msg: "Server error cannot fetch vendor's Recurring Expenses" });
+  }
+}
+
+export const getRecurringBill = async (req: Request, res: Response) => {
+  try {
+    const recurringBill = await RecurringBill.find(req.query).populate({path: "vendorId", select: "name"});
+
+    res.status(200).json(recurringBill);
+    
+  } catch (err) {
+    res.status(500).json({ msg: "Server error cannot fetch vendor's Recurring Bill" });
   }
 }

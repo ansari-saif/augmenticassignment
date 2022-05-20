@@ -11,6 +11,7 @@ import putFile from "../../../utils/s3"
 import fs from 'fs';
 import fileUpload from "express-fileupload";
 import { RecurringExpense } from "../../../models/recurringExpense";
+import { RecurringBill } from "../../../models/recurringBill";
 
 export const vendorBillPost = async(req: Request, res: Response) => {
   try {
@@ -131,6 +132,18 @@ export const vendorRecurringExpensePost = async(req: Request, res: Response) => 
     
   } catch (err) {
     res.status(500).json({ msg: "Server Error: Recurring Expense Data wasn't able to stored" });
+  }
+
+}
+
+export const vendorRecurringBillPost = async(req: Request, res: Response) => {
+  try {
+    const vendorRecurringBill = await RecurringBill.create(req.body);
+
+    res.status(200).json(vendorRecurringBill);
+    
+  } catch (err) {
+    res.status(500).json({ msg: "Server Error: Recurring Bill Data wasn't able to stored" });
   }
 
 }

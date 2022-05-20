@@ -10,6 +10,7 @@ import { generateBillPDF, generatePurchaseMadePDF, generatePurchaseOrderPDF, gen
 import putFile, { deleteFile, updateFile } from "../../../utils/s3"
 import fs from 'fs';
 import { RecurringExpense } from "../../../models/recurringExpense";
+import { RecurringBill } from "../../../models/recurringBill";
 
 
 export const vendorBillPut = async(req: Request, res: Response) => {
@@ -176,6 +177,18 @@ export const vendorRecurringExpensePut = async(req: Request, res: Response) => {
     
   } catch (err) {
     res.status(500).json({ msg: "Server Error: Recurring Expense Data wasn't Updated" });
+  }
+
+}
+
+export const vendorRecurringBillPut = async(req: Request, res: Response) => {
+  try {
+    const vendorRecurringBill = await RecurringBill.findByIdAndUpdate(req.params.id, req.body, { new : true });
+
+    res.status(200).json(vendorRecurringBill);
+    
+  } catch (err) {
+    res.status(500).json({ msg: "Server Error: Recurring Bill Data wasn't Updated" });
   }
 
 }
