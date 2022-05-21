@@ -9,10 +9,12 @@ export default async function controllerPost(req: Request, res: Response) {
   const data = req.body;
   const errors = validatePayment(data.payment);
   if (errors.length) {
+    console.log(errors);
     res.status(400).json({ errors });
     return;
   }
-  const invoices =[...data.changedInv];
+  console.log(data);
+  const invoices =[...data.invoices];
   let invoice = []
   for await (const inv of invoices) {
     const newInvoice: any = await SaleInvoice.findById(inv._id);
@@ -25,6 +27,9 @@ export default async function controllerPost(req: Request, res: Response) {
       id: inv._id,
       paidAmount,
       withholdingTax,
+      invoiceNumber: newInvoice.invoice,
+      invoiceDate: newInvoice.invoiceDate,
+      invoiceAmount: newInvoice.grandTotal, 
     })
   }
   data.payment.invoice = invoice;
@@ -33,7 +38,8 @@ export default async function controllerPost(req: Request, res: Response) {
     if (err) {
       res.status(500).json(err);
     } else {
-      for await (const invoice of data.changedInv ) {
+      console.log(data.invoices);
+      for await (const invoice of data.invoices ) {
         const newInvoice = await SaleInvoice.findByIdAndUpdate(invoice._id, invoice);
         if (!newInvoice) {
           return res.status(404).json({message: "Invoice not found"});
