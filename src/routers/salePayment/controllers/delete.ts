@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import { SalePayment } from "../../../models/salePayment";
 
 export default async function controllerDelete(req: Request, res: Response) {
+  console.log('deleted')
   const { id } = req.params;
   const salePayment = await SalePayment.findByIdAndDelete(id);
   if (!salePayment) {

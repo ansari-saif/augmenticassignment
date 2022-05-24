@@ -16,6 +16,7 @@ export default async function controllerPost(req: Request, res: Response) {
     res.status(400).json({ errors });
     return;
   }
+  console.log(data);
   if (!data.neverExpires) {
     const start = data.startDate;
     const end = data.endDate;
