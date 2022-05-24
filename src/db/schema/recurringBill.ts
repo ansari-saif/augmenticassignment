@@ -1,15 +1,17 @@
 import { Document, Schema, Types } from "mongoose";
-import { VendorBill } from "../../models/VendorBill";
-import { generateBillPDF } from "../../utils/pdf-generation/generatePDF";
-import putFile from "../../utils/s3";
-import fs from 'fs';
+import { calculateNextTime } from "../../utils/nextTime";
 
-interface IVendorBill extends Document {
+interface IRecurringBill extends Document {
   vendorId : Types.ObjectId;
-  billNo: string;
-  orderNo: string;
-  billDate: Date;
-  dueDate: Date;
+  profileName: string;
+  repeatEvery: {
+    repeatNumber: number;
+    repeatUnit: string;
+  };
+  billStartDate: Date;
+  billEndDate: Date;
+  billNextDate: Date;
+  neverExpire: boolean;
   paymentTerms: string;
   discountType: string;
   transaction: {
@@ -39,21 +41,21 @@ interface IVendorBill extends Document {
   balanceDue: number;
   status: string;
   notes: string;
-  fileInfos: {
-    fileName: string;
-    filePath: string;
-  }[];
-  pdf_url?:string;
 }
 
 
-const vendorBillSchema = new Schema<IVendorBill>(
+const recurringBillSchema = new Schema<IRecurringBill>(
   {
     vendorId: { type: Schema.Types.ObjectId, ref: "Vendor" },
-    billNo: String,
-    orderNo: String,
-    billDate: Date,
-    dueDate: Date,
+    profileName: String,
+    repeatEvery: {
+      repeatNumber: Number,
+      repeatUnit: String
+    },
+    billStartDate: Date,
+    billEndDate: Date,
+    billNextDate: Date,
+    neverExpire: Boolean,
     paymentTerms: String,
     discountType: String,
     transaction: [{
@@ -83,37 +85,14 @@ const vendorBillSchema = new Schema<IVendorBill>(
     balanceDue: Number,
     status: String,
     notes: String,
-    fileInfos: [{
-      fileName: String,
-      filePath: String,
-    }],
-    pdf_url : String,
   }
 );
 
-// vendorBillSchema.post("updateOne", function(next){
-//   if(this.balanceDue <= 0){
-//     this.status = "PAID";
-//   }
-//   console.log(this);
-//   next();
-// })
-
-vendorBillSchema.post("save", async function(next){
-  if(this?.pdf_url === undefined || ""){
-    // UPLOAD FILE TO CLOUD 
-    const uploadedVendorBill = await VendorBill.findOne({_id : this._id}).populate({path: "vendorId", select: "name billAddress"});
-  
-    const pathToFile = await generateBillPDF(uploadedVendorBill.toJSON());
-    const file = await fs.readFileSync(pathToFile);
-    // console.log(pathToFile);
-    await putFile(file, `${uploadedVendorBill._id}.pdf` );
-
-    await VendorBill.updateOne({_id : this._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
-
-    await fs.rmSync(pathToFile);
-  }
+recurringBillSchema.pre("save", async function(next){
+  const nextTime = calculateNextTime(this.billStartDate, this.repeatEvery.repeatNumber, this.repeatEvery.repeatUnit);
+  this.billNextDate = nextTime as any;
   next();
-});
+})
 
-export { IVendorBill, vendorBillSchema }
+
+export { IRecurringBill, recurringBillSchema }

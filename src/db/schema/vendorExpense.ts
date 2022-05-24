@@ -15,6 +15,7 @@ interface IVendorExpense extends Document {
   isBillable: boolean;
   projectId?: Types.ObjectId;
   markUpBy: number;
+  status: string;
   fileInfos: {
     fileName: string;
     filePath: string;
@@ -37,6 +38,7 @@ const vendorExpenseSchema = new Schema<IVendorExpense>({
   isBillable: Boolean,
   projectId: { type: Schema.Types.ObjectId, ref:"Project" },
   markUpBy: Number,
+  status: String,
   fileInfos: [{
     fileName: String,
     filePath: String,
