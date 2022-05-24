@@ -2,18 +2,19 @@ import { Document, Schema, Types } from "mongoose";
 import { SaleInvoice } from "../../models";
 
 interface Customer {
-  id: Types.ObjectId;
+  _id: Types.ObjectId;
   name: string;
   email: string;
 }
 
 interface invoice {
-  id: Types.ObjectId;
+  _id: Types.ObjectId;
   paidAmount: number;
   withholdingTax: number;
+  invoiceNumber: string,
+  invoiceDate: Date;
+  invoiceAmount: number;
 }
-
-type invoiceId = Types.ObjectId;
 
 interface ISalePayment extends Document {
   invoice: Array<invoice>;
@@ -36,12 +37,15 @@ interface ISalePayment extends Document {
 const salePaymentSchema = new Schema<ISalePayment>(
   {
     invoice: [{ 
-      id: {type: Schema.Types.ObjectId, ref: "SaleInvoice" },
+      _id: {type: Schema.Types.ObjectId, ref: "SaleInvoice" },
       paidAmount: { type: Number, default: 0 },
-      withholdingTax: { type: Number, default: 0 }
+      withholdingTax: { type: Number, default: 0 },
+      invoiceNumber: String,
+      invoiceDate: Date,
+      invoiceAmount: Number,
     }],
     customer: { 
-      id: { type: Schema.Types.ObjectId, ref: "Customer" },
+      _id: { type: Schema.Types.ObjectId, ref: "Customer" },
       name: String,
       email: String,
     },
