@@ -23,7 +23,7 @@ const putFile = async (file: any, fileName: string, filedata: any = {mimetype: `
         ContentType:`${filedata?.mimetype}`
       })
     );
-    console.log("Success, Object Created.", data);
+    // console.log("Success, Object Created.", data);
     return data;
   } catch (err) {
     console.log("Errorr", err);
