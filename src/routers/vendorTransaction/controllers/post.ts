@@ -12,6 +12,8 @@ import fs from 'fs';
 import fileUpload from "express-fileupload";
 import { RecurringExpense } from "../../../models/recurringExpense";
 import { RecurringBill } from "../../../models/recurringBill";
+import { calculateNextTime } from "../../../utils/nextTime";
+import moment from "moment";
 
 export const vendorBillPost = async(req: Request, res: Response) => {
   try {
@@ -127,6 +129,25 @@ export const vendorCreditPost = async(req: Request, res: Response) => {
 export const vendorRecurringExpensePost = async(req: Request, res: Response) => {
   try {
     const vendorRecurringExpense = await RecurringExpense.create(req.body);
+    let today = moment().format("YYYY-MM-DD");
+    let expStart = moment(vendorRecurringExpense?.expenseStartDate).format("YYYY-MM-DD");
+    if(expStart == today){
+      const vendorExpense = {
+        expenseDate: today,
+        expenseAccount : vendorRecurringExpense?.expenseAccount,
+        expenseAmount: vendorRecurringExpense?.expenseAmount,
+        paymentThrough: vendorRecurringExpense?.paymentThrough,
+        vendorId: vendorRecurringExpense?.vendorId,
+        notes: vendorRecurringExpense?.notes,
+        customerId: vendorRecurringExpense?.customerId,
+        isBillable: vendorRecurringExpense?.isBillable,
+        projectId: vendorRecurringExpense?.projectId,
+        markUpBy: vendorRecurringExpense?.markUpBy,
+        status: vendorRecurringExpense?.isBillable ? "UNBILLED" : "NON-BILLABLE"
+      }
+
+      await VendorExpense.create(vendorExpense);
+    }
 
     res.status(200).json(vendorRecurringExpense);
     
@@ -139,6 +160,31 @@ export const vendorRecurringExpensePost = async(req: Request, res: Response) => 
 export const vendorRecurringBillPost = async(req: Request, res: Response) => {
   try {
     const vendorRecurringBill = await RecurringBill.create(req.body);
+    let today = moment().format("YYYY-MM-DD");
+    let billStart = moment(vendorRecurringBill?.billStartDate).format("YYYY-MM-DD");
+    if(billStart == today){
+      const vendorBill = {
+        vendorId : vendorRecurringBill?.vendorId,
+        billNo: `BTX${Math.ceil(new Date().getTime() * Math.random() * 1000)}`,
+        billDate : vendorRecurringBill?.billStartDate,
+        paymentTerms : vendorRecurringBill?.paymentTerms,
+        discountType : vendorRecurringBill?.discountType,
+        transaction : vendorRecurringBill?.transaction,
+        subTotal: vendorRecurringBill?.subTotal,
+        discount: vendorRecurringBill?.discount,
+        discountAccount: vendorRecurringBill?.discountAccount,
+        discountAmount : vendorRecurringBill?.discountAmount,
+        taxSystem : vendorRecurringBill?.taxSystem,
+        taxType : vendorRecurringBill?.taxType,
+        taxAmount: vendorRecurringBill?.taxAmount,
+        adjustment: vendorRecurringBill?.adjustment,
+        total : vendorRecurringBill?.total,
+        balanceDue: vendorRecurringBill?.total,
+        status: "OPEN",
+        notes: vendorRecurringBill?.notes
+      }
+      await VendorBill.create(vendorBill);
+    }
 
     res.status(200).json(vendorRecurringBill);
     

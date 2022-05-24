@@ -1,11 +1,16 @@
 import { Document, Schema, Types } from "mongoose";
+import { calculateNextTime } from "../../utils/nextTime";
 
 interface IRecurringBill extends Document {
   vendorId : Types.ObjectId;
   profileName: string;
-  repeatEvery: string;
+  repeatEvery: {
+    repeatNumber: number;
+    repeatUnit: string;
+  };
   billStartDate: Date;
   billEndDate: Date;
+  billNextDate: Date;
   neverExpire: boolean;
   paymentTerms: string;
   discountType: string;
@@ -43,9 +48,13 @@ const recurringBillSchema = new Schema<IRecurringBill>(
   {
     vendorId: { type: Schema.Types.ObjectId, ref: "Vendor" },
     profileName: String,
-    repeatEvery: String,
+    repeatEvery: {
+      repeatNumber: Number,
+      repeatUnit: String
+    },
     billStartDate: Date,
     billEndDate: Date,
+    billNextDate: Date,
     neverExpire: Boolean,
     paymentTerms: String,
     discountType: String,
@@ -78,6 +87,12 @@ const recurringBillSchema = new Schema<IRecurringBill>(
     notes: String,
   }
 );
+
+recurringBillSchema.pre("save", async function(next){
+  const nextTime = calculateNextTime(this.billStartDate, this.repeatEvery.repeatNumber, this.repeatEvery.repeatUnit);
+  this.billNextDate = nextTime as any;
+  next();
+})
 
 
 export { IRecurringBill, recurringBillSchema }

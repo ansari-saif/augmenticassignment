@@ -3,6 +3,9 @@ import router from "../routers";
 import cors from "cors";
 import fileUpload from "express-fileupload";
 
+const config = require("../config/index");
+const scheduler = require("../scheduler");
+
 const app = require("express")();
 
 const whitelist = ["http://127.0.0.1:8001", "https://hrm-xi.vercel.app" , "https://knmultidemo.vercel.app"];
@@ -29,6 +32,9 @@ app.use(fileUpload());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/v1", router);
+
+
+scheduler.initCrons(config);
 
 
 export default app;

@@ -1,10 +1,15 @@
 import { Document, Schema, Types } from "mongoose";
+import { calculateNextTime } from "../../utils/nextTime";
 
 interface IRecurringExpense extends Document {
   profileName: string;
-  repeatEvery: string;
+  repeatEvery: {
+    repeatNumber: number;
+    repeatUnit: string;
+  };
   expenseStartDate: Date;
   expenseEndDate: Date;
+  expenseNextDate: Date;
   neverExpire: boolean;
   expenseAccount: string;
   expenseAmount: number;
@@ -20,9 +25,13 @@ interface IRecurringExpense extends Document {
 
 const recurringExpenseSchema = new Schema<IRecurringExpense>({
   profileName: String,
-  repeatEvery: String,
+  repeatEvery: {
+    repeatNumber: Number,
+    repeatUnit: String,
+  },
   expenseStartDate: Date,
   expenseEndDate: Date,
+  expenseNextDate: Date,
   neverExpire: Boolean,
   expenseAccount: String,
   expenseAmount: Number,
@@ -35,5 +44,11 @@ const recurringExpenseSchema = new Schema<IRecurringExpense>({
   markUpBy: Number,
   status: String,
 });
+
+recurringExpenseSchema.pre("save", async function(next){
+  const nextTime = calculateNextTime(this.expenseStartDate, this.repeatEvery.repeatNumber, this.repeatEvery.repeatUnit);
+  this.expenseNextDate = nextTime as any;
+  next();
+})
 
 export { IRecurringExpense, recurringExpenseSchema }

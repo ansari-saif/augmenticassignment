@@ -1,4 +1,8 @@
 import { Document, Schema, Types } from "mongoose";
+import { VendorBill } from "../../models/VendorBill";
+import { generateBillPDF } from "../../utils/pdf-generation/generatePDF";
+import putFile from "../../utils/s3";
+import fs from 'fs';
 
 interface IVendorBill extends Document {
   vendorId : Types.ObjectId;
@@ -94,5 +98,22 @@ const vendorBillSchema = new Schema<IVendorBill>(
 //   console.log(this);
 //   next();
 // })
+
+vendorBillSchema.post("save", async function(next){
+  if(this?.pdf_url === undefined || ""){
+    // UPLOAD FILE TO CLOUD 
+    const uploadedVendorBill = await VendorBill.findOne({_id : this._id}).populate({path: "vendorId", select: "name billAddress"});
+  
+    const pathToFile = await generateBillPDF(uploadedVendorBill.toJSON());
+    const file = await fs.readFileSync(pathToFile);
+    // console.log(pathToFile);
+    await putFile(file, `${uploadedVendorBill._id}.pdf` );
+
+    await VendorBill.updateOne({_id : this._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
+
+    await fs.rmSync(pathToFile);
+  }
+  next();
+});
 
 export { IVendorBill, vendorBillSchema }
