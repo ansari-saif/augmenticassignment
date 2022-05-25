@@ -43,6 +43,7 @@ interface IPurchaseOrder extends Document {
   termsAndConditions: string;
   status: string;
   billedStatus: string;
+  billInfo: Types.ObjectId;
   fileInfos: {
     fileName: string;
     filePath: string;
@@ -92,6 +93,7 @@ const purchaseOrderSchema = new Schema<IPurchaseOrder>({
   termsAndConditions: String,
   status: String,
   billedStatus: String,
+  billInfo: { type: Schema.Types.ObjectId, ref: "VendorBill" },
   fileInfos: [{
     fileName: String,
     filePath: String,
@@ -99,4 +101,5 @@ const purchaseOrderSchema = new Schema<IPurchaseOrder>({
   pdf_url: String,
 });
 
+// 0 0,12 * * *
 export { IPurchaseOrder, purchaseOrderSchema }
