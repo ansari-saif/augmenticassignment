@@ -11,9 +11,9 @@ interface Item {
 }
 
 interface Customer {
-  id: string;
+  email: string;
   name: string;
-  email: Types.ObjectId;
+  id: Types.ObjectId;
 }
 
 interface ISaleInvoice extends Document {
@@ -36,6 +36,8 @@ interface ISaleInvoice extends Document {
   taxType: string;
   taxationAmount: number;
   taxationPercentage: number
+  tcsTax: Types.ObjectId;
+  tdsType: string;
   // 
 }
 
@@ -58,6 +60,8 @@ const saleInvoiceSchema = new Schema<ISaleInvoice>(
     taxType: String,
     taxationAmount: Number,
     taxationPercentage: Number,
+    tcsTax: { type: Schema.Types.ObjectId, ref: "Tax" },
+    tdsType: String,  
     customer: 
       {
         id: { type: Schema.Types.ObjectId, ref: "Customer" },

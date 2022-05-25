@@ -6,7 +6,6 @@ import validateSalesEstimate from "../../../validators/validateSaleEstimate";
 
 export default async function controllerPost(req: Request, res: Response) {
   const data = req.body;
-  console.log(data);
   const errors = validateSalesEstimate(data);
   if (errors.length) {
     res.status(400).json({ errors });
