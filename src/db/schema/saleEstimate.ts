@@ -18,7 +18,7 @@ interface Customer {
 interface ISaleEstimate extends Document {
   employee: Number;
   project: String;
-  tax: String;
+  tax: Types.ObjectId;
   estimateDate: Date;
   expiryDate: Date;
   taxAmount: number;
@@ -39,7 +39,7 @@ const saleEstimateSchema = new Schema(
   {
     employee: { type: Number, ref: "Employee" },
     project: { type: String, ref: "Project" },
-    tax: { type: String, ref: "Tax" },
+    tax: { type: Schema.Types.ObjectId, ref: "Tax" },
     estimateDate: Date,
     expiryDate: Date,
     taxAmount: Number,
