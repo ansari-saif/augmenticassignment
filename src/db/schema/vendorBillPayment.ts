@@ -1,5 +1,8 @@
 import { Document, Schema, Types } from "mongoose";
 import { VendorBill } from "../../models/VendorBill";
+import { generateBillPDF } from "../../utils/pdf-generation/generatePDF";
+import putFile, { deleteFile } from "../../utils/s3";
+import fs from 'fs';
 
 interface IVendorBillPayment extends Document {
   vendorId : Types.ObjectId;
@@ -68,12 +71,31 @@ vendorBillPaymentSchema.pre("save", async function(next){
     
     if(this.vendorBill){
       this.vendorBill.forEach(async (vb) => {
+        const vendorBill = await VendorBill.findById(vb._id);
+
         if(vb.billPaymentAmount != 0){
+          let paymade = (vendorBill?.payments || 0) + vb.billPaymentAmount;
+          let bal = (vendorBill?.balanceDue || 0) - vb.billPaymentAmount;
+
           if(vb.balanceDue <= 0){
-            await VendorBill.findByIdAndUpdate(vb._id, { balanceDue: vb.balanceDue, status: "PAID" }, { new: true });
+            await VendorBill.findByIdAndUpdate(vb._id, { balanceDue: bal, payments: paymade, status: "PAID" }, { new: true });
           } else{
-            await VendorBill.findByIdAndUpdate(vb._id, { balanceDue: vb.balanceDue }, { new: true });
+            await VendorBill.findByIdAndUpdate(vb._id, { balanceDue: bal, payments: paymade }, { new: true });
           }
+
+          // UPLOAD FILE TO CLOUD 
+        const uploadedVendorBill = await VendorBill.findOne({_id : vb._id}).populate({path: "vendorId", select: "name billAddress"});
+    
+        await deleteFile(`${uploadedVendorBill._id}.pdf`);
+      
+        const pathToFile = await generateBillPDF(uploadedVendorBill.toJSON());
+        const file = await fs.readFileSync(pathToFile);
+        // console.log(pathToFile);
+        await putFile(file, `${uploadedVendorBill._id}.pdf` );
+    
+        await VendorBill.findByIdAndUpdate(vb._id, {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
+    
+        await fs.rmSync(pathToFile);
         }
       })
     }

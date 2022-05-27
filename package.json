@@ -37,6 +37,7 @@
     "moment": "^2.29.3",
     "moment-range": "^4.0.2",
     "mongoose": "^6.1.4",
+    "multer": "^1.4.4",
     "node-cron": "^3.0.0",
     "pdf-creator-node": "^2.3.4"
   }
