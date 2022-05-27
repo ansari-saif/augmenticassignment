@@ -27,6 +27,7 @@ interface IVendorCredit extends Document {
     adjustmentValue: number;
   };
   total: number;
+  creditUsed: number;
   balance: number;
   notes: string;
   status: string;
@@ -62,6 +63,7 @@ const vendorCreditSchema = new Schema<IVendorCredit>(
       adjustmentValue: Number,
     },
     total: Number,
+    creditUsed: Number,
     balance: Number,
     notes: String,
     status: String,

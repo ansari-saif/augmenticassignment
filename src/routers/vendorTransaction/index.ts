@@ -2,7 +2,7 @@ import { Router } from "express";
 import { deleteVendorFile, vendorBilldelete, vendorBillPaymentdelete, vendorCreditdelete, vendorExpensedelete, vendorPurchaseOrderdelete, vendorRecurringBilldelete, vendorRecurringExpensedelete } from "./controllers/delete";
 import { getRecurringBill, getRecurringExpense, getVendorBillPayment, getVendorBills, getVendorCredit, getVendorExpense, getVendorPurchaseOrder } from "./controllers/get";
 import { uploadVendorFile, vendorBillPaymentPost, vendorBillPost, vendorCreditPost, vendorExpensePost, vendorPurchaseOrderPost, vendorRecurringBillPost, vendorRecurringExpensePost } from "./controllers/post";
-import { vendorBillPaymentPut, vendorBillPut, vendorCreditPut, vendorExpensePut, vendorPurchaseOrderPut, vendorRecurringBillPut, vendorRecurringExpensePut } from "./controllers/put";
+import { vendorBillPaymentPut, vendorBillPut, vendorCreditPut, vendorCreditToBills, vendorExpensePut, vendorPurchaseOrderPut, vendorRecurringBillPut, vendorRecurringExpensePut } from "./controllers/put";
 
 const vendorTransaction = Router();
 
@@ -36,6 +36,8 @@ vendorTransaction.get('/getvendorcredit', getVendorCredit);
 vendorTransaction.post('/createvendorcredit', vendorCreditPost);
 vendorTransaction.put('/updatevendorcredit/:id', vendorCreditPut);
 vendorTransaction.delete('/removevendorcredit/:id', vendorCreditdelete);
+
+vendorTransaction.put('/updatevendorcredittobills', vendorCreditToBills);
 
 // Recurring Expense 
 vendorTransaction.get('/getrecurringexpense', getRecurringExpense);
