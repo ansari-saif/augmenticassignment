@@ -49,7 +49,7 @@ const ticketSchema = new Schema<ITicket>(
         {
           reply: {
             type: String,
-            required: true,
+            // required: true,
           },
           user: { type: Schema.Types.ObjectId, ref: "Employee" },
           createdAt: { type: Date, default: Date.now },

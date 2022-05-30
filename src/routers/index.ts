@@ -44,6 +44,8 @@ import timesheetRouter from "./timesheet";
 import vendorRouter from "./vendor";
 import vendorCreditRouter from "./vendorCredit";
 import vendorTransaction from "./vendorTransaction";
+import stockRouter from "./Stock";
+
 
 const router = Router();
 
@@ -91,4 +93,5 @@ router.use("/timesheets", auth, timesheetRouter);
 router.use("/roleaccessprem", auth, roleAccessPremRouter);
 router.use("/generalledger", auth, generalLedgerRouter);
 router.use("/vendortrx", auth, vendorTransaction);
+router.use("/stock", auth, stockRouter);
 export default router;
