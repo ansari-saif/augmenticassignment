@@ -1,26 +1,43 @@
 import { Document, Schema, Types } from "mongoose";
 
 interface IStock extends Document {
-  itemName: string;
-  reqQuantity: number;
-  spentFor: string;
+  itemDetails: string;
+  stockNo: string;
+  quantity: number;
   leftQuantity: number;
-  totalQuantity : number;
+  billStatus: string;
   vendorId: Types.ObjectId;
+  billId: Types.ObjectId;
+  date: Date;
 }
 
 const stockSchema = new Schema<IStock>(
   {
-    itemName: String,
-    reqQuantity: Number,
-    spentFor: String,
+    itemDetails: String,
+    stockNo: String,
+    quantity: Number,
     leftQuantity: Number,
-    totalQuantity : Number,
+    billStatus: String,
     vendorId: {
       type: Schema.Types.ObjectId,
       ref: "Vendor",
     },
+    billId: {
+      type: Schema.Types.ObjectId,
+      ref: "VendorBill",
+    },
+    date: Date,
+  }, {
+    toJSON: { virtuals : true },
+    toObject: { virtuals : true }
   }
 );
+
+stockSchema.virtual("splitStocks", {
+  ref: "SplitStock",
+  localField: "_id",
+  foreignField: "stockId",
+  justOne: false
+});
 
 export { IStock, stockSchema };
