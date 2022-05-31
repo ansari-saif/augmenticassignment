@@ -43,4 +43,12 @@ splitStockSchema.pre("save", async function(next){
   next();
 });
 
+splitStockSchema.pre("remove", async function(next){
+  const stk = await Stock.findById(this.stockId);
+  if(stk){
+    const res = await Stock.findByIdAndUpdate(this.stockId, {leftQuantity : (stk?.leftQuantity + this.usedQuantity) });
+  }
+  next();
+})
+
 export { ISplitStock, splitStockSchema };
