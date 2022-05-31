@@ -1,4 +1,5 @@
 import { Document, Schema, Types } from "mongoose";
+import { SplitStock } from "../../models/splitStock";
 
 interface IStock extends Document {
   itemDetails: string;
@@ -32,6 +33,12 @@ const stockSchema = new Schema<IStock>(
     toObject: { virtuals : true }
   }
 );
+
+stockSchema.pre("remove", async function(next){
+  const res = await SplitStock.deleteMany({ stockId : this._id });
+  console.log(res);
+  next();
+})
 
 stockSchema.virtual("splitStocks", {
   ref: "SplitStock",
