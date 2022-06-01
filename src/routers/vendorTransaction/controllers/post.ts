@@ -19,18 +19,18 @@ export const vendorBillPost = async(req: Request, res: Response) => {
   try {
     const vendorBill : any = await VendorBill.create(req.body);
     // UPLOAD FILE TO CLOUD 
-    const uploadedVendorBill = await VendorBill.findOne({_id : vendorBill._id}).populate({path: "vendorId", select: "name billAddress"});
+    // const uploadedVendorBill = await VendorBill.findOne({_id : vendorBill._id}).populate({path: "vendorId", select: "name billAddress"});
   
-    const pathToFile = await generateBillPDF(uploadedVendorBill.toJSON());
-    const file = await fs.readFileSync(pathToFile);
-    // console.log(pathToFile);
-    await putFile(file, `${uploadedVendorBill._id}.pdf` );
+    // const pathToFile = await generateBillPDF(uploadedVendorBill.toJSON());
+    // const file = await fs.readFileSync(pathToFile);
+    // // console.log(pathToFile);
+    // await putFile(file, `${uploadedVendorBill._id}.pdf` );
 
-    await VendorBill.updateOne({_id : vendorBill._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
+    // await VendorBill.updateOne({_id : vendorBill._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
 
-    await fs.rmSync(pathToFile);
+    // await fs.rmSync(pathToFile);
 
-    res.status(200).json({...vendorBill._doc , pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf` });
+    res.status(200).json(vendorBill);
     
   } catch (err) {
     res.status(500).json({ msg: "Server Error: Bill wasn't created" })

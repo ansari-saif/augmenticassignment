@@ -1,7 +1,7 @@
 import { Document, Schema, Types } from "mongoose";
 import { VendorBill } from "../../models/VendorBill";
 import { generateBillPDF } from "../../utils/pdf-generation/generatePDF";
-import putFile from "../../utils/s3";
+import putFile, { deleteFile } from "../../utils/s3";
 import fs from 'fs';
 
 interface IVendorBill extends Document {
@@ -36,6 +36,8 @@ interface IVendorBill extends Document {
     adjustmentValue: number;
   };
   total: number;
+  credit: number;
+  payments: number;
   balanceDue: number;
   status: string;
   notes: string;
@@ -80,6 +82,8 @@ const vendorBillSchema = new Schema<IVendorBill>(
       adjustmentValue: Number,
     },
     total: Number,
+    credit: { type : Number, default: 0},
+    payments: { type : Number, default: 0},
     balanceDue: Number,
     status: String,
     notes: String,
@@ -109,11 +113,32 @@ vendorBillSchema.post("save", async function(next){
     // console.log(pathToFile);
     await putFile(file, `${uploadedVendorBill._id}.pdf` );
 
-    await VendorBill.updateOne({_id : this._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
+    await VendorBill.findByIdAndUpdate(this._id , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
 
     await fs.rmSync(pathToFile);
   }
   next();
 });
+
+// vendorBillSchema.pre("updateOne", async function(next){
+//     // UPLOAD FILE TO CLOUD 
+    
+//     const uploadedVendorBill = await VendorBill.findOne({_id : this._id}).populate({path: "vendorId", select: "name billAddress"});
+  
+//     await deleteFile(`${uploadedVendorBill._id}.pdf`);
+  
+//     const pathToFile = await generateBillPDF(uploadedVendorBill.toJSON());
+//     const file = await fs.readFileSync(pathToFile);
+//     // console.log(pathToFile);
+//     await putFile(file, `${uploadedVendorBill._id}.pdf` );
+
+//     await VendorBill.findByIdAndUpdate(this._id , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
+
+//     await fs.rmSync(pathToFile);
+
+//   next();
+// });
+
+
 
 export { IVendorBill, vendorBillSchema }

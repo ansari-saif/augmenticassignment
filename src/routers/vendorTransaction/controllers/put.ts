@@ -34,7 +34,7 @@ export const vendorBillPut = async(req: Request, res: Response) => {
       // console.log(pathToFile);
       await putFile(file, `${uploadedVendorBill._id}.pdf` );
   
-      await VendorBill.updateOne({_id : vendorBill._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
+      await VendorBill.findByIdAndUpdate(vendorBill._id, {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
   
       await fs.rmSync(pathToFile);
   
@@ -190,5 +190,34 @@ export const vendorRecurringBillPut = async(req: Request, res: Response) => {
   } catch (err) {
     res.status(500).json({ msg: "Server Error: Recurring Bill Data wasn't Updated" });
   }
+}
 
+export const vendorCreditToBills = async(req: Request, res: Response) => {
+  try {
+    const creditToBillList = req.body;
+
+    creditToBillList.forEach(async(ele : any) => {
+      // await VendorBill.updateOne({_id : ele.id}, {credit : ele.creditPay, balanceDue : ele.balance}); 
+      const vendorBill : any = await VendorBill.findByIdAndUpdate(ele.id, {credit : ele.creditPay, balanceDue : ele.balance}, { new: true });
+
+      // UPLOAD FILE TO CLOUD 
+      const uploadedVendorBill = await VendorBill.findOne({_id : vendorBill._id}).populate({path: "vendorId", select: "name billAddress"});
+  
+      await deleteFile(`${uploadedVendorBill._id}.pdf`);
+    
+      const pathToFile = await generateBillPDF(uploadedVendorBill.toJSON());
+      const file = await fs.readFileSync(pathToFile);
+      // console.log(pathToFile);
+      await putFile(file, `${uploadedVendorBill._id}.pdf` );
+  
+      await VendorBill.findByIdAndUpdate(vendorBill._id, {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
+  
+      await fs.rmSync(pathToFile);
+    });
+
+    res.status(200).json({msg : "credit of bills updated"});
+
+  } catch (err) {
+    res.status(500).json({ msg: "Server Error: Bill Credit Data wasn't Updated" });
+  }
 }
