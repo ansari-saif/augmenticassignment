@@ -101,5 +101,29 @@ export const generatePurchaseMadePDF = async (payInfo: any) => {
   return document.path;
 };
 
+export const generateSaleEstimatePDF = async (estimate: any) => {
+  const html = fs.readFileSync(path.join(__dirname , "Sale_Estimate_Template.html"), "utf8");
+  const document = {
+    html: html,
+    data: {
+      saleEstimateData : estimate,
+    },
+    path: path.join(__dirname , `generated/${estimate._id}.pdf`),
+    type: "",
+  };
+
+  const options = {
+    format: "A4",
+    orientation: "portrait",
+    border: "5mm",
+  };
+  console.log('getting executed');
+  console.log(document.path);
+  console.log(document.data);
+  const res = await pdf.create(document, options);
+  console.log("FILE CREATED")
+  return document.path;
+};
+
 
 export default generatePDFRouter;

@@ -3,10 +3,8 @@
 import { Request, Response } from "express";
 import { RecurringInvoice } from "../../../models/recurringInvoice";
 import validateRecurringInvoice from "../../../validators/validateRecurringInvoice";
-import * as Moment from "moment";
-import { extendMoment } from 'moment-range';
+import moment from "moment";
 
-const moment = extendMoment(Moment);
 
 export default async function controllerPost(req: Request, res: Response) {
   const data = req.body;
@@ -16,21 +14,10 @@ export default async function controllerPost(req: Request, res: Response) {
     res.status(400).json({ errors });
     return;
   }
-  console.log(data);
-  if (!data.neverExpires) {
-    const start = data.startDate;
-    const end = data.endDate;
-    const range = moment.range(moment(start), moment(end));
-    const dates = Array.from(range.by(data.frequencyUnit.toLowerCase()));
-    // todo: filter accroding to the frequency
-    let childInvoices = [];
-    for (const date in dates) {
-      childInvoices.push({
-        id: '',
-        date: date,
-      })
-    }
-    data.childInvoices = childInvoices;
+  const today = moment().format('YYYY-MM-DD');
+  const startDate = moment(data?.startDate).format('YYYY-MM-DD');
+  if (startDate == today) {
+    console.log(data);
   }
   const invoice = new RecurringInvoice(data);
   invoice.save((err, goal) => {
@@ -41,4 +28,5 @@ export default async function controllerPost(req: Request, res: Response) {
       res.status(201).json(invoice);
     }
   });
+  res.status(201).json(data);
 }

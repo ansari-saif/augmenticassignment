@@ -16,7 +16,6 @@ interface Customer {
 
 interface ChildInvoice {
   id: Types.ObjectId;
-  date: Date;
 }
 
 
@@ -36,9 +35,10 @@ interface IRecurringInvoice extends Document {
   orderNumber: string;
   profileName: string;
   startDate: Date;
+  nextDate: Date;
   termsAndConditions: string;
   childInvoices: ChildInvoice[];
-  
+  status: string;
   // 
   paidAmount: number;
   withholdingTax: number;
@@ -49,6 +49,7 @@ const recurringInvoiceSchema = new Schema<IRecurringInvoice>(
   {
     employee: { type: Number, ref: "Employee" },
     startDate: Date,
+    nextDate: Date,
     endDate: Date,
     discount: String,
     amount: Number,
@@ -63,6 +64,7 @@ const recurringInvoiceSchema = new Schema<IRecurringInvoice>(
     adjustments: Number,
     frequencyUnit: String,
     frequency: Number,
+    status: String,
     neverExpires: {type:Boolean, default: false},
     customer: 
       {
@@ -83,7 +85,6 @@ const recurringInvoiceSchema = new Schema<IRecurringInvoice>(
     childInvoices: [
       {
         id: { type: Schema.Types.ObjectId, ref: "SaleInvoice", default: '' },
-        date: Date,
       }
     ]
   },

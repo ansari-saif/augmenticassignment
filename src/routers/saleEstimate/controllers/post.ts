@@ -2,7 +2,10 @@
 
 import { Request, Response } from "express";
 import { SaleEstimate } from "../../../models/saleEstimate";
+import { generateSaleEstimatePDF } from "../../../utils/pdf-generation/generatePDF";
 import validateSalesEstimate from "../../../validators/validateSaleEstimate";
+import fs from 'fs';
+import putFile from "../../../utils/s3";
 
 export default async function controllerPost(req: Request, res: Response) {
   const data = req.body;
@@ -11,12 +14,17 @@ export default async function controllerPost(req: Request, res: Response) {
     res.status(400).json({ errors });
     return;
   }
-  const goal = new SaleEstimate(data);
-  goal.save((err, goal) => {
-    if (err) {
-      res.status(500).json(err);
-    } else {
-      res.status(201).json(goal);
-    }
-  });
+  try {
+    const estimate : any  = await SaleEstimate.create(data);
+    const uploadedEstimate = await SaleEstimate.findOne({ _id: estimate._id }).populate(["customer", "tax"]);
+    const pathToFile = await generateSaleEstimatePDF(uploadedEstimate.toJSON())
+    // const file = await fs.readFileSync(pathToFile);
+    // await putFile(file, `${uploadedEstimate._id}.pdf`);
+    // await SaleEstimate.updateOne({ _id : uploadedEstimate._id }, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedEstimate._id}.pdf` });
+    // await fs.rmSync(pathToFile);
+    // res.status(200).json({...estimate._doc, pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedEstimate._id}.pdf`});
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ msg: "Server Error: Sale Estimate data couldn't be created" });
+  }
 }
