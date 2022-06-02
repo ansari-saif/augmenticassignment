@@ -15,6 +15,7 @@ import { RecurringBill } from "../../../models/recurringBill";
 import { calculateNextTime } from "../../../utils/nextTime";
 import moment from "moment";
 
+
 export const vendorBillPost = async(req: Request, res: Response) => {
   try {
     const vendorBill : any = await VendorBill.create(req.body);
@@ -194,7 +195,7 @@ export const vendorRecurringBillPost = async(req: Request, res: Response) => {
 
 }
 
-export const uploadVendorFile = async(req: Request, res: Response) => {
+export const uploadVendorFileUp = async(req: Request, res: Response) => {
   try { 
 
     if(req.files === null){
@@ -228,4 +229,27 @@ export const uploadVendorFile = async(req: Request, res: Response) => {
     res.status(500).json({ msg: "Server Error: File was not uploaded" });
   }
 
+}
+
+export const uploadVendorFile = async(req: any, res: Response) => {
+  try {
+    if(req.file === null){
+      return res.status(400).json({ msg: 'No file uploaded' });
+    }
+
+    const fileName = req.file.filename;
+
+    const pathToFile = req.file.path;
+
+    const fileD = await fs.readFileSync(pathToFile);
+
+    await putFile(fileD, `${req.file.filename}` );
+
+    await fs.rmSync(pathToFile);
+
+    res.status(200).json({ fileName: fileName, filePath: `https://knmulti.fra1.digitaloceanspaces.com/${fileName}` });
+    
+  } catch (err) {
+    res.status(500).json({ msg: "Server Error: File was not uploaded" });
+  }
 }
