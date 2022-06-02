@@ -1,10 +1,46 @@
-import { Router } from "express";
+import { Request, Router } from "express";
+import { FileFilterCallback } from "multer";
+
+
 import { deleteVendorFile, vendorBilldelete, vendorBillPaymentdelete, vendorCreditdelete, vendorExpensedelete, vendorPurchaseOrderdelete, vendorRecurringBilldelete, vendorRecurringExpensedelete } from "./controllers/delete";
 import { getRecurringBill, getRecurringExpense, getVendorBillPayment, getVendorBills, getVendorCredit, getVendorExpense, getVendorPurchaseOrder } from "./controllers/get";
 import { uploadVendorFile, vendorBillPaymentPost, vendorBillPost, vendorCreditPost, vendorExpensePost, vendorPurchaseOrderPost, vendorRecurringBillPost, vendorRecurringExpensePost } from "./controllers/post";
 import { vendorBillPaymentPut, vendorBillPut, vendorCreditPut, vendorCreditToBills, vendorExpensePut, vendorPurchaseOrderPut, vendorRecurringBillPut, vendorRecurringExpensePut } from "./controllers/put";
 
 const vendorTransaction = Router();
+
+const multer = require("multer");
+
+type DestinationCallback = (error: Error | null, destination: string) => void
+type FileNameCallback = (error: Error | null, filename: string) => void
+
+const storage = multer.diskStorage({
+  destination: function(req: Request, file: Express.Multer.File, cb : DestinationCallback) {
+    cb(null, './src/uploads/');
+  },
+  filename: function(req: Request, file: Express.Multer.File, cb: FileNameCallback) {
+    cb(null, `purchasefile_${Math.ceil(Math.random() * 1000000)}_${file.originalname}`);
+  }
+});
+
+// const fileFilter = (
+//   req: Request,
+//   file: Express.Multer.File,
+//   cb : FileFilterCallback
+// ): void => {
+//   if(
+//     file.mimetype === 'image/jpeg' ||
+//     file.mimetype === 'image/png' 
+//   ) {
+//     cb(null, true)
+//   } else {
+//     cb(null, false)
+//   }
+// }
+
+
+// const upload = multer({ storage : storage, fileFilter: fileFilter });
+const upload = multer({ storage : storage });
 
 
 // bills 
@@ -52,7 +88,7 @@ vendorTransaction.put('/updaterecurringbill/:id', vendorRecurringBillPut);
 vendorTransaction.delete('/removerecurringbill/:id', vendorRecurringBilldelete);
 
 // Upload File 
-vendorTransaction.post('/upload', uploadVendorFile);
+vendorTransaction.post('/upload', upload.single('file'), uploadVendorFile);
 vendorTransaction.delete('/removefile/:fileName', deleteVendorFile);
 
 export default vendorTransaction;
