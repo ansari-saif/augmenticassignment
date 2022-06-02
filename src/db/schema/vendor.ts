@@ -56,6 +56,10 @@ interface IVendor extends Document {
   expenses: number[];
   bills: number[];
   description: string;
+  fileInfos: {
+    fileName: string;
+    filePath: string;
+  }[];
 }
 
 const vendorSchema = new Schema<IVendor>(
@@ -112,6 +116,10 @@ const vendorSchema = new Schema<IVendor>(
     expenses: [{ type: Number, ref: "Expense" }],
     bills: [{ type: Number, ref: "Bill" }],
     description: String,
+    fileInfos: [{
+      fileName: String,
+      filePath: String,
+    }],
   },
   {
     timestamps: true,

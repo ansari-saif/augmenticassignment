@@ -3,6 +3,7 @@ import { VendorBill } from "../../models/VendorBill";
 import { generateBillPDF } from "../../utils/pdf-generation/generatePDF";
 import putFile, { deleteFile } from "../../utils/s3";
 import fs from 'fs';
+import { VendorBillPayment } from "../../models/vendorBillPayment";
 
 interface IVendorBillPayment extends Document {
   vendorId : Types.ObjectId;
@@ -64,6 +65,16 @@ const vendorBillPaymentSchema = new Schema<IVendorBillPayment>({
     filePath: String,
   }],
   pdf_url : String,
+});
+
+vendorBillPaymentSchema.pre("save", function (next) {
+  if (this.isNew) {
+    VendorBillPayment.countDocuments({}, (err: any, count: any) => {
+      if (err) return next(err);
+      this.paymentNo = count + 1;
+      next();
+    });
+  } else next();
 });
 
 vendorBillPaymentSchema.pre("save", async function(next){
