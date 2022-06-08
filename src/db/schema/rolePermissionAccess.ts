@@ -26,9 +26,9 @@ interface ModulePermission {
 }
 
 interface IRolePermisionAccseeSchema extends Document {
-  role: string,
-  moduleAccess : ModuleAccess
-  modulePermission: ModulePermission
+  role: string;
+  moduleAccess : ModuleAccess;
+  modulePermission: ModulePermission;
 }
 
 
@@ -36,8 +36,8 @@ const rolePermisionAccseeSchema = new Schema<IRolePermisionAccseeSchema>(
   {
     role: {
       type: String,
-      // unique: [true, "This Role Already Exits"],
-      required: [true, "Please Provide Role"]
+      required: [true, "Please Provide Role"],
+      unique: true,
     },
     moduleAccess: {
       employee: {
