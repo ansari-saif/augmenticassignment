@@ -45,6 +45,7 @@ import vendorRouter from "./vendor";
 import vendorCreditRouter from "./vendorCredit";
 import vendorTransaction from "./vendorTransaction";
 import stockRouter from "./Stock";
+import fileCred from "./filesCrud";
 
 
 const router = Router();
@@ -94,4 +95,5 @@ router.use("/roleaccessprem", auth, roleAccessPremRouter);
 router.use("/generalledger", auth, generalLedgerRouter);
 router.use("/vendortrx", auth, vendorTransaction);
 router.use("/stock", auth, stockRouter);
+router.use("/file", auth, fileCred);
 export default router;
