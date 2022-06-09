@@ -6,7 +6,7 @@ export default async function controllerGet(req: Request, res: Response) {
   if (id) {
     const employee = await Employee.findById(id, {
       password: 0,
-    }).populate("jobRole");
+    }).populate("jobRole").populate("workLocation").populate("department");
     if (employee) {
       res.status(200).json(employee);
     } else {
@@ -20,7 +20,7 @@ export default async function controllerGet(req: Request, res: Response) {
         password: 0,
       }
     )
-      .populate("jobRole")
+      .populate("jobRole").populate("workLocation").populate("department")
       .limit(parseInt(limit as string))
       .skip(parseInt(limit as string) * (parseInt(page as string) - 1));
     res.status(200).json(employees);

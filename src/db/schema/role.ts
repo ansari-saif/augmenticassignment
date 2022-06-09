@@ -12,7 +12,7 @@ interface IRole extends Document {
 
 const roleSchema = new Schema<IRole>(
   {
-    name: String,
+    name: { type : String, default: "Employee" },
     description: String,
     department: { type: Schema.Types.ObjectId, ref: "Department" },
     active: Boolean,
