@@ -137,39 +137,42 @@
                 <b>KN Multi Projects</b>
                 <p>Plot No 31, Basundhara Complex,
                     <br>
+         
                     Hanspal, Bhubaneshwar, Odisha 752101
                 </p>
             </div>
             <div class="overview">
-                <h1>Estimaate</h1>
-                <p>Estimate # {{this.saleEstimateData.estimate}}</p>
-                <p>Estimate Date: {{this.saleEstimateData.estimateDate}}</p>
-                <p>Estimate Expiry Date: {{this.saleEstimateData.expiryDate}}</p>
-                <!-- <span>Balance Due</span>
-                <h2>₹{{this.purchaseOrderData.balanceDue}}</h2> -->
+                <h1>Credit Notes</h1>
+                <p>Credit Notes # {{this.creditNoteData.creditNote}}</p>
             </div>
 
         </div>
         <div class="information">
             <div>
                 <p>Bill To</p>
-                <b>{{this.saleEstimateData.customer.displayName}}</b>
-                <p>{{this.saleEstimateData.customer.billingAddress.addressLine1}} ,<br> 
-                    {{this.saleEstimateData.customer.billingAddress.addressLine2}} , <br>
-                    {{this.saleEstimateData.customer.billingAddress.city}},<br> 
-                    {{this.saleEstimateData.customer.billingAddress.zipcode}} ,{{this.saleEstimateData.customer.billingAddress.state}}<br>
+                <b>{{this.creditNoteData.customer.displayName}}</b>
+                <p>{{this.creditNoteData.customer.billingAddress.addressLine1}} ,<br> 
+                    {{this.creditNoteData.customer.billingAddress.addressLine2}} , <br>
+                    {{this.creditNoteData.customer.billingAddress.city}},<br> 
+                    {{this.creditNoteData.customer.billingAddress.zipcode}} ,{{this.creditNoteData.customer.billingAddress.state}}<br>
                     India</p>
                 <br />
+
             </div>
-            <div>
-                <p>Ship To</p>
-                <b>{{this.saleEstimateData.customer.displayName}}</b>
-                <p>{{this.saleEstimateData.customer.shippingAddress.addressLine1}} ,<br> 
-                    {{this.saleEstimateData.customer.shippingAddress.addressLine2}} , <br>
-                    {{this.saleEstimateData.customer.shippingAddress.city}},<br> 
-                    {{this.saleEstimateData.customer.shippingAddress.zipcode}} ,{{this.saleEstimateData.customer.shippingAddress.state}}<br>
-                    India</p>
-                <br />
+            <div class="info_2">
+                <div class="flex justify-between w-200">
+                    <div class="right">Ref : </div>
+                    <div>#{{this.creditNoteData.creditNote}}</div>
+                </div>
+                <div class="flex justify-between w-200">
+                    <div class="right">Credit Date : </div>
+                    <div>{{this.creditNoteData.creditDate}}</div>
+                </div>
+                <div class="flex justify-between w-200">
+                    <div class="right">Ref# : </div>
+                    <div>{{this.creditNoteData.reference}}</div>
+                </div>
+
             </div>
         </div>
         <div class="main__table">
@@ -177,18 +180,16 @@
                 <thead>
                     <td>#</td>
                     <td>Items & Description</td>
-                    <!-- <td>Customer Details</td> -->
                     <td>Qty</td>
-                    <td>Unit Cost</td>
+                    <td>Rate</td>
                     <td>Amount</td>
                 </thead>
-                {{#each this.saleEstimateData.items}}
+                {{#each this.creditNoteData.items}}
                 <tr>
                     <td>{{this._id}}</td>
-                    <td>{{this.item}}{this.description}}</td>
-                    <!-- <td>-</td> -->
+                    <td>{{this.itemDetails}}{{this.item}}</td>
                     <td>{{this.quantity}}</td>
-                    <td>{{this.unitCost}}</td>
+                    <td>{{this.unitcost}}</td>
                     <td>{{this.amount}}</td>
                 </tr>
                 {{/each}}
@@ -199,28 +200,20 @@
             <div class="info_2">
                 <div class="flex justify-between w-200">
                     <div class="right">Sub Total : </div>
-                    <div>{{this.saleEstimateData.amount}}</div>
+                    <div>{{this.creditNoteData.amount}}</div>
                 </div>
                 <div class="flex justify-between w-200">
                     <div class="right">Discount : </div>
-                    <div>{{this.saleEstimateData.discount}}</div>
+                    <div>{{this.creditNoteData.discount}}</div>
                 </div>
                 <div class="flex justify-between w-200">
-                    <div class="right">Adjustment : </div>
-                    <div>{{this.saleEstimateData.adjustment}}</div>
-                </div>
-                <div class="flex justify-between w-200">
-                    <div class="right">TCS ({{this.saleEstimateData.tax.name}}): </div>
-                    <div>({{this.saleEstimateData.taxAmount}})</div>
+                    <div class="right">Tax : </div>
+                    <div>{{this.creditNoteData.taxAmount}}</div>
                 </div>
                 <div class="flex justify-between w-200">
                     <div class="right bold">Total : </div>
-                    <div class="bold">₹{{this.saleEstimateData.grandTotal}}</div>
+                    <div class="bold">₹{{this.creditNoteData.grandTotal}}</div>
                 </div>
-                <!-- <div class="flex justify-between w-200 bg-gray">
-                    <div class="right bold">Balance Due : </div>
-                    <div class="bold">₹{{this.purchaseOrderData.balanceDue}}</div>
-                </div> -->
             </div>
         </div>
 
@@ -228,14 +221,14 @@
             <div>
                 Notes
             </div>
-            <div>{{this.saleEstimateData.customerNotes}}</div>
+            <div>{{this.creditNoteData.customerNotes}}</div>
         </div>
         <br />
         <div>
             <div>
                 Terms & Conditions
             </div>
-            <div>{{this.saleEstimateData.termsAndConditions}}</div>
+            <div>{{this.creditNoteData.termsAndConditions}}</div>
         </div>
 
         <div class="signature">

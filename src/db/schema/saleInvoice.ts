@@ -10,15 +10,14 @@ interface Item {
   amount: number;
 }
 
-interface Customer {
-  email: string;
-  name: string;
-  id: Types.ObjectId;
+interface CreditDetails {
+  id: Types.ObjectId,
+  credited: number;
 }
 
 interface ISaleInvoice extends Document {
   amount: number;
-  customer: Customer;
+  customer: Types.ObjectId;
   customerNotes: string;
   discount: string;
   dueDate: Date;
@@ -29,7 +28,12 @@ interface ISaleInvoice extends Document {
   withholdingTax: number;
   invoice: string;
   invoiceDate: Date;
+  estimate: Types.ObjectId;
+  salesOrder: Types.ObjectId;
+  deliveryChallan: Types.ObjectId;
   items: Item[];
+  creditNotes: [Types.ObjectId];
+  creditDetails: [CreditDetails];
   orderNumber: string;
   termsAndConditions: string;
   terms: string;
@@ -63,14 +67,18 @@ const saleInvoiceSchema = new Schema<ISaleInvoice>(
     taxationAmount: Number,
     taxationPercentage: Number,
     tcsTax: { type: Schema.Types.ObjectId, ref: "Tax" },
-    tdsType: String,  
-    customer: 
+    tdsType: String,
+    estimate: { type: Schema.Types.ObjectId, ref: 'saleEstimate' },  
+    salesOrder: { type: Schema.Types.ObjectId, ref: 'saleOrder' },  
+    deliveryChallan: { type: Schema.Types.ObjectId, ref: 'deliveryChallan' },  
+    customer: { type: Schema.Types.ObjectId, ref: "Customer" },
+    creditNotes: [{ type:Types.ObjectId, ref: "CreditNotes" }],
+    creditDetails: [
       {
-        id: { type: Schema.Types.ObjectId, ref: "Customer" },
-        name: String,
-        email: String,
+        id: { type: Schema.Types.ObjectId, ref: 'CreditNotes' },
+        credited: Number,
       }
-    ,
+    ],
     items: [
       {
         item: String,

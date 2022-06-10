@@ -78,11 +78,11 @@ interface IEmployee extends Document {
   education: Education[];
   userAuthorites: USER_AUTHORITIES[];
   managerUserId: Number;
+  department: Types.ObjectId;
   active: Boolean;
   joinDate: Date;
   workLocation: Types.ObjectId;
   jobRole: Types.ObjectId;
-  department: Types.ObjectId;
   activities: EmployeeActivity[];
   userType: USER_TYPE;
   acceptedTimesheets: Types.ObjectId[];
@@ -91,6 +91,7 @@ interface IEmployee extends Document {
   emergencyContact: otherContacts;
   familyInformation: otherContacts;
   bankDetails: BankDetails;
+  ticketsAssigned: [Types.ObjectId];
   certFile: {
     fileName: string;
     filePath: string;
@@ -144,6 +145,7 @@ const employeeSchema = new Schema<IEmployee>(
         country: String,
       },
     },
+    ticketsAssigned: [{ type: Schema.Types.ObjectId, ref: "Ticket" }],
     personalInformation: {
       passportNo: String,
       passportExp: Date,
@@ -156,6 +158,7 @@ const employeeSchema = new Schema<IEmployee>(
     },
     mobileNo: String,
     dob: Date,
+    department: { type: Schema.Types.ObjectId, ref: "Department" },
     previousExperience: [
       {
         startDate: Date,
@@ -200,10 +203,6 @@ const employeeSchema = new Schema<IEmployee>(
     jobRole: {
       type: Schema.Types.ObjectId,
       ref: "Role",
-    },
-    department: {
-      type: Schema.Types.ObjectId,
-      ref: "Department",
     },
     activities: [
       {

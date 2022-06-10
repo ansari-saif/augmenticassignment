@@ -2,20 +2,33 @@
 
 import { Request, Response } from "express";
 import { DeliveryChallan } from "../../../models";
-import validateDeliveryChallan from "../../../validators/validateDeliveryChallan";
+import { generateSalesOrderPDF } from "../../../utils/pdf-generation/generatePDF";
+import putFile, { deleteFile } from "../../../utils/s3";
+import fs from 'fs';
 
 export default async function controllerPut(req: Request, res: Response) {
-  const { id } = req.params;
-  const data = req.body;
-  const errors = validateDeliveryChallan(data);
-  if (errors.length) {
-    res.status(400).json({ errors });
-    return;
+  try {
+    const { id } = req.params;
+    const data = req.body;
+    
+    const deliveryChallan: any = await DeliveryChallan.findByIdAndUpdate(id, data, { new: true });
+    const uploadedChallan = await DeliveryChallan.findOne({ _id: deliveryChallan._id }).populate('customer')
+  
+    await deleteFile(`${uploadedChallan._id}.pdf`);
+  
+    const pathToFile = await generateSalesOrderPDF(uploadedChallan.toJSON());
+    const file = await fs.readFileSync(pathToFile);
+  
+    await putFile(file, `${uploadedChallan._id}.pdf`);
+    
+    await DeliveryChallan.updateOne({ _id : uploadedChallan._id }, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedChallan._id}.pdf` });
+    
+    await fs.rmSync(pathToFile);
+    if (!deliveryChallan) {
+      return res.status(404).json({ message: "SaleEstimate not found" });
+    }
+    return res.status(200).json(deliveryChallan);
+  } catch (e) {
+    res.status(500).json({ msg: "Server Error: Delivery Challan Data wasn't able to update" });
   }
-  const deliveryChallan = await DeliveryChallan.findByIdAndUpdate(id, data);
-  if (!deliveryChallan) {
-    return res.status(404).json({ message: "SaleEstimate not found" });
-  }
-  console.log(deliveryChallan);
-  return res.status(200).json(deliveryChallan);
 }

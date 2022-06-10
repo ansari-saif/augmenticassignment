@@ -18,13 +18,12 @@ export default async function controllerPost(req: Request, res: Response) {
     const estimate : any  = await SaleEstimate.create(data);
     const uploadedEstimate = await SaleEstimate.findOne({ _id: estimate._id }).populate(["customer", "tax"]);
     const pathToFile = await generateSaleEstimatePDF(uploadedEstimate.toJSON())
-    // const file = await fs.readFileSync(pathToFile);
-    // await putFile(file, `${uploadedEstimate._id}.pdf`);
-    // await SaleEstimate.updateOne({ _id : uploadedEstimate._id }, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedEstimate._id}.pdf` });
-    // await fs.rmSync(pathToFile);
-    // res.status(200).json({...estimate._doc, pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedEstimate._id}.pdf`});
+    const file = await fs.readFileSync(pathToFile);
+    await putFile(file, `${uploadedEstimate._id}.pdf`);
+    await SaleEstimate.updateOne({ _id : uploadedEstimate._id }, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedEstimate._id}.pdf` });
+    await fs.rmSync(pathToFile);
+    res.status(200).json({...estimate._doc, pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedEstimate._id}.pdf`});
   } catch (e) {
-    console.log(e);
     res.status(500).json({ msg: "Server Error: Sale Estimate data couldn't be created" });
   }
 }

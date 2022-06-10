@@ -22,8 +22,10 @@ interface ISaleEstimate extends Document {
   customerNotes: string;
   termsAndConditions: string;
   items: Item[];
+  status: string;
   // 
   estimate: string;
+  isInvoiced: boolean;
   reference: string;
   subject: string;
   grandTotal: number;
@@ -45,11 +47,12 @@ const saleEstimateSchema = new Schema(
     customerNotes: String,
     termsAndConditions: String,
     estimate: String,
+    isInvoiced: { type: Boolean, default: false},
     reference: String,
     subject: String,
+    status: { type: String, default: 'DRAFT' },
     grandTotal: Number,
-    customer: { type: Schema.Types.ObjectId, ref: "Customer" }
-    ,
+    customer: { type: Schema.Types.ObjectId, ref: "Customer" },
     items: [
       {
         item: String,

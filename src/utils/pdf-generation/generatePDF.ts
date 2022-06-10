@@ -4,6 +4,7 @@ const pdf = require("pdf-creator-node");
 import fs from "fs";
 import { Router } from "express";
 import path from "path";
+import { DeliveryChallan } from "../../models";
 
 const generatePDFRouter = Router();
 
@@ -117,9 +118,69 @@ export const generateSaleEstimatePDF = async (estimate: any) => {
     orientation: "portrait",
     border: "5mm",
   };
-  console.log('getting executed');
-  console.log(document.path);
-  console.log(document.data);
+  const res = await pdf.create(document, options);
+  console.log("FILE CREATED")
+  return document.path;
+};
+
+export const generateSalesOrderPDF = async (order: any) => {
+  const html = fs.readFileSync(path.join(__dirname , "Sale_Order_Template.html"), "utf8");
+  const document = {
+    html: html,
+    data: {
+      saleOrderData : order,
+    },
+    path: path.join(__dirname , `generated/${order._id}.pdf`),
+    type: "",
+  };
+
+  const options = {
+    format: "A4",
+    orientation: "portrait",
+    border: "5mm",
+  };
+  const res = await pdf.create(document, options);
+  console.log("FILE CREATED")
+  return document.path;
+};
+
+export const generateDeliveryChallanPDF = async (challan: any) => {
+  const html = fs.readFileSync(path.join(__dirname , "Delivery_Challan_Template.html"), "utf8");
+  const document = {
+    html: html,
+    data: {
+      deliveryChallan : challan,
+    },
+    path: path.join(__dirname , `generated/${challan._id}.pdf`),
+    type: "",
+  };
+
+  const options = {
+    format: "A4",
+    orientation: "portrait",
+    border: "5mm",
+  };
+  const res = await pdf.create(document, options);
+  console.log("FILE CREATED")
+  return document.path;
+};
+
+export const generateCreditNotePDF = async (note: any) => {
+  const html = fs.readFileSync(path.join(__dirname , "Credit_Note_Template.html"), "utf8");
+  const document = {
+    html: html,
+    data: {
+      creditNoteData : note,
+    },
+    path: path.join(__dirname , `generated/${note._id}.pdf`),
+    type: "",
+  };
+
+  const options = {
+    format: "A4",
+    orientation: "portrait",
+    border: "5mm",
+  };
   const res = await pdf.create(document, options);
   console.log("FILE CREATED")
   return document.path;

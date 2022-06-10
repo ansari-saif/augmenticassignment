@@ -11,6 +11,5 @@ export default async function controllerGet(req: Request, res: Response) {
     return res.status(200).json(invoice);
   }
   const invoice = await RecurringInvoice.find({});
-  console.log(invoice)
   return res.status(200).json(invoice);
 }
