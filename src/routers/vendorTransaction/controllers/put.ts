@@ -154,7 +154,7 @@ export const vendorCreditPut = async (req: Request, res: Response) => {
       const file = await fs.readFileSync(pathToFile);
       // console.log(pathToFile);
       await putFile(file, `${uploadedVendorCredit._id}.pdf` );
-  
+      console.log(vendorCredit._id);
       await VendorCredit.updateOne({_id : vendorCredit._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorCredit._id}.pdf`})
   
       await fs.rmSync(pathToFile);

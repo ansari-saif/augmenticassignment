@@ -95,5 +95,5 @@ router.use("/roleaccessprem", auth, roleAccessPremRouter);
 router.use("/generalledger", auth, generalLedgerRouter);
 router.use("/vendortrx", auth, vendorTransaction);
 router.use("/stock", auth, stockRouter);
-router.use("/file", auth, fileCred);
+router.use("/file", fileCred);
 export default router;

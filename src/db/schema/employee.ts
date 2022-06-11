@@ -78,11 +78,11 @@ interface IEmployee extends Document {
   education: Education[];
   userAuthorites: USER_AUTHORITIES[];
   managerUserId: Number;
+  department: Types.ObjectId;
   active: Boolean;
   joinDate: Date;
   workLocation: Types.ObjectId;
   jobRole: Types.ObjectId;
-  department: Types.ObjectId;
   activities: EmployeeActivity[];
   userType: USER_TYPE;
   acceptedTimesheets: Types.ObjectId[];
@@ -91,6 +91,7 @@ interface IEmployee extends Document {
   emergencyContact: otherContacts;
   familyInformation: otherContacts;
   bankDetails: BankDetails;
+  ticketsAssigned: [Types.ObjectId];
   certFile: {
     fileName: string;
     filePath: string;
@@ -144,6 +145,7 @@ const employeeSchema = new Schema<IEmployee>(
         country: String,
       },
     },
+    ticketsAssigned: [{ type: Schema.Types.ObjectId, ref: "Ticket" }],
     personalInformation: {
       passportNo: String,
       passportExp: Date,
@@ -156,6 +158,7 @@ const employeeSchema = new Schema<IEmployee>(
     },
     mobileNo: String,
     dob: Date,
+    department: { type: Schema.Types.ObjectId, ref: "Department" },
     previousExperience: [
       {
         startDate: Date,
@@ -201,10 +204,6 @@ const employeeSchema = new Schema<IEmployee>(
       type: Schema.Types.ObjectId,
       ref: "Role",
     },
-    department: {
-      type: Schema.Types.ObjectId,
-      ref: "Department",
-    },
     activities: [
       {
         activityType: String,
@@ -245,14 +244,14 @@ const employeeSchema = new Schema<IEmployee>(
   { _id: false, timestamps: true }
 );
 
-employeeSchema.pre("save", function (next) {
-  if (this.isNew) {
-    Employee.countDocuments({}, (err: any, count: any) => {
-      if (err) return next(err);
-      this._id = count + 1;
-      next();
-    });
-  } else next();
-});
+// employeeSchema.pre("save", function (next) {
+//   if (this.isNew) {
+//     Employee.countDocuments({}, (err: any, count: any) => {
+//       if (err) return next(err);
+//       this._id = count + 1;
+//       next();
+//     });
+//   } else next();
+// });
 
 export { IEmployee, employeeSchema };

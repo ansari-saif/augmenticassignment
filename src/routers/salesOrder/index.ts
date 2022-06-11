@@ -3,6 +3,7 @@ import {
   controllerPost,
   controllerGet,
   controllerDelete,
+  controllerPut,
 } from "./controllers";
 
 const salesOrderRouter = Router();
@@ -10,7 +11,7 @@ const salesOrderRouter = Router();
 salesOrderRouter.get("/", controllerGet);
 salesOrderRouter.get("/:id", controllerGet);
 salesOrderRouter.post("/", controllerPost);
-// saleEstimateRouter.put("/:id", controllerPut);
+salesOrderRouter.put("/:id", controllerPut);
 salesOrderRouter.delete("/:id", controllerDelete);
 
 export default salesOrderRouter;

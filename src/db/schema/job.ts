@@ -68,7 +68,16 @@ const jobSchema = new Schema<IJob>(
   },
   {
     timestamps: true,
+    toJSON: { virtuals : true },
+    toObject: { virtuals : true }
   }
 );
+
+jobSchema.virtual("candidates", {
+  ref: "Candidate",
+  localField: "_id",
+  foreignField: "job",
+  justOne: false
+});
 
 export { jobSchema, IJob };

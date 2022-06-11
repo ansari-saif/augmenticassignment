@@ -13,5 +13,6 @@ export default async function controllerPut(req: Request, res: Response) {
   if (!customer) {
     return res.status(404).send({ message: "Customer not found" });
   }
+  console.log('DONE');
   return res.status(200).send(customer);
 }

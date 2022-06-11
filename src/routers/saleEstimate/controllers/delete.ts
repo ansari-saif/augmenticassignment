@@ -2,12 +2,19 @@
 
 import { Request, Response } from "express";
 import { SaleEstimate } from "../../../models/saleEstimate";
+import { deleteFile } from "../../../utils/s3";
 
 export default async function controllerDelete(req: Request, res: Response) {
   const { id } = req.params;
-  const saleEstimate = await SaleEstimate.findByIdAndDelete(id);
-  if (!saleEstimate) {
-    return res.status(404).json({ message: "SaleEstimate not found" });
+  try {
+    const saleEstimate = await SaleEstimate.findByIdAndDelete(id);
+    if (!saleEstimate) {
+      return res.status(404).json({ message: "SaleEstimate not found" });
+    }
+    await deleteFile(`${id}.pdf`);
+    return res.status(200).json(saleEstimate);
+
+  } catch (e) {
+    res.status(500).json({ msg: "Server Error: Estimate wasn't" })
   }
-  return res.status(200).json(saleEstimate);
 }
