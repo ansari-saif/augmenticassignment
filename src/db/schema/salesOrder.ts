@@ -8,12 +8,6 @@ interface Item {
   amount: number;
 }
 
-interface Customer {
-  id: Types.ObjectId;
-  name: string;
-  email: string;
-}
-
 interface ISalesOrder extends Document {
   employee: Number;
   project: String;
@@ -26,11 +20,14 @@ interface ISalesOrder extends Document {
   customerNotes: string;
   termsAndConditions: string;
   items: Item[];
+  status: string;
+  isInvoiced: boolean;
+  pdf_url: string;
   // 
   salesOrder: string;
   reference: string;
   grandTotal: number;
-  customer: Customer; 
+  customer: Types.ObjectId; 
 }
 
 const salesOrderSchema = new Schema<ISalesOrder>(
@@ -46,15 +43,12 @@ const salesOrderSchema = new Schema<ISalesOrder>(
     customerNotes: String,
     termsAndConditions: String,
     salesOrder: String,
+    pdf_url: String,
     reference: String,
     grandTotal: Number,
-    customer: 
-      {
-        id: { type: Schema.Types.ObjectId, ref: "Customer" },
-        name: String,
-        email: String,
-      }
-    ,
+    status: { type: String, default: 'DRAFT' },
+    isInvoiced: { type: Boolean, default: false },
+    customer:  { type: Schema.Types.ObjectId, ref: "Customer" },
     items: [
       {
         item: String,

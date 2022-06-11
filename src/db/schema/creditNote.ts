@@ -9,14 +9,14 @@ interface Item {
   amount: number;
 }
 
-interface Customer {
-  id: string;
-  name: string;
-  email: string;
+interface InoviceDetails {
+  id: Types.ObjectId;
+  credited: number;
 }
 
+
 interface ICreditNote extends Document {
-  customer: Customer;
+  customer: Types.ObjectId;
   creditDate: Date;
   creditNote: string;
   customerNotes: string;
@@ -26,7 +26,13 @@ interface ICreditNote extends Document {
   amount: number;
   reference: string;
   subject: string;
+  taxAmount: number;
+  pdf_url: string;
+  status: string;
+  creditUsed: number;
   tax: Types.ObjectId;
+  invoices: [Types.ObjectId];
+  invoiceDetails: [InoviceDetails];
   termsAndConditions: string;
   associatedInvoice: number;
   employee: number;
@@ -34,19 +40,15 @@ interface ICreditNote extends Document {
 
 const creditNoteSchema = new Schema<ICreditNote>(
   {
-    customer: 
-      {
-        id: { type: String, ref: "Customer" },
-        name: String,
-        email: String,
-      }
-    ,
+    customer: { type: Schema.Types.ObjectId, ref: "Customer" },
     creditDate: Date,
     creditNote: String,
     customerNotes: String,
     discount: String,
     grandTotal: Number,
     amount: Number,
+    status: { type: String, default: "OPEN" },
+    taxAmount: Number,
     items: [
       {
         item: String,
@@ -57,8 +59,17 @@ const creditNoteSchema = new Schema<ICreditNote>(
       },
     ],
     reference: String,
+    creditUsed: { type: Number, default: 0 },
     subject: String,
     tax: { type: Schema.Types.ObjectId, ref: "Tax" },
+    invoices: [{ type: Schema.Types.ObjectId, ref: "SaleInvoice"}],
+    invoiceDetails: [
+      {
+        id: { type: Schema.Types.ObjectId, ref: "SaleInvoice" },
+        credited: Number,
+      },
+    ],
+    pdf_url: String,
     termsAndConditions: String,
     associatedInvoice: {
       type: Number,

@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   controllerDelete,
   controllerGetInvoice,
-  // controllerGetInvoiceByCustomerId,
+  controllerGetInvoiceByCustomerId,
   controllerPost,
   controllerPut,
 } from "./controllers";
@@ -13,7 +13,7 @@ saleInvoiceRouter.get("/", controllerGetInvoice);
 saleInvoiceRouter.get("/:id", controllerGetInvoice);
 // saleInvoiceRouter.get("/recurring/:id", controllerGetRecurringInvoices);
 // saleInvoiceRouter.get("/recurring", controllerGetRecurringInvoices);
-// saleInvoiceRouter.get("/customer-id/:id", controllerGetInvoiceByCustomerId);
+saleInvoiceRouter.get("/customer-id/:id", controllerGetInvoiceByCustomerId);
 saleInvoiceRouter.delete("/:id", controllerDelete);
 saleInvoiceRouter.post("/", controllerPost as any);
 saleInvoiceRouter.put("/:id", controllerPut);

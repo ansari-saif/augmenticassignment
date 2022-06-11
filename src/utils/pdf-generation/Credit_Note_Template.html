@@ -142,48 +142,35 @@
                 </p>
             </div>
             <div class="overview">
-                <h1>Purchase Order</h1>
-                <p>Purchase Order # {{this.purchaseOrderData.purchaseOrderNo}}</p>
-                <!-- <span>Balance Due</span>
-                <h2>₹{{this.purchaseOrderData.balanceDue}}</h2> -->
+                <h1>Credit Notes</h1>
+                <p>Credit Notes # {{this.creditNoteData.creditNote}}</p>
             </div>
 
         </div>
         <div class="information">
             <div>
-                <p>Vendor Address</p>
-                <b>{{this.purchaseOrderData.vendorId.name}}</b>
-                <p>{{this.purchaseOrderData.vendorId.billAddress.address}} , {{this.purchaseOrderData.vendorId.billAddress.city}} , <br>
-                    {{this.purchaseOrderData.vendorId.billAddress.state}}, {{this.purchaseOrderData.vendorId.billAddress.country}} ,
-                    {{this.purchaseOrderData.vendorId.billAddress.pincode}}</p>
+                <p>Bill To</p>
+                <b>{{this.creditNoteData.customer.displayName}}</b>
+                <p>{{this.creditNoteData.customer.billingAddress.addressLine1}} ,<br> 
+                    {{this.creditNoteData.customer.billingAddress.addressLine2}} , <br>
+                    {{this.creditNoteData.customer.billingAddress.city}},<br> 
+                    {{this.creditNoteData.customer.billingAddress.zipcode}} ,{{this.creditNoteData.customer.billingAddress.state}}<br>
+                    India</p>
                 <br />
-                <p>Deliver To</p>
-                <b>{{this.purchaseOrderData.customerId.displayName}}</b>
 
-                <!-- <p>{{this.purchaseOrderData.vendorId.billAddress.address}} , {{this.purchaseOrderData.vendorId.billAddress.city}} , <br>
-                    {{this.purchaseOrderData.vendorId.billAddress.state}}, {{this.purchaseOrderData.vendorId.billAddress.country}} ,
-                    {{this.purchaseOrderData.vendorId.billAddress.pincode}}</p> -->
             </div>
             <div class="info_2">
                 <div class="flex justify-between w-200">
-                    <div class="right">Status : </div>
-                    <div>{{this.purchaseOrderData.status}}</div>
+                    <div class="right">Ref : </div>
+                    <div>#{{this.creditNoteData.creditNote}}</div>
                 </div>
                 <div class="flex justify-between w-200">
-                    <div class="right">Shipment preference : </div>
-                    <div>{{this.purchaseOrderData.shipmentPreference}}</div>
-                </div>
-                <div class="flex justify-between w-200">
-                    <div class="right">Date : </div>
-                    <div>{{this.purchaseOrderData.purchareOrderDate}}</div>
-                </div>
-                <div class="flex justify-between w-200">
-                    <div class="right">Delivery Date : </div>
-                    <div>{{this.purchaseOrderData.expentedDeliveryDate}}</div>
+                    <div class="right">Credit Date : </div>
+                    <div>{{this.creditNoteData.creditDate}}</div>
                 </div>
                 <div class="flex justify-between w-200">
                     <div class="right">Ref# : </div>
-                    <div>{{this.purchaseOrderData.referenceId}}</div>
+                    <div>{{this.creditNoteData.reference}}</div>
                 </div>
 
             </div>
@@ -193,18 +180,16 @@
                 <thead>
                     <td>#</td>
                     <td>Items & Description</td>
-                    <!-- <td>Customer Details</td> -->
                     <td>Qty</td>
                     <td>Rate</td>
                     <td>Amount</td>
                 </thead>
-                {{#each this.purchaseOrderData.transaction}}
+                {{#each this.creditNoteData.items}}
                 <tr>
                     <td>{{this._id}}</td>
-                    <td>{{this.itemDetails}}</td>
-                    <!-- <td>-</td> -->
+                    <td>{{this.itemDetails}}{{this.item}}</td>
                     <td>{{this.quantity}}</td>
-                    <td>{{this.rate}}</td>
+                    <td>{{this.unitcost}}</td>
                     <td>{{this.amount}}</td>
                 </tr>
                 {{/each}}
@@ -215,28 +200,20 @@
             <div class="info_2">
                 <div class="flex justify-between w-200">
                     <div class="right">Sub Total : </div>
-                    <div>{{this.purchaseOrderData.subTotal}}</div>
+                    <div>{{this.creditNoteData.amount}}</div>
                 </div>
                 <div class="flex justify-between w-200">
                     <div class="right">Discount : </div>
-                    <div>{{this.purchaseOrderData.discountAmount}}</div>
-                </div>
-                <div class="flex justify-between w-200">
-                    <div class="right">{{this.purchaseOrderData.adjustment.adjustmentName}} : </div>
-                    <div>{{this.purchaseOrderData.adjustment.adjustmentValue}}</div>
+                    <div>{{this.creditNoteData.discount}}</div>
                 </div>
                 <div class="flex justify-between w-200">
                     <div class="right">Tax : </div>
-                    <div>{{this.purchaseOrderData.taxAmount}} ({{this.purchaseOrderData.taxType}})</div>
+                    <div>{{this.creditNoteData.taxAmount}}</div>
                 </div>
                 <div class="flex justify-between w-200">
                     <div class="right bold">Total : </div>
-                    <div class="bold">₹{{this.purchaseOrderData.total}}</div>
+                    <div class="bold">₹{{this.creditNoteData.grandTotal}}</div>
                 </div>
-                <!-- <div class="flex justify-between w-200 bg-gray">
-                    <div class="right bold">Balance Due : </div>
-                    <div class="bold">₹{{this.purchaseOrderData.balanceDue}}</div>
-                </div> -->
             </div>
         </div>
 
@@ -244,14 +221,14 @@
             <div>
                 Notes
             </div>
-            <div>{{this.purchaseOrderData.notes}}</div>
+            <div>{{this.creditNoteData.customerNotes}}</div>
         </div>
         <br />
         <div>
             <div>
                 Terms & Conditions
             </div>
-            <div>{{this.purchaseOrderData.termsAndConditions}}</div>
+            <div>{{this.creditNoteData.termsAndConditions}}</div>
         </div>
 
         <div class="signature">

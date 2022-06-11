@@ -22,6 +22,7 @@ interface contactPersons {
 type invoiceId = Types.ObjectId 
 
 interface ICustomer extends Document {
+  customerType: string;
   firstName: string;
   lastName: string;
   displayName: string;
@@ -49,6 +50,7 @@ interface ICustomer extends Document {
 
 const customerSchema = new Schema<ICustomer>(
   {
+    customerType: String,
     firstName: String,
     lastName: String,
     displayName: String,

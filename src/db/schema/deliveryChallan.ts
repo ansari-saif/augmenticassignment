@@ -8,12 +8,6 @@ interface Item {
   amount: number;
 }
 
-interface Customer {
-  id: string;
-  name: string;
-  email: string;
-}
-
 interface IDeliveryChallan extends Document {
   challanDate: Date;
   discount: string;
@@ -25,7 +19,9 @@ interface IDeliveryChallan extends Document {
   deliveryChallan: string;
   reference: string;
   grandTotal: number;
-  customer: Customer; 
+  status: string;
+  pdf_url: string;
+  customer: Types.ObjectId; 
 }
 
 const deliveryChallanSchema = new Schema<IDeliveryChallan>(
@@ -39,13 +35,9 @@ const deliveryChallanSchema = new Schema<IDeliveryChallan>(
     deliveryChallan: String,
     reference: String,
     grandTotal: Number,
-    customer: 
-      {
-        id: { type: String, ref: "Customer" },
-        name: String,
-        email: String,
-      }
-    ,
+    status: { type: String, default: 'DRAFT' },
+    pdf_url: String,
+    customer: { type: Schema.Types.ObjectId, ref: "Customer" },
     items: [
       {
         item: String,

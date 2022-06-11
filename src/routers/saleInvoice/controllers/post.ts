@@ -10,14 +10,14 @@ export default async function controllerPost(
   res: Response
 ) {
   const data = req.body;
-  console.log(data);
   const errors = validateSaleInvoice(data);
   if (errors.length) {
+    console.log(errors)
     res.status(400).json({ errors });
     return;
   }
   const saleInvoice = new SaleInvoice({ ...data, createdBy: req.user.id });
-  const customerId = saleInvoice.customer.id;
+  const customerId = saleInvoice.customer;
   saleInvoice.save(async (err, invoice) => {
     if (err) {
       res.status(500).json(err);

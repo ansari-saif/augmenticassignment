@@ -1,5 +1,5 @@
 import controllerDelete from "./delete";
-import { controllerGetInvoice } from "./get";
+import { controllerGetInvoice, controllerGetInvoiceByCustomerId } from "./get";
 import controllerPost from "./post";
 import controllerPut from "./put";
 
@@ -8,5 +8,5 @@ export {
   controllerGetInvoice,
   controllerPost,
   controllerPut,
-  // controllerGetInvoiceByCustomerId,
+  controllerGetInvoiceByCustomerId,
 };

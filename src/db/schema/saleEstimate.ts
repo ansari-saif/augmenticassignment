@@ -9,12 +9,6 @@ interface Item {
   amount: number;
 }
 
-interface Customer {
-  id: string;
-  name: string;
-  email: string;
-}
-
 interface ISaleEstimate extends Document {
   employee: Number;
   project: String;
@@ -22,17 +16,21 @@ interface ISaleEstimate extends Document {
   estimateDate: Date;
   expiryDate: Date;
   taxAmount: number;
-  discount: string;
+  discount: number;
+  adjustment: number;
   amount: number;
   customerNotes: string;
   termsAndConditions: string;
   items: Item[];
+  status: string;
   // 
   estimate: string;
+  isInvoiced: boolean;
   reference: string;
   subject: string;
   grandTotal: number;
-  customer: Customer; 
+  customer: Types.ObjectId; 
+  pdf_url?:string;
 }
 
 const saleEstimateSchema = new Schema(
@@ -43,21 +41,18 @@ const saleEstimateSchema = new Schema(
     estimateDate: Date,
     expiryDate: Date,
     taxAmount: Number,
-    discount: String,
+    discount: Number,
+    adjustment: Number,
     amount: Number,
     customerNotes: String,
     termsAndConditions: String,
     estimate: String,
+    isInvoiced: { type: Boolean, default: false},
     reference: String,
     subject: String,
+    status: { type: String, default: 'DRAFT' },
     grandTotal: Number,
-    customer: 
-      {
-        id: { type: String, ref: "Customer" },
-        name: String,
-        email: String,
-      }
-    ,
+    customer: { type: Schema.Types.ObjectId, ref: "Customer" },
     items: [
       {
         item: String,
@@ -67,8 +62,9 @@ const saleEstimateSchema = new Schema(
         amount: Number,
       },
     ],
+    pdf_url: String,
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 saleEstimateSchema.pre("save", function (next) {

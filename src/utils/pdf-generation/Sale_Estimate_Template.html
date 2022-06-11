@@ -137,13 +137,14 @@
                 <b>KN Multi Projects</b>
                 <p>Plot No 31, Basundhara Complex,
                     <br>
-         
                     Hanspal, Bhubaneshwar, Odisha 752101
                 </p>
             </div>
             <div class="overview">
-                <h1>Purchase Order</h1>
-                <p>Purchase Order # {{this.purchaseOrderData.purchaseOrderNo}}</p>
+                <h1>Estimaate</h1>
+                <p>Estimate # {{this.saleEstimateData.estimate}}</p>
+                <p>Estimate Date: {{this.saleEstimateData.estimateDate}}</p>
+                <p>Estimate Expiry Date: {{this.saleEstimateData.expiryDate}}</p>
                 <!-- <span>Balance Due</span>
                 <h2>₹{{this.purchaseOrderData.balanceDue}}</h2> -->
             </div>
@@ -151,41 +152,24 @@
         </div>
         <div class="information">
             <div>
-                <p>Vendor Address</p>
-                <b>{{this.purchaseOrderData.vendorId.name}}</b>
-                <p>{{this.purchaseOrderData.vendorId.billAddress.address}} , {{this.purchaseOrderData.vendorId.billAddress.city}} , <br>
-                    {{this.purchaseOrderData.vendorId.billAddress.state}}, {{this.purchaseOrderData.vendorId.billAddress.country}} ,
-                    {{this.purchaseOrderData.vendorId.billAddress.pincode}}</p>
+                <p>Bill To</p>
+                <b>{{this.saleEstimateData.customer.displayName}}</b>
+                <p>{{this.saleEstimateData.customer.billingAddress.addressLine1}} ,<br> 
+                    {{this.saleEstimateData.customer.billingAddress.addressLine2}} , <br>
+                    {{this.saleEstimateData.customer.billingAddress.city}},<br> 
+                    {{this.saleEstimateData.customer.billingAddress.zipcode}} ,{{this.saleEstimateData.customer.billingAddress.state}}<br>
+                    India</p>
                 <br />
-                <p>Deliver To</p>
-                <b>{{this.purchaseOrderData.customerId.displayName}}</b>
-
-                <!-- <p>{{this.purchaseOrderData.vendorId.billAddress.address}} , {{this.purchaseOrderData.vendorId.billAddress.city}} , <br>
-                    {{this.purchaseOrderData.vendorId.billAddress.state}}, {{this.purchaseOrderData.vendorId.billAddress.country}} ,
-                    {{this.purchaseOrderData.vendorId.billAddress.pincode}}</p> -->
             </div>
-            <div class="info_2">
-                <div class="flex justify-between w-200">
-                    <div class="right">Status : </div>
-                    <div>{{this.purchaseOrderData.status}}</div>
-                </div>
-                <div class="flex justify-between w-200">
-                    <div class="right">Shipment preference : </div>
-                    <div>{{this.purchaseOrderData.shipmentPreference}}</div>
-                </div>
-                <div class="flex justify-between w-200">
-                    <div class="right">Date : </div>
-                    <div>{{this.purchaseOrderData.purchareOrderDate}}</div>
-                </div>
-                <div class="flex justify-between w-200">
-                    <div class="right">Delivery Date : </div>
-                    <div>{{this.purchaseOrderData.expentedDeliveryDate}}</div>
-                </div>
-                <div class="flex justify-between w-200">
-                    <div class="right">Ref# : </div>
-                    <div>{{this.purchaseOrderData.referenceId}}</div>
-                </div>
-
+            <div>
+                <p>Ship To</p>
+                <b>{{this.saleEstimateData.customer.displayName}}</b>
+                <p>{{this.saleEstimateData.customer.shippingAddress.addressLine1}} ,<br> 
+                    {{this.saleEstimateData.customer.shippingAddress.addressLine2}} , <br>
+                    {{this.saleEstimateData.customer.shippingAddress.city}},<br> 
+                    {{this.saleEstimateData.customer.shippingAddress.zipcode}} ,{{this.saleEstimateData.customer.shippingAddress.state}}<br>
+                    India</p>
+                <br />
             </div>
         </div>
         <div class="main__table">
@@ -195,16 +179,16 @@
                     <td>Items & Description</td>
                     <!-- <td>Customer Details</td> -->
                     <td>Qty</td>
-                    <td>Rate</td>
+                    <td>Unit Cost</td>
                     <td>Amount</td>
                 </thead>
-                {{#each this.purchaseOrderData.transaction}}
+                {{#each this.saleEstimateData.items}}
                 <tr>
                     <td>{{this._id}}</td>
-                    <td>{{this.itemDetails}}</td>
+                    <td>{{this.item}}{this.description}}</td>
                     <!-- <td>-</td> -->
                     <td>{{this.quantity}}</td>
-                    <td>{{this.rate}}</td>
+                    <td>{{this.unitCost}}</td>
                     <td>{{this.amount}}</td>
                 </tr>
                 {{/each}}
@@ -215,23 +199,23 @@
             <div class="info_2">
                 <div class="flex justify-between w-200">
                     <div class="right">Sub Total : </div>
-                    <div>{{this.purchaseOrderData.subTotal}}</div>
+                    <div>{{this.saleEstimateData.amount}}</div>
                 </div>
                 <div class="flex justify-between w-200">
                     <div class="right">Discount : </div>
-                    <div>{{this.purchaseOrderData.discountAmount}}</div>
+                    <div>{{this.saleEstimateData.discount}}</div>
                 </div>
                 <div class="flex justify-between w-200">
-                    <div class="right">{{this.purchaseOrderData.adjustment.adjustmentName}} : </div>
-                    <div>{{this.purchaseOrderData.adjustment.adjustmentValue}}</div>
+                    <div class="right">Adjustment : </div>
+                    <div>{{this.saleEstimateData.adjustment}}</div>
                 </div>
                 <div class="flex justify-between w-200">
-                    <div class="right">Tax : </div>
-                    <div>{{this.purchaseOrderData.taxAmount}} ({{this.purchaseOrderData.taxType}})</div>
+                    <div class="right">TCS ({{this.saleEstimateData.tax.name}}): </div>
+                    <div>({{this.saleEstimateData.taxAmount}})</div>
                 </div>
                 <div class="flex justify-between w-200">
                     <div class="right bold">Total : </div>
-                    <div class="bold">₹{{this.purchaseOrderData.total}}</div>
+                    <div class="bold">₹{{this.saleEstimateData.grandTotal}}</div>
                 </div>
                 <!-- <div class="flex justify-between w-200 bg-gray">
                     <div class="right bold">Balance Due : </div>
@@ -244,14 +228,14 @@
             <div>
                 Notes
             </div>
-            <div>{{this.purchaseOrderData.notes}}</div>
+            <div>{{this.saleEstimateData.customerNotes}}</div>
         </div>
         <br />
         <div>
             <div>
                 Terms & Conditions
             </div>
-            <div>{{this.purchaseOrderData.termsAndConditions}}</div>
+            <div>{{this.saleEstimateData.termsAndConditions}}</div>
         </div>
 
         <div class="signature">

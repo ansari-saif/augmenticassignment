@@ -17,26 +17,16 @@ export async function controllerGetInvoice(req: Request, res: Response) {
     .populate("customer")
   console.log(saleInvoices);
   return res.status(200).json(saleInvoices);
-}
+};
 
-// export async function controllerGetRecurringInvoices(
-//   req: Request,
-//   res: Response
-// ) {
-//   const { id } = req.params;
-//   if (id) {
-//     const saleInvoice = await SaleInvoice.find({ customer: id })
-//       .populate("customer")
-//       .populate("project");
-//     if (!saleInvoice) {
-//       return res.status(404).json({ message: "SaleInvoice not found" });
-//     }
-//     return res.status(200).json(saleInvoice);
-//   }
-//   const saleInvoices = await SaleInvoice.find({
-//     type: "Recurring",
-//   })
-//     .populate("customer")
-//     .populate("project");
-//   return res.status(200).json(saleInvoices);
-// }
+export async function controllerGetInvoiceByCustomerId(req: Request, res: Response) {
+  const { id } = req.params;
+  if (id) {
+    const invoices = await SaleInvoice.find({ where: { customer: id } });
+    if (!invoices) {
+      return res.status(404).json({ message: "SaleInvoice not found" });
+    }
+    return res.status(200).json(invoices);
+  }
+  return res.status(500).json({ message: "No ID provided" });
+}

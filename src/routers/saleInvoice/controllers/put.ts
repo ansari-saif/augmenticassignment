@@ -1,20 +1,23 @@
-// create an epxress put route for the saleEstimate model
 
 import { Request, Response } from "express";
 import { SaleInvoice } from "../../../models";
-import validateSalesEstimate from "../../../validators/validateSaleEstimate";
+import validateSaleInvoice from "../../../validators/validateSaleInvoice";
 
 export default async function controllerPut(req: Request, res: Response) {
   const { id } = req.params;
   const data = req.body;
-  // const errors = validateSalesEstimate(data);
-  // if (errors.length) {
-  //   res.status(400).json({ errors });
-  //   return;
-  // }
-  const saleEstimate = await SaleInvoice.findByIdAndUpdate(id, data);
-  if (!saleEstimate) {
+  console.log(data)
+  const errors = validateSaleInvoice(data);
+  if (errors.length) {
+    console.log(errors)
+    res.status(400).json({ errors });
+    return;
+  }
+  const saleInvoice = await SaleInvoice.findByIdAndUpdate(id, data);
+  if (!saleInvoice) {
     return res.status(404).json({ message: "Sale Invoice not found" });
   }
-  return res.status(200).json(saleEstimate);
+  console.log(saleInvoice)
+  console.log('done!!!!!')
+  return res.status(200).json(saleInvoice);
 }
