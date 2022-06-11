@@ -2,12 +2,19 @@ import { Document, Schema } from "mongoose";
 
 interface ICandidate extends Document {
   name: string;
+  firstName: string;
+  lastName: string;
   job: Schema.Types.ObjectId;
   message: string;
   resume: string;
   mobile: string;
   email: string;
   status: string;
+  onBoarding: boolean;
+  fileInfos?:{
+    fileName: string;
+    filePath: string;
+  };
 }
 
 const candidateSchema = new Schema<ICandidate>(
@@ -16,6 +23,8 @@ const candidateSchema = new Schema<ICandidate>(
       type: String,
       required: true,
     },
+    firstName: String,
+    lastName: String,
     job: {
       type: Schema.Types.ObjectId,
       ref: "Job",
@@ -40,10 +49,18 @@ const candidateSchema = new Schema<ICandidate>(
       type: String,
       required: true,
     },
+    onBoarding : {
+      type: Boolean,
+    },
+    fileInfos : {
+      fileName: String,
+      filePath: String,
+    },
   },
   {
     timestamps: true,
   }
 );
+
 
 export { candidateSchema, ICandidate };
