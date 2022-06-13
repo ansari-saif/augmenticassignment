@@ -6,6 +6,7 @@ import { SaleInvoice } from "../../../models";
 export async function controllerGetInvoice(req: Request, res: Response) {
   const { id } = req.params;
   if (id) {
+    console.log('getting executed');
     const saleInvoice = await SaleInvoice.findById(id)
       .populate("customer")
     if (!saleInvoice) {
@@ -15,7 +16,6 @@ export async function controllerGetInvoice(req: Request, res: Response) {
   }
   const saleInvoices = await SaleInvoice.find({})
     .populate("customer")
-  console.log(saleInvoices);
   return res.status(200).json(saleInvoices);
 };
 

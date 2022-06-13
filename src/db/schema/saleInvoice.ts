@@ -43,13 +43,14 @@ interface ISaleInvoice extends Document {
   taxationPercentage: number
   tcsTax: Types.ObjectId;
   tdsType: string;
+  status: string;
   // 
 }
 
 const saleInvoiceSchema = new Schema<ISaleInvoice>(
   {
     employee: { type: Number, ref: "Employee" },
-    project: { type: Number, ref: "Project" },
+    project: { type: Schema.Types.ObjectId, ref: "Project" },
     invoiceDate: Date,
     dueDate: Date,
     discount: String,
@@ -88,6 +89,7 @@ const saleInvoiceSchema = new Schema<ISaleInvoice>(
         amount: Number,
       },
     ],
+    status: { type: String, default: 'DRAFT' },
   },
   { timestamps: true }
 );

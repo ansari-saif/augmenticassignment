@@ -8,21 +8,10 @@ interface Item {
   amount: number;
 }
 
-interface Customer {
-  id: string;
-  name: string;
-  email: Types.ObjectId;
-}
-
-interface ChildInvoice {
-  id: Types.ObjectId;
-}
-
-
 interface IRecurringInvoice extends Document {
   adjustments: number;
   amount: number;
-  customer: Customer;
+  customer: Types.ObjectId;
   customerNotes: string;
   discount: string;
   employee: number;
@@ -33,11 +22,12 @@ interface IRecurringInvoice extends Document {
   items: Item[];
   neverExpires: boolean;
   orderNumber: string;
+  project: Types.ObjectId;
   profileName: string;
   startDate: Date;
   nextDate: Date;
   termsAndConditions: string;
-  childInvoices: ChildInvoice[];
+  childInvoices: [Types.ObjectId];
   status: string;
   // 
   paidAmount: number;
@@ -58,6 +48,7 @@ const recurringInvoiceSchema = new Schema<IRecurringInvoice>(
     orderNumber: String,
     termsAndConditions: String,
     profileName: String,
+    project: { type: Schema.Types.ObjectId, ref: 'Project' },
     grandTotal: Number,
     paidAmount: { type: Number, default: 0 },
     withholdingTax: { type: Number, default: 0 },
@@ -66,13 +57,7 @@ const recurringInvoiceSchema = new Schema<IRecurringInvoice>(
     frequency: Number,
     status: String,
     neverExpires: {type:Boolean, default: false},
-    customer: 
-      {
-        id: { type: Schema.Types.ObjectId, ref: "Customer" },
-        name: String,
-        email: String,
-      }
-    ,
+    customer: { type: Schema.Types.ObjectId, ref: "Customer" },
     items: [
       {
         item: String,

@@ -112,7 +112,7 @@ export const generateSaleEstimatePDF = async (estimate: any) => {
     path: path.join(__dirname , `generated/${estimate._id}.pdf`),
     type: "",
   };
-
+  console.log('getting')
   const options = {
     format: "A4",
     orientation: "portrait",
@@ -181,6 +181,31 @@ export const generateCreditNotePDF = async (note: any) => {
     orientation: "portrait",
     border: "5mm",
   };
+  const res = await pdf.create(document, options);
+  console.log("FILE CREATED")
+  return document.path;
+};
+
+export const generateSaleInvoicePDF = async (invoice: any) => {
+  console.log('function started to execute')
+  const html = fs.readFileSync(path.join(__dirname , "Sale_Invoice_Template.html"), "utf8");
+  console.log('html acquired')
+  const document = {
+    html: html,
+    data: {
+      saleInvoiceData : invoice,
+    },
+    path: path.join(__dirname , `generated/${invoice._id}.pdf`),
+    type: "",
+  };
+  console.log('objects made')
+  
+  const options = {
+    format: "A4",
+    orientation: "portrait",
+    border: "5mm",
+  };
+  console.log('creating');
   const res = await pdf.create(document, options);
   console.log("FILE CREATED")
   return document.path;
