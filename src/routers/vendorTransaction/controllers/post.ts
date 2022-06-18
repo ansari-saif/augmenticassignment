@@ -9,7 +9,7 @@ import { generateBillPDF, generatePurchaseMadePDF, generatePurchaseOrderPDF, gen
 // import uploadFileToCloud from "../../../utils/uploadToCloud"
 import putFile from "../../../utils/s3"
 import fs from 'fs';
-import fileUpload from "express-fileupload";
+import fileUpload, { UploadedFile } from "express-fileupload";
 import { RecurringExpense } from "../../../models/recurringExpense";
 import { RecurringBill } from "../../../models/recurringBill";
 import { calculateNextTime } from "../../../utils/nextTime";
@@ -233,21 +233,44 @@ export const uploadVendorFileUp = async(req: Request, res: Response) => {
 
 export const uploadVendorFile = async(req: any, res: Response) => {
   try {
-    if(req.file === null){
-      return res.status(400).json({ msg: 'No file uploaded' });
+    // if(req.file === null){
+    //   return res.status(400).json({ msg: 'No file uploaded' });
+    // }
+
+    // const fileName = req.file.filename;
+
+    // const pathToFile = req.file.path;
+
+    // const fileD = await fs.readFileSync(pathToFile);
+
+    // await putFile(fileD, `${req.file.filename}` );
+
+    // await fs.rmSync(pathToFile);
+
+    // res.status(200).json({ fileName: fileName, filePath: `https://knmulti.fra1.digitaloceanspaces.com/${fileName}` });
+
+    if (!req.files?.file) {
+      return res.status(400).send({
+        message: "No file was uploaded",
+      });
     }
 
-    const fileName = req.file.filename;
+    const fileName = `purchasefile_${Math.ceil(Math.random() * 1000000)}_${(req.files!.file as UploadedFile).name}`
 
-    const pathToFile = req.file.path;
+    const file = await putFile(
+      (req.files!.file as UploadedFile).data,
+      fileName,
+      (req.files!.file as UploadedFile)
+    );
 
-    const fileD = await fs.readFileSync(pathToFile);
+    if (!file) {
+      res.status(500).json({
+        message: "Error uploading file",
+      });
+    }
 
-    await putFile(fileD, `${req.file.filename}` );
-
-    await fs.rmSync(pathToFile);
-
-    res.status(200).json({ fileName: fileName, filePath: `https://knmulti.fra1.digitaloceanspaces.com/${fileName}` });
+    res.status(200).json({ fileName: fileName, 
+      filePath: `https://knmulti.fra1.digitaloceanspaces.com/${fileName}` });
     
   } catch (err) {
     res.status(500).json({ msg: "Server Error: File was not uploaded" });
