@@ -28,7 +28,6 @@ export default async function controllerPost(
     await SaleInvoice.updateOne({ _id : uploadedInvoice._id }, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedInvoice._id}.pdf` });
     await fs.rmSync(pathToFile);
     res.status(200).json({ pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedInvoice._id}.pdf`});
-    console.log('done');
   } catch (e) {
     console.log(e)
     res.status(500).json({ msg: "Server Error: Sale Estimate data couldn't be created" });

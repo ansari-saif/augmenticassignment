@@ -10,7 +10,6 @@ const generatePDFRouter = Router();
 
 export const generateBillPDF = async (billData: any) => {
   const html = fs.readFileSync(path.join(__dirname , "Bill_Template.html"), "utf8");
-  // console.log(billData)
   const document = {
     html: html,
     data: {
@@ -113,6 +112,9 @@ export const generateSaleEstimatePDF = async (estimate: any) => {
     type: "",
   };
   console.log('getting')
+  try {
+
+  } catch (e) {}
   const options = {
     format: "A4",
     orientation: "portrait",
@@ -124,24 +126,31 @@ export const generateSaleEstimatePDF = async (estimate: any) => {
 };
 
 export const generateSalesOrderPDF = async (order: any) => {
-  const html = fs.readFileSync(path.join(__dirname , "Sale_Order_Template.html"), "utf8");
-  const document = {
-    html: html,
-    data: {
-      saleOrderData : order,
-    },
-    path: path.join(__dirname , `generated/${order._id}.pdf`),
-    type: "",
-  };
-
-  const options = {
-    format: "A4",
-    orientation: "portrait",
-    border: "5mm",
-  };
-  const res = await pdf.create(document, options);
-  console.log("FILE CREATED")
-  return document.path;
+  try {
+    console.log('function called')
+    const html = fs.readFileSync(path.join(__dirname , "Sale_Order_Template.html"), "utf8");
+    console.log('tamplate acquired')
+    const document = {
+      html: html,
+      data: {
+        saleOrderData : order,
+      },
+      path: path.join(__dirname , `generated/${order._id}.pdf`),
+      type: "",
+    };
+    
+    const options = {
+      format: "A4",
+      orientation: "portrait",
+      border: "5mm",
+    };
+    console.log('executing function')
+    const res = await pdf.create(document, options);
+    console.log("FILE CREATED")
+    return document.path;
+  } catch (err) {
+    console.log(err)
+  }
 };
 
 export const generateDeliveryChallanPDF = async (challan: any) => {
