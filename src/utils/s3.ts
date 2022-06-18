@@ -49,7 +49,7 @@ export const updateFile = async(modelName: any, modelData: any, populateObject: 
 
   await deleteFile(`${uploadedData._id}.pdf`);
 
-  const pathToFile = await generateBillPDF(uploadedData.toJSON());
+  const pathToFile : any = await generateBillPDF(uploadedData.toJSON());
   const file = await fs.readFileSync(pathToFile);
   // console.log(pathToFile);
   await putFile(file, `${uploadedData._id}.pdf` );

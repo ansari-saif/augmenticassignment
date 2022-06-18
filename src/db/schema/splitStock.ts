@@ -8,6 +8,8 @@ interface ISplitStock extends Document {
   splitStockNo: string;
   projectId: Types.ObjectId;
   usedQuantity: number;
+  consumedQuantity: number;
+  LeftQuantity: number;
   referenceNo: string;
   purpose: string;
   notes: string;
@@ -28,6 +30,8 @@ const splitStockSchema = new Schema<ISplitStock>(
     splitStockNo: String,
     projectId: { type : Schema.Types.ObjectId, ref: "Project" },
     usedQuantity: Number,
+    consumedQuantity: Number,
+    LeftQuantity: Number,
     referenceNo: String,
     purpose: String,
     notes: String,

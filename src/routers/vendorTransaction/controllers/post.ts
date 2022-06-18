@@ -9,7 +9,7 @@ import { generateBillPDF, generatePurchaseMadePDF, generatePurchaseOrderPDF, gen
 // import uploadFileToCloud from "../../../utils/uploadToCloud"
 import putFile from "../../../utils/s3"
 import fs from 'fs';
-import fileUpload from "express-fileupload";
+import fileUpload, { UploadedFile } from "express-fileupload";
 import { RecurringExpense } from "../../../models/recurringExpense";
 import { RecurringBill } from "../../../models/recurringBill";
 import { calculateNextTime } from "../../../utils/nextTime";
@@ -20,16 +20,16 @@ export const vendorBillPost = async(req: Request, res: Response) => {
   try {
     const vendorBill : any = await VendorBill.create(req.body);
     // UPLOAD FILE TO CLOUD 
-    // const uploadedVendorBill = await VendorBill.findOne({_id : vendorBill._id}).populate({path: "vendorId", select: "name billAddress"});
+    const uploadedVendorBill = await VendorBill.findOne({_id : vendorBill._id}).populate({path: "vendorId", select: "name billAddress"});
   
-    // const pathToFile = await generateBillPDF(uploadedVendorBill.toJSON());
-    // const file = await fs.readFileSync(pathToFile);
-    // // console.log(pathToFile);
-    // await putFile(file, `${uploadedVendorBill._id}.pdf` );
+    const pathToFile : any = await generateBillPDF(uploadedVendorBill.toJSON());
+    const file = await fs.readFileSync(pathToFile);
+    // console.log(pathToFile);
+    await putFile(file, `${uploadedVendorBill._id}.pdf` );
 
-    // await VendorBill.updateOne({_id : vendorBill._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
+    await VendorBill.updateOne({_id : vendorBill._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
 
-    // await fs.rmSync(pathToFile);
+    await fs.rmSync(pathToFile);
 
     res.status(200).json(vendorBill);
     
@@ -47,7 +47,7 @@ export const vendorBillPaymentPost = async(req: Request, res: Response) => {
     // UPLOAD FILE TO CLOUD 
     const uploadedVendorBillPayment = await VendorBillPayment.findOne({_id : vendorBillPayment._id}).populate({path: "vendorId", select: "name billAddress"});
   
-    const pathToFile = await generatePurchaseMadePDF(uploadedVendorBillPayment.toJSON());
+    const pathToFile : any = await generatePurchaseMadePDF(uploadedVendorBillPayment.toJSON());
     const file = await fs.readFileSync(pathToFile);
     // console.log(pathToFile);
     await putFile(file, `${uploadedVendorBillPayment._id}.pdf` );
@@ -82,7 +82,7 @@ export const vendorPurchaseOrderPost = async(req: Request, res: Response) => {
     // UPLOAD FILE TO CLOUD 
     const uploadedpurchaseOrder = await PurchaseOrder.findOne({_id : purchaseOrder._id}).populate({path: "vendorId", select: "name billAddress"}).populate({path: "customerId", select: "displayName shippingAddress"});
   
-    const pathToFile = await generatePurchaseOrderPDF(uploadedpurchaseOrder.toJSON());
+    const pathToFile : any = await generatePurchaseOrderPDF(uploadedpurchaseOrder.toJSON());
     const file = await fs.readFileSync(pathToFile);
     // console.log(pathToFile);
     await putFile(file, `${uploadedpurchaseOrder._id}.pdf` );
@@ -195,59 +195,82 @@ export const vendorRecurringBillPost = async(req: Request, res: Response) => {
 
 }
 
-export const uploadVendorFileUp = async(req: Request, res: Response) => {
-  try { 
+// export const uploadVendorFileUp = async(req: Request, res: Response) => {
+//   try { 
 
-    if(req.files === null){
-      return res.status(400).json({ msg: 'No file uploaded' });
-    }
+//     if(req.files === null){
+//       return res.status(400).json({ msg: 'No file uploaded' });
+//     }
 
-    const file = req.files?.file as fileUpload.UploadedFile;
+//     const file = req.files?.file as fileUpload.UploadedFile;
 
-    const fileName = `purchasefile_${Date.now()}_${file?.name}`;
+//     const fileName = `purchasefile_${Date.now()}_${file?.name}`;
 
-    file?.mv(`${__dirname}/${fileName}`, err => {
-      console.error(err);
-      return
-    });
+//     file?.mv(`${__dirname}/${fileName}`, err => {
+//       console.error(err);
+//       return
+//     });
     
     
-    await putFile(`${__dirname}/${fileName}`, `${fileName}`, file );
+//     await putFile(`${__dirname}/${fileName}`, `${fileName}`, file );
 
-    fs?.unlink(`${__dirname}/${fileName}`, (err => {
-      if(err) { console.log(err)
-        return
-      }
-      else {
-        console.log("Folder file Deleted");
-      }
-    }));
+//     fs?.unlink(`${__dirname}/${fileName}`, (err => {
+//       if(err) { console.log(err)
+//         return
+//       }
+//       else {
+//         console.log("Folder file Deleted");
+//       }
+//     }));
 
-    res.status(200).json({ fileName: fileName, filePath: `https://knmulti.fra1.digitaloceanspaces.com/${fileName}` });
+//     res.status(200).json({ fileName: fileName, filePath: `https://knmulti.fra1.digitaloceanspaces.com/${fileName}` });
     
-  } catch (err) {
-    res.status(500).json({ msg: "Server Error: File was not uploaded" });
-  }
+//   } catch (err) {
+//     res.status(500).json({ msg: "Server Error: File was not uploaded" });
+//   }
 
-}
+// }
 
 export const uploadVendorFile = async(req: any, res: Response) => {
   try {
-    if(req.file === null){
-      return res.status(400).json({ msg: 'No file uploaded' });
+    // if(req.file === null){
+    //   return res.status(400).json({ msg: 'No file uploaded' });
+    // }
+
+    // const fileName = req.file.filename;
+
+    // const pathToFile = req.file.path;
+
+    // const fileD = await fs.readFileSync(pathToFile);
+
+    // await putFile(fileD, `${req.file.filename}` );
+
+    // await fs.rmSync(pathToFile);
+
+    // res.status(200).json({ fileName: fileName, filePath: `https://knmulti.fra1.digitaloceanspaces.com/${fileName}` });
+
+    if (!req.files?.file) {
+      return res.status(400).send({
+        message: "No file was uploaded",
+      });
     }
 
-    const fileName = req.file.filename;
+    const fileName = `purchasefile_${Math.ceil(Math.random() * 1000000)}_${(req.files!.file as UploadedFile).name}`
 
-    const pathToFile = req.file.path;
+    const file = await putFile(
+      (req.files!.file as UploadedFile).data,
+      fileName,
+      (req.files!.file as UploadedFile)
+    );
 
-    const fileD = await fs.readFileSync(pathToFile);
+    if (!file) {
+      res.status(500).json({
+        message: "Error uploading file",
+      });
+    }
 
-    await putFile(fileD, `${req.file.filename}` );
-
-    await fs.rmSync(pathToFile);
-
-    res.status(200).json({ fileName: fileName, filePath: `https://knmulti.fra1.digitaloceanspaces.com/${fileName}` });
+    res.status(200).json({ fileName: fileName, 
+      filePath: `https://knmulti.fra1.digitaloceanspaces.com/${fileName}` });
     
   } catch (err) {
     res.status(500).json({ msg: "Server Error: File was not uploaded" });

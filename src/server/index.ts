@@ -27,7 +27,7 @@ app.use(
   // })
   cors(corsOptions)
 );
-// app.use(fileUpload());
+app.use(fileUpload());
 
 app.use(express.urlencoded({ extended: true }));
 
