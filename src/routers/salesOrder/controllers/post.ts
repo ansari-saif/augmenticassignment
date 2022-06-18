@@ -9,7 +9,6 @@ import fs from 'fs';
 
 export default async function controllerPost(req: Request, res: Response) {
   const data = req.body;
-  console.log(data);
   const errors = validateSalesOrder(data);
   if (errors.length) {
     res.status(400).json({ errors });
@@ -18,13 +17,14 @@ export default async function controllerPost(req: Request, res: Response) {
   try {
     const order : any  = await SalesOrder.create(data);
     const uploadedOrder = await SalesOrder.findOne({ _id: order._id }).populate(["customer"]);
-    const pathToFile = await generateSalesOrderPDF(uploadedOrder.toJSON());
+    const pathToFile: any  = await generateSalesOrderPDF(uploadedOrder.toJSON());
     const file = await fs.readFileSync(pathToFile);
     await putFile(file, `${uploadedOrder._id}.pdf`);
     await SalesOrder.updateOne({ _id : uploadedOrder._id }, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedOrder._id}.pdf` });
     await fs.rmSync(pathToFile);
     res.status(200).json({...order._doc, pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedOrder._id}.pdf`});
   } catch (e) {
+    console.log(e);
     res.status(500).json({ msg: "Server Error: Sale Estimate data couldn't be created" });
   }
 }

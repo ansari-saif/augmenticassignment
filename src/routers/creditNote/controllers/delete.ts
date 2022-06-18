@@ -10,8 +10,6 @@ export default async function controllerDelete(req: Request, res: Response) {
     if (!note) {
       return res.status(404).json({ message: "Credit Note not found" });
     }
-    console.log(note);
-    console.log('deleted');
     return res.status(200).json(note);
   }
   const notes = await CreditNote.find({});
