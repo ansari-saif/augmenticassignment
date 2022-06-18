@@ -6,7 +6,12 @@ import { validateCandidate } from "../../../validators";
 
 export default async function controllerPut(req: Request, res: Response) {
   const { id } = req.params;
-  const data = req.body;
+  let data;
+  if(req.body.status === "SELECTED"){
+    data = { ...req.body, onBoarding: true }
+  } else {
+    data = req.body;
+  }
   const errors = validateCandidate(data);
   if (errors.length) {
     res.status(400).json({ errors });
