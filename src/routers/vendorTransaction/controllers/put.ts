@@ -29,7 +29,7 @@ export const vendorBillPut = async(req: Request, res: Response) => {
   
       await deleteFile(`${uploadedVendorBill._id}.pdf`);
     
-      const pathToFile = await generateBillPDF(uploadedVendorBill.toJSON());
+      const pathToFile : any = await generateBillPDF(uploadedVendorBill.toJSON());
       const file = await fs.readFileSync(pathToFile);
       // console.log(pathToFile);
       await putFile(file, `${uploadedVendorBill._id}.pdf` );
@@ -65,7 +65,7 @@ export const vendorBillPaymentPut = async(req: Request, res: Response) => {
   
       await deleteFile(`${uploadedVendorBillPay._id}.pdf`);
     
-      const pathToFile = await generatePurchaseMadePDF(uploadedVendorBillPay.toJSON());
+      const pathToFile : any = await generatePurchaseMadePDF(uploadedVendorBillPay.toJSON());
       const file = await fs.readFileSync(pathToFile);
       // console.log(pathToFile);
       await putFile(file, `${uploadedVendorBillPay._id}.pdf` );
@@ -112,7 +112,7 @@ export const vendorPurchaseOrderPut = async(req: Request, res: Response) => {
   
       await deleteFile(`${uploadedpurchaseOrder._id}.pdf`);
     
-      const pathToFile = await generatePurchaseOrderPDF(uploadedpurchaseOrder.toJSON());
+      const pathToFile : any = await generatePurchaseOrderPDF(uploadedpurchaseOrder.toJSON());
       const file = await fs.readFileSync(pathToFile);
       // console.log(pathToFile);
       await putFile(file, `${uploadedpurchaseOrder._id}.pdf` );
@@ -205,7 +205,7 @@ export const vendorCreditToBills = async(req: Request, res: Response) => {
   
       await deleteFile(`${uploadedVendorBill._id}.pdf`);
     
-      const pathToFile = await generateBillPDF(uploadedVendorBill.toJSON());
+      const pathToFile : any = await generateBillPDF(uploadedVendorBill.toJSON());
       const file = await fs.readFileSync(pathToFile);
       // console.log(pathToFile);
       await putFile(file, `${uploadedVendorBill._id}.pdf` );
