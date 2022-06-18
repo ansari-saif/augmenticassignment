@@ -27,7 +27,7 @@ export default async function controllerPostAttachment(
       attachments: {
         name: (req.files!.attachment as UploadedFile).name,
         url:
-          "https://kn-m.sgp1.digitaloceanspaces.com/" +
+          "https://knmulti.fra1.digitaloceanspaces.com/" +
           (req.files!.attachment as UploadedFile).name,
         uploadedAt: new Date(),
         uploader: (req as any).user.id,

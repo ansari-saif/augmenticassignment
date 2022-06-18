@@ -99,7 +99,7 @@ vendorBillPaymentSchema.pre("save", async function(next){
     
         await deleteFile(`${uploadedVendorBill._id}.pdf`);
       
-        const pathToFile = await generateBillPDF(uploadedVendorBill.toJSON());
+        const pathToFile : any = await generateBillPDF(uploadedVendorBill.toJSON());
         const file = await fs.readFileSync(pathToFile);
         // console.log(pathToFile);
         await putFile(file, `${uploadedVendorBill._id}.pdf` );

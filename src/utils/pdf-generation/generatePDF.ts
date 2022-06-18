@@ -9,25 +9,32 @@ import { DeliveryChallan } from "../../models";
 const generatePDFRouter = Router();
 
 export const generateBillPDF = async (billData: any) => {
-  const html = fs.readFileSync(path.join(__dirname , "Bill_Template.html"), "utf8");
-  const document = {
-    html: html,
-    data: {
-      billData : billData,
-    },
-    path: path.join(__dirname , `generated/${billData._id}.pdf`),
-    type: "",
-  };
 
-  const options = {
-    format: "A4",
-    orientation: "portrait",
-    border: "5mm",
-  };
+  try {
+    const html = fs.readFileSync(path.join(__dirname , "Bill_Template.html"), "utf8");
+    // console.log(billData)
+    const document = {
+      html: html,
+      data: {
+        billData : billData,
+      },
+      path: path.join(__dirname , `generated/${billData._id}.pdf`),
+      type: "",
+    };
+    
+    const options = {
+      format: "A4",
+      orientation: "portrait",
+      border: "5mm",
+    };
 
-  const res = await pdf.create(document, options);
-  console.log("FILE CREATED")
-  return document.path;
+    const res = await pdf.create(document, options);
+    console.log("FILE CREATED")
+    return document.path;
+  } catch (error) {
+    console.log(error);
+  }
+  
 };
 
 export const generatePurchaseOrderPDF = async (purchaseOrderData: any) => {
@@ -54,7 +61,7 @@ export const generatePurchaseOrderPDF = async (purchaseOrderData: any) => {
 };
 
 export const generateVendorCreditPDF = async (creditData: any) => {
-
+  try {
     const html = fs.readFileSync(path.join(__dirname , "Vendor_Credit_Template.html"), "utf8");
     // console.log(creditData)
     const document = {
@@ -75,6 +82,9 @@ export const generateVendorCreditPDF = async (creditData: any) => {
     const res = await pdf.create(document, options);
     console.log("FILE CREATED");
     return document.path;
+  } catch (error) {
+    console.log(error)
+  }
     
 };
 

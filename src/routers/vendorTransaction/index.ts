@@ -1,5 +1,4 @@
 import { Request, Router } from "express";
-import { FileFilterCallback } from "multer";
 
 
 import { deleteVendorFile, vendorBilldelete, vendorBillPaymentdelete, vendorCreditdelete, vendorExpensedelete, vendorPurchaseOrderdelete, vendorRecurringBilldelete, vendorRecurringExpensedelete } from "./controllers/delete";
@@ -9,19 +8,20 @@ import { vendorBillPaymentPut, vendorBillPut, vendorCreditPut, vendorCreditToBil
 
 const vendorTransaction = Router();
 
-const multer = require("multer");
+// const multer = require("multer");
+// import { FileFilterCallback } from "multer";
 
-type DestinationCallback = (error: Error | null, destination: string) => void
-type FileNameCallback = (error: Error | null, filename: string) => void
+// type DestinationCallback = (error: Error | null, destination: string) => void
+// type FileNameCallback = (error: Error | null, filename: string) => void
 
-const storage = multer.diskStorage({
-  destination: function(req: Request, file: Express.Multer.File, cb : DestinationCallback) {
-    cb(null, './src/uploads/');
-  },
-  filename: function(req: Request, file: Express.Multer.File, cb: FileNameCallback) {
-    cb(null, `purchasefile_${Math.ceil(Math.random() * 1000000)}_${file.originalname}`);
-  }
-});
+// const storage = multer.diskStorage({
+//   destination: function(req: Request, file: Express.Multer.File, cb : DestinationCallback) {
+//     cb(null, './src/uploads/');
+//   },
+//   filename: function(req: Request, file: Express.Multer.File, cb: FileNameCallback) {
+//     cb(null, `purchasefile_${Math.ceil(Math.random() * 1000000)}_${file.originalname}`);
+//   }
+// });
 
 // const fileFilter = (
 //   req: Request,
@@ -40,7 +40,7 @@ const storage = multer.diskStorage({
 
 
 // const upload = multer({ storage : storage, fileFilter: fileFilter });
-const upload = multer({ storage : storage });
+// const upload = multer({ storage : storage });
 
 
 // bills 
@@ -88,7 +88,8 @@ vendorTransaction.put('/updaterecurringbill/:id', vendorRecurringBillPut);
 vendorTransaction.delete('/removerecurringbill/:id', vendorRecurringBilldelete);
 
 // Upload File 
-vendorTransaction.post('/upload', upload.single('file'), uploadVendorFile);
+// vendorTransaction.post('/upload', upload.single('file'), uploadVendorFile);
+vendorTransaction.post('/upload', uploadVendorFile);
 vendorTransaction.delete('/removefile/:fileName', deleteVendorFile);
 
 export default vendorTransaction;

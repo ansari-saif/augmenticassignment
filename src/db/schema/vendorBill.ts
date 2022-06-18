@@ -108,7 +108,7 @@ vendorBillSchema.post("save", async function(next){
     // UPLOAD FILE TO CLOUD 
     const uploadedVendorBill = await VendorBill.findOne({_id : this._id}).populate({path: "vendorId", select: "name billAddress"});
   
-    const pathToFile = await generateBillPDF(uploadedVendorBill.toJSON());
+    const pathToFile : any = await generateBillPDF(uploadedVendorBill.toJSON());
     const file = await fs.readFileSync(pathToFile);
     // console.log(pathToFile);
     await putFile(file, `${uploadedVendorBill._id}.pdf` );
@@ -127,7 +127,7 @@ vendorBillSchema.post("save", async function(next){
   
 //     await deleteFile(`${uploadedVendorBill._id}.pdf`);
   
-//     const pathToFile = await generateBillPDF(uploadedVendorBill.toJSON());
+//     const pathToFile : any = await generateBillPDF(uploadedVendorBill.toJSON());
 //     const file = await fs.readFileSync(pathToFile);
 //     // console.log(pathToFile);
 //     await putFile(file, `${uploadedVendorBill._id}.pdf` );

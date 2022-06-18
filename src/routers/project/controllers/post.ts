@@ -28,7 +28,8 @@ export async function controllerPostLayout(req: Request, res: Response) {
   }
   const file = await putFile(
     (req.files!.layout as UploadedFile).data,
-    req.params.id + (req.files!.layout as UploadedFile).name
+    req.params.id + (req.files!.layout as UploadedFile).name,
+    hasLoyout
   );
   if (!file) {
     res.status(500).json({
@@ -37,7 +38,7 @@ export async function controllerPostLayout(req: Request, res: Response) {
   }
   const project = await Project.findByIdAndUpdate(req.params.id, {
     layout:
-      "https://kn-m.sgp1.digitaloceanspaces.com/" +
+      "https://knmulti.fra1.digitaloceanspaces.com/" +
       req.params.id +
       (req.files!.layout as UploadedFile).name,
   });
