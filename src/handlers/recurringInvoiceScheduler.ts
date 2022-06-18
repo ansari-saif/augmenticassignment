@@ -45,47 +45,47 @@ module.exports = async () => {
 
       const updatedRecInvoice = await RecurringInvoice.findByIdAndUpdate(inv?._id, inv)
     }
+    
+  })
 
-    mayExpireInv.forEach(async (inv) => {
-      const invNextDay = moment(inv.nextDate).format('YYYY-MM-DD');
-      const invEndDay = moment(inv.endDate).format('YYYY-MM-DD');
-      const saleInv = {
-        amount: inv?.amount,
-        customer: inv?.customer,
-        customerNotes: inv?.customerNotes,
-        discount: inv?.discount,
-        employee: inv?.employee,
-        project: inv?.project,
-        grandTotal: inv?.grandTotal,
-        invoice: `INV-${recurringInvoice.length}`,
-        invoiceDate: today,
-        items: inv?.items,
-        orderNumber: inv?.orderNumber,
-        termsAndConditions: inv?.termsAndConditions,
-        terms: inv?.terms,
-        adjustments: inv?.adjustments,
-        status: 'Active',
-      };
+  mayExpireInv.forEach(async (inv) => {
+    const invNextDay = moment(inv.nextDate).format('YYYY-MM-DD');
+    const invEndDay = moment(inv.endDate).format('YYYY-MM-DD');
+    const saleInv = {
+      amount: inv?.amount,
+      customer: inv?.customer,
+      customerNotes: inv?.customerNotes,
+      discount: inv?.discount,
+      employee: inv?.employee,
+      project: inv?.project,
+      grandTotal: inv?.grandTotal,
+      invoice: `INV-${recurringInvoice.length}`,
+      invoiceDate: today,
+      items: inv?.items,
+      orderNumber: inv?.orderNumber,
+      termsAndConditions: inv?.termsAndConditions,
+      terms: inv?.terms,
+      adjustments: inv?.adjustments,
+      status: 'Active',
+    };
 
-      const sameOrAfter = moment(invEndDay).isSameOrAfter(today, 'day');
+    const sameOrAfter = moment(invEndDay).isSameOrAfter(today, 'day');
 
-      if (sameOrAfter) {
-        if (invNextDay === today) {
-          const invoice = await SaleInvoice.create(saleInv);
-          const updateNextDate = calculateNextTime(inv?.nextDate, inv?.frequency, inv?.frequencyUnit);
-          const nextIsSameOrAfter = moment(invEndDay).isSameOrAfter(updateNextDate, 'day');
+    if (sameOrAfter) {
+      if (invNextDay === today) {
+        const invoice = await SaleInvoice.create(saleInv);
+        const updateNextDate = calculateNextTime(inv?.nextDate, inv?.frequency, inv?.frequencyUnit);
+        const nextIsSameOrAfter = moment(invEndDay).isSameOrAfter(updateNextDate, 'day');
 
-          if (nextIsSameOrAfter) {
+        if (nextIsSameOrAfter) {
 
-            inv.childInvoices.push(invoice._id);
+          inv.childInvoices.push(invoice._id);
 
-            const updatedRecInvoice = await RecurringInvoice.findByIdAndUpdate(inv._id, {...inv, nextDate: updateNextDate });
-          } else {
-            const updatedRecInvoice = await RecurringInvoice.findByIdAndUpdate(inv._id, { status: 'Expired' });
-          }
+          const updatedRecInvoice = await RecurringInvoice.findByIdAndUpdate(inv._id, {...inv, nextDate: updateNextDate });
+        } else {
+          const updatedRecInvoice = await RecurringInvoice.findByIdAndUpdate(inv._id, { status: 'Expired' });
         }
       }
-    })
-
+    }
   })
 }

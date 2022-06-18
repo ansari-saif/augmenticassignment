@@ -1,12 +1,6 @@
 import { Document, Schema, Types } from "mongoose";
 import { SaleInvoice } from "../../models";
 
-interface Customer {
-  _id: Types.ObjectId;
-  name: string;
-  email: string;
-}
-
 interface invoice {
   _id: Types.ObjectId;
   paidAmount: number;
@@ -18,7 +12,7 @@ interface invoice {
 
 interface ISalePayment extends Document {
   invoice: Array<invoice>;
-  customer: Customer;
+  customer: Types.ObjectId;
   paymentDate: Date;
   paymentAmount: number;
   paymentMode: string;
@@ -44,11 +38,7 @@ const salePaymentSchema = new Schema<ISalePayment>(
       invoiceDate: Date,
       invoiceAmount: Number,
     }],
-    customer: { 
-      _id: { type: Schema.Types.ObjectId, ref: "Customer" },
-      name: String,
-      email: String,
-    },
+    customer: { type: Schema.Types.ObjectId, ref: "Customer" },
     paymentDate: Date,
     paymentAmount: Number,
     paymentMode: String,

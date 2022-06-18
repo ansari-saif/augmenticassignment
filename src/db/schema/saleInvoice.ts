@@ -15,6 +15,13 @@ interface CreditDetails {
   credited: number;
 }
 
+interface PaymentReceived {
+  id: Types.ObjectId;
+  payment: string;
+  paymentMode: string;
+  amount: number;
+}
+
 interface ISaleInvoice extends Document {
   amount: number;
   customer: Types.ObjectId;
@@ -34,6 +41,7 @@ interface ISaleInvoice extends Document {
   items: Item[];
   creditNotes: [Types.ObjectId];
   creditDetails: [CreditDetails];
+  paymentReceived: [PaymentReceived]
   orderNumber: string;
   termsAndConditions: string;
   terms: string;
@@ -63,6 +71,12 @@ const saleInvoiceSchema = new Schema<ISaleInvoice>(
     grandTotal: Number,
     paidAmount: { type: Number, default: 0 },
     withholdingTax: { type: Number, default: 0 },
+    paymentReceived: [{
+      id: { type: Schema.Types.ObjectId, ref: 'SalePayment' },
+      payment: String,
+      paymentMode: String,
+      amount: Number,
+    }],
     adjustments: Number,
     taxType: String,
     taxationAmount: Number,

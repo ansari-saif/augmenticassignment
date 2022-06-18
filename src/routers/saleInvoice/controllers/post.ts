@@ -9,7 +9,7 @@ import fs from 'fs';
 import { generateSaleInvoicePDF } from "../../../utils/pdf-generation/generatePDF";
 
 export default async function controllerPost(
-  req: RequestWithUser,
+  req: Request,
   res: Response
 ) {
   const data = req.body;
@@ -20,15 +20,17 @@ export default async function controllerPost(
     return;
   }
   try {
-    const saleInvoice: any = await SaleInvoice.create({ ...data, createdBy: req.user.id });
-    const uploadedInvoice = await SaleInvoice.findById(saleInvoice._id).populate(["customer", "tax"]);
+    const saleInvoice: any = await SaleInvoice.create(data);
+    const uploadedInvoice = await SaleInvoice.findById(saleInvoice._id).populate(["customer", "tcsTax"]);
     const pathToFile = await generateSaleInvoicePDF(uploadedInvoice.toJSON())
-    // const file = await fs.readFileSync(pathToFile);
-    // await putFile(file, `${uploadedInvoice._id}.pdf`);
-    // await SaleInvoice.updateOne({ _id : uploadedInvoice._id }, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedInvoice._id}.pdf` });
-    // await fs.rmSync(pathToFile);
-    // res.status(200).json({ pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedInvoice._id}.pdf`});
+    const file = await fs.readFileSync(pathToFile);
+    await putFile(file, `${uploadedInvoice._id}.pdf`);
+    await SaleInvoice.updateOne({ _id : uploadedInvoice._id }, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedInvoice._id}.pdf` });
+    await fs.rmSync(pathToFile);
+    res.status(200).json({ pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedInvoice._id}.pdf`});
+    console.log('done');
   } catch (e) {
+    console.log(e)
     res.status(500).json({ msg: "Server Error: Sale Estimate data couldn't be created" });
   }
 

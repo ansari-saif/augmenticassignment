@@ -15,7 +15,7 @@ saleInvoiceRouter.get("/:id", controllerGetInvoice);
 // saleInvoiceRouter.get("/recurring", controllerGetRecurringInvoices);
 saleInvoiceRouter.get("/customer-id/:id", controllerGetInvoiceByCustomerId);
 saleInvoiceRouter.delete("/:id", controllerDelete);
-saleInvoiceRouter.post("/", controllerPost as any);
+saleInvoiceRouter.post("/", controllerPost);
 saleInvoiceRouter.put("/:id", controllerPut);
 
 export default saleInvoiceRouter;

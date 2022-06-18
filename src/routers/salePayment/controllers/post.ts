@@ -6,52 +6,58 @@ import { SalePayment } from "../../../models/salePayment";
 import { validatePayment } from "../../../validators";
 
 export default async function controllerPost(req: Request, res: Response) {
-  const data = req.body;
-  const errors = validatePayment(data.payment);
-  if (errors.length) {
-    console.log(errors);
-    res.status(400).json({ errors });
-    return;
-  }
-  console.log(data);
-  const invoices =[...data.invoices];
-  let invoice = []
-  for await (const inv of invoices) {
-    const newInvoice: any = await SaleInvoice.findById(inv._id);
-    if (!inv) {
-      return res.status(404).json({message: "Invoice not found"});
+  try {
+    const data = req.body;
+    const errors = validatePayment(data.payment);
+    if (errors.length) {
+      res.status(400).json({ errors });
+      return;
     }
-    const paidAmount = inv.paidAmount - newInvoice.paidAmount;
-    const withholdingTax = inv.withholdingTax - newInvoice.withholdingTax;
-    invoice.push({
-      id: inv._id,
-      paidAmount,
-      withholdingTax,
-      invoiceNumber: newInvoice.invoice,
-      invoiceDate: newInvoice.invoiceDate,
-      invoiceAmount: newInvoice.grandTotal, 
-    })
-  }
-  data.payment.invoice = invoice;
-  const salePayment = new SalePayment(data.payment);
-  salePayment.save(async (err, salePayment) => {
-    if (err) {
-      res.status(500).json(err);
-    } else {
-      console.log(data.invoices);
-      for await (const invoice of data.invoices ) {
-        const newInvoice = await SaleInvoice.findByIdAndUpdate(invoice._id, invoice);
-        if (!newInvoice) {
-          return res.status(404).json({message: "Invoice not found"});
-        }
+
+    const invoices = [...data.invoices];
+    let invoice : any = [];
+
+    for await (const invData of invoices) {
+      const inv = await SaleInvoice.findById(invData._id);
+      if (!inv) {
+        return res.status(404).json({message: "Invoice not found"});
       }
-      if (data.customerModified.isModified) {
-        const newCustomer = await Customer.findByIdAndUpdate(data.payment.customer.id, data.updatedCustomer);
-        if(!newCustomer) {
-          return res.status(404).json({message: "Customer not found"});
-        }
-      }
-      res.status(201).json(salePayment);
+
+      const paidAmount = invData.paidAmount - inv.paidAmount;
+      const withholdingTax = invData.withholdingTax - inv.withholdingTax;
+
+      invoice.push({
+        id: inv._id.toString(),
+        paidAmount,
+        withholdingTax,
+        invoiceNumber: inv.invoice,
+        invoiceDate: inv.invoiceDate,
+        invoiceAmount: inv.grandTotal,
+      });
+
+      inv.paidAmount = paidAmount;
+      inv.withholdingTax = withholdingTax;
+      await SaleInvoice.findByIdAndUpdate(inv._id, inv);
     }
-  });
+
+    data.payment.invoice = invoice;
+    
+    const salePayment = await SalePayment.create(data.payment);
+
+    for await (const inv of invoice ) {
+      const invoiceData : any = await SaleInvoice.findById(inv.id);
+      const paymentReceived = {
+        id: salePayment._id,
+        payment: salePayment.paymentNumber,
+        paymentMode: salePayment.paymentMode,
+        amount: inv.paidAmount,
+      };
+
+      invoiceData.paymentReceived.push(paymentReceived);
+      const updatedInvoice = await SaleInvoice.findByIdAndUpdate(invoiceData._id, invoiceData);      
+    }
+    res.status(200).send({ msg: 'Payment received' });
+  } catch (err) {
+    res.status(500).send({ msg: 'Error Recording the Payment' })
+  }
 }
