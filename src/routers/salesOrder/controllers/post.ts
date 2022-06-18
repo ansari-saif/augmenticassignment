@@ -24,6 +24,7 @@ export default async function controllerPost(req: Request, res: Response) {
     await fs.rmSync(pathToFile);
     res.status(200).json({...order._doc, pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedOrder._id}.pdf`});
   } catch (e) {
+    console.log(e);
     res.status(500).json({ msg: "Server Error: Sale Estimate data couldn't be created" });
   }
 }
