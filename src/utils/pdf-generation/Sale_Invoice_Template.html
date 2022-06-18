@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Purchase Order</title>
+    <title>Bill Invoice</title>
     <style>
         * {
             margin: 0;
@@ -89,7 +89,7 @@
             margin-top: 5px !important;
         }
 
-        td {
+        /* td {
             padding: 15px 25px !important;
         }
 
@@ -101,7 +101,7 @@
         table {
             border: 1px solid rgb(87, 1, 1) !important;
             width: 100%;
-        }
+        } */
 
         .main__table {
             margin: 80px auto !important;
@@ -126,9 +126,12 @@
             margin-top: 25px;
         }
     </style>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="nofollow" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 
 <body>
+
     <div class="pdf">
         <div class="header">
             <div class="company_info">
@@ -140,108 +143,104 @@
                     Hanspal, Bhubaneshwar, Odisha 752101
                 </p>
             </div>
-            <div class="overview">
-                <h1>Estimaate</h1>
-                <p>Estimate # {{this.saleEstimateData.estimate}}</p>
-                <p>Estimate Date: {{this.saleEstimateData.estimateDate}}</p>
-                <p>Estimate Expiry Date: {{this.saleEstimateData.expiryDate}}</p>
-                <!-- <span>Balance Due</span>
-                <h2>₹{{this.purchaseOrderData.balanceDue}}</h2> -->
-            </div>
 
         </div>
-        {{#ifCond this.saleEstimateData.customer.billingAddress '!==' undefined}}
-        <div class="information">
-            <div>
-                <p>Bill To</p>
-                <b>{{this.saleEstimateData.customer.displayName}}</b>
-                <p>{{this.saleEstimateData.customer.billingAddress.addressLine1}} ,<br> 
-                    {{this.saleEstimateData.customer.billingAddress.addressLine2}} , <br>
-                    {{this.saleEstimateData.customer.billingAddress.city}},<br> 
-                    {{this.saleEstimateData.customer.billingAddress.zipcode}} ,{{this.saleEstimateData.customer.billingAddress.state}}<br>
-                    India</p>
-                <br />
-            </div>
-            <div>
-                <p>Ship To</p>
-                <b>{{this.saleEstimateData.customer.displayName}}</b>
-                <p>{{this.saleEstimateData.customer.shippingAddress.addressLine1}} ,<br> 
-                    {{this.saleEstimateData.customer.shippingAddress.addressLine2}} , <br>
-                    {{this.saleEstimateData.customer.shippingAddress.city}},<br> 
-                    {{this.saleEstimateData.customer.shippingAddress.zipcode}} ,{{this.saleEstimateData.customer.shippingAddress.state}}<br>
-                    India</p>
-                <br />
-            </div>
+        <div class="h3 text-center">Invoice</div>
+        <div class="d-flex justify-content-between">
+          <div class="flex-grow-1">
+            <table class="table"> 
+              <tbody>
+                <tr>
+                  <td>Invoice#</td>
+                  <td>{{saleInvoiceData.invoice}}</td>
+                </tr>
+                <tr>
+                  <td>Invoice Date</td>
+                  <td>{{saleInvoiceData.invoiceDate}}</td>
+                </tr>
+                <tr>
+                <tr>
+                  <td>Terms</td>
+                  <td>{{saleInvoiceData.terms}}</td>
+                </tr>
+                <tr>
+                  <td>Reference</td>
+                  <td>{{saleInvoiceData.reference}}</td>
+                </tr>
+                <tr>
+                  <td>Due Date</td>
+                  <td>{{saleInvoiceData.dueDate}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="flex-grow-1"></div>
+        </div>
+        <hr />
+        {{#ifCond this.saleInvoiceData.customer.billlingAddress '!==' undefined}}
+        <div>
+          <p class="text-muted">Bill To</p>
+          <div class='ml-3'>
+            
+              <p class='h4'>{{saleInvoiceData.customer.displayName}}</p>
+           
+            <div>{{saleInvoiceData.customer.billlingAddress.attention}}</div>
+            <div>{{saleInvoiceData.customer.billlingAddress.addressLine1}}</div>
+            <div>{{saleInvoiceData.customer.billlingAddress.addressLine2}}</div>
+            <div>{{saleInvoiceData.customer.billlingAddress.city}} - {{saleInvoiceData.customer.billlingAddress.state}}</div>
+            <div>{{saleInvoiceData.customer.billlingAddress.country}} - {{saleInvoiceData.customer.billlingAddress.zipcode}}</div>
+          </div>
+        </div>
+        <div>
+          <p class="text-muted">Ship To</p>
+          <div class='ml-3'>
+            
+              <p class='h4'>{{saleInvoiceData.customer.displayName}}</p>
+           
+            <div>{{saleInvoiceData.customer.shippingAddress.attention}}</div>
+            <div>{{saleInvoiceData.customer.shippingAddress.addressLine1}}</div>
+            <div>{{saleInvoiceData.customer.shippingAddress.addressLine2}}</div>
+            <div>{{saleInvoiceData.customer.shippingAddress.city}} - {{saleInvoiceData.customer.shippingAddress.state}}</div>
+            <div>{{saleInvoiceData.customer.shippingAddress.country}} - {{saleInvoiceData.customer.shippingAddress.zipcode}}</div>
+          </div>
         </div>
         {{/ifCond}}
-        <div class="main__table">
-            <table>
-                <thead>
-                    <td>#</td>
-                    <td>Items & Description</td>
-                    <!-- <td>Customer Details</td> -->
-                    <td>Qty</td>
-                    <td>Unit Cost</td>
-                    <td>Amount</td>
-                </thead>
-                {{#each this.saleEstimateData.items}}
+        <hr />
+        <div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Item& Description</th>
+                <th>Qty</th>
+                <th>Rate</th> 
+                <th>Amount</th> 
+              </tr>
+            </thead>
+            <tbody>
+                {{#each this.saleInvoiceData.items}}
                 <tr>
                     <td>{{this._id}}</td>
-                    <td>{{this.item}}{this.description}}</td>
-                    <!-- <td>-</td> -->
-                    <td>{{this.quantity}}</td>
+                    <td>{{this.item}}{{this.description}}</td>
+                    <td>{{this.quantity}}</td>                    
                     <td>{{this.unitCost}}</td>
                     <td>{{this.amount}}</td>
+                    
                 </tr>
                 {{/each}}
-            </table>
+            </tbody>
+          </table>
         </div>
-        <div class="footer">
-            <div></div>
-            <div class="info_2">
-                <div class="flex justify-between w-200">
-                    <div class="right">Sub Total : </div>
-                    <div>{{this.saleEstimateData.amount}}</div>
-                </div>
-                <div class="flex justify-between w-200">
-                    <div class="right">Discount : </div>
-                    <div>{{this.saleEstimateData.discount}}</div>
-                </div>
-                <div class="flex justify-between w-200">
-                    <div class="right">Adjustment : </div>
-                    <div>{{this.saleEstimateData.adjustment}}</div>
-                </div>
-                <div class="flex justify-between w-200">
-                    <div class="right">TCS ({{this.saleEstimateData.tax.name}}): </div>
-                    <div>({{this.saleEstimateData.taxAmount}})</div>
-                </div>
-                <div class="flex justify-between w-200">
-                    <div class="right bold">Total : </div>
-                    <div class="bold">₹{{this.saleEstimateData.grandTotal}}</div>
-                </div>
-                <!-- <div class="flex justify-between w-200 bg-gray">
-                    <div class="right bold">Balance Due : </div>
-                    <div class="bold">₹{{this.purchaseOrderData.balanceDue}}</div>
-                </div> -->
-            </div>
-        </div>
-
-        <div>
-            <div>
-                Notes
-            </div>
-            <div>{{this.saleEstimateData.customerNotes}}</div>
-        </div>
-        <br />
-        <div>
-            <div>
-                Terms & Conditions
-            </div>
-            <div>{{this.saleEstimateData.termsAndConditions}}</div>
-        </div>
+        <hr />
+        
+          <div>
+            <div class="h4">More Information</div>
+            <p class="text-muted">Notes: {{this.saleInvoiceData.customerNotes}}</p>
+            <p class="text-muted">Terms & Conditions: {{this.saleInvoiceData.termsAndConditions}}</p>
+          </div>
+       
 
         <div class="signature">
-
             Authorized Signature _________________________
         </div>
 

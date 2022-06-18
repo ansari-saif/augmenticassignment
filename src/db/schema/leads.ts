@@ -39,7 +39,7 @@ interface ILead extends Document {
   activities: ILeadActivity[];
 }
 
-const   leadSchema = new Schema<ILead>(
+const leadSchema = new Schema<ILead>(
   {
     status: {
       type: String,
