@@ -6,7 +6,6 @@ import validateSaleInvoice from "../../../validators/validateSaleInvoice";
 export default async function controllerPut(req: Request, res: Response) {
   const { id } = req.params;
   const data = req.body;
-  console.log(data)
   const errors = validateSaleInvoice(data);
   if (errors.length) {
     console.log(errors)
@@ -17,7 +16,5 @@ export default async function controllerPut(req: Request, res: Response) {
   if (!saleInvoice) {
     return res.status(404).json({ message: "Sale Invoice not found" });
   }
-  console.log(saleInvoice)
-  console.log('done!!!!!')
   return res.status(200).json(saleInvoice);
 }
