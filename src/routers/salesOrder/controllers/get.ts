@@ -11,6 +11,5 @@ export default async function controllerGet(req: Request, res: Response) {
     return res.status(200).json(salesOrder);
   }
   const salesOrder = await SalesOrder.find({}).populate('customer');
-  console.log(salesOrder)
   return res.status(200).json(salesOrder);
 }

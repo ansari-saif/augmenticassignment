@@ -17,11 +17,10 @@ export default async function controllerPut(req: Request, res: Response) {
 
     await deleteFile(`${uploadedOrder._id}.pdf`);
 
-    const pathToFile = await generateSalesOrderPDF(uploadedOrder.toJSON());
+    const pathToFile: any = await generateSalesOrderPDF(uploadedOrder.toJSON());
     const file = await fs.readFileSync(pathToFile);
 
     await putFile(file, `${uploadedOrder._id}.pdf`);
-    console.log(uploadedOrder._id);
     await SalesOrder.updateOne({ _id : uploadedOrder._id }, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedOrder._id}.pdf` });
 
     await fs.rmSync(pathToFile);

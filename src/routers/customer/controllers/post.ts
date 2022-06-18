@@ -10,7 +10,6 @@ export default async function controllerPost(req: Request, res: Response) {
     contactPersons.push(value);
   });
   data.contactPersons = contactPersons;
-  console.log(data);
   const customer = new Customer({
     ...data,
   });
