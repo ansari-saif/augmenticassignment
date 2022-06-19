@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import { RecurringInvoice } from "../../../models/recurringInvoice";
 import validateRecurringInvoice from "../../../validators/validateRecurringInvoice";
 import moment from "moment";
+import { calculateNextTime } from "../../../utils/nextTime";
 
 
 export default async function controllerPost(req: Request, res: Response) {
@@ -14,19 +15,11 @@ export default async function controllerPost(req: Request, res: Response) {
     res.status(400).json({ errors });
     return;
   }
-  const today = moment().format('YYYY-MM-DD');
-  const startDate = moment(data?.startDate).format('YYYY-MM-DD');
-  if (startDate == today) {
-    console.log(data);
-  }
-  const invoice = new RecurringInvoice(data);
-  invoice.save((err, goal) => {
-    if (err) {
-      res.status(500).json(err);
-    } else {
-      console.log(invoice)
-      res.status(201).json(invoice);
-    }
-  });
-  res.status(201).json(data);
+
+  const updateNextDate = calculateNextTime(data?.startDate, data?.frequency, data?.frequencyUnit);
+  data.nextDate = updateNextDate;
+  
+  const recurringInvoice = await RecurringInvoice.create(data);
+  let today = moment().format('YYYY-MM-DD');
+  res.status(200).json(recurringInvoice);
 }
