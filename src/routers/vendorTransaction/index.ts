@@ -2,7 +2,7 @@ import { Request, Router } from "express";
 
 
 import { deleteVendorFile, vendorBilldelete, vendorBillPaymentdelete, vendorCreditdelete, vendorExpensedelete, vendorPurchaseOrderdelete, vendorRecurringBilldelete, vendorRecurringExpensedelete } from "./controllers/delete";
-import { getRecurringBill, getRecurringExpense, getVendorBillPayment, getVendorBills, getVendorCredit, getVendorExpense, getVendorPurchaseOrder } from "./controllers/get";
+import { getPatmentofBill, getRecurringBill, getRecurringExpense, getVendorBillPayment, getVendorBills, getVendorCredit, getVendorExpense, getVendorPurchaseOrder } from "./controllers/get";
 import { uploadVendorFile, vendorBillPaymentPost, vendorBillPost, vendorCreditPost, vendorExpensePost, vendorPurchaseOrderPost, vendorRecurringBillPost, vendorRecurringExpensePost } from "./controllers/post";
 import { vendorBillPaymentPut, vendorBillPut, vendorCreditPut, vendorCreditToBills, vendorExpensePut, vendorPurchaseOrderPut, vendorRecurringBillPut, vendorRecurringExpensePut } from "./controllers/put";
 
@@ -51,6 +51,7 @@ vendorTransaction.delete('/removevendorbill/:id', vendorBilldelete);
 
 // bill Payment 
 vendorTransaction.get('/getvendorbillpayment', getVendorBillPayment);
+vendorTransaction.get('/getpaymentofbill', getPatmentofBill);
 vendorTransaction.post('/createvendorbillpayment', vendorBillPaymentPost);
 vendorTransaction.put('/updatevendorbillpayment/:id', vendorBillPaymentPut);
 vendorTransaction.delete('/removevendorbillpayment/:id', vendorBillPaymentdelete);

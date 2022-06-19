@@ -144,7 +144,8 @@ export const vendorRecurringExpensePost = async(req: Request, res: Response) => 
         isBillable: vendorRecurringExpense?.isBillable,
         projectId: vendorRecurringExpense?.projectId,
         markUpBy: vendorRecurringExpense?.markUpBy,
-        status: vendorRecurringExpense?.isBillable ? "UNBILLED" : "NON-BILLABLE"
+        status: vendorRecurringExpense?.isBillable ? "UNBILLED" : "NON-BILLABLE",
+        recurrExp: vendorRecurringExpense?._id
       }
 
       await VendorExpense.create(vendorExpense);
@@ -182,7 +183,8 @@ export const vendorRecurringBillPost = async(req: Request, res: Response) => {
         total : vendorRecurringBill?.total,
         balanceDue: vendorRecurringBill?.total,
         status: "OPEN",
-        notes: vendorRecurringBill?.notes
+        notes: vendorRecurringBill?.notes,
+        recurrBill: vendorRecurringBill?._id
       }
       await VendorBill.create(vendorBill);
     }

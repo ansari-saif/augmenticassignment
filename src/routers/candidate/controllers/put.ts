@@ -12,11 +12,11 @@ export default async function controllerPut(req: Request, res: Response) {
   } else {
     data = req.body;
   }
-  const errors = validateCandidate(data);
-  if (errors.length) {
-    res.status(400).json({ errors });
-    return;
-  }
+  // const errors = validateCandidate(data);
+  // if (errors.length) {
+  //   res.status(400).json({ errors });
+  //   return;
+  // }
   const candidate = await Candidate.findByIdAndUpdate(id, data);
   if (candidate) {
     res.status(200).json(candidate);
