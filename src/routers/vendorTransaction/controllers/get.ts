@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { Request, Response } from "express";
 import { PurchaseOrder } from "../../../models/purchaseOrder";
 import { RecurringBill } from "../../../models/recurringBill";
@@ -26,6 +27,25 @@ export const getVendorBillPayment = async (req: Request, res: Response) => {
     
   } catch (err) {
     res.status(500).json({ msg: "Server error cannot fetch vendor's bill payments" });
+  }
+}
+
+export const getPatmentofBill = async (req: Request, res: Response) => { 
+  try {
+    
+    const { vendorId, vendorBill }  = req.query;
+    const vendorBillPayment = await VendorBillPayment.find({ vendorId }).populate({path: "vendorId", select: "name billAddress"});
+    
+    const vendorBillPaymentOfBill = vendorBillPayment.filter(vb => {
+      const vendorBillIds = vb.vendorBill.map(vb => vb._id);
+      const bool = vendorBillIds.filter(vbId => vbId.toString() === (vendorBill as any).toString()).length > 0;
+      
+      return bool;
+    });
+    res.status(200).json(vendorBillPaymentOfBill);
+    
+  } catch (err) {
+    res.status(500).json({ msg: "Server error cannot fetch payments of bill" });
   }
 }
 
@@ -64,7 +84,7 @@ export const getVendorCredit = async (req: Request, res: Response) => {
 
 export const getRecurringExpense = async (req: Request, res: Response) => {
   try {
-    const recurringExpense = await RecurringExpense.find(req.query).populate({path: "vendorId", select: "name"}).populate({path: "customerId", select: "displayName"});
+    const recurringExpense = await RecurringExpense.find(req.query).populate({path: "vendorId", select: "name billAddress"}).populate({path: "customerId", select: "displayName"});
 
     res.status(200).json(recurringExpense);
     
@@ -75,7 +95,7 @@ export const getRecurringExpense = async (req: Request, res: Response) => {
 
 export const getRecurringBill = async (req: Request, res: Response) => {
   try {
-    const recurringBill = await RecurringBill.find(req.query).populate({path: "vendorId", select: "name"});
+    const recurringBill = await RecurringBill.find(req.query).populate({path: "vendorId", select: "name billAddress"});
 
     res.status(200).json(recurringBill);
     
