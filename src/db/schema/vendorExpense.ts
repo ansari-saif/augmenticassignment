@@ -16,6 +16,7 @@ interface IVendorExpense extends Document {
   projectId?: Types.ObjectId;
   markUpBy: number;
   status: string;
+  recurrExp?: Types.ObjectId;
   fileInfos: {
     fileName: string;
     filePath: string;
@@ -39,6 +40,7 @@ const vendorExpenseSchema = new Schema<IVendorExpense>({
   projectId: { type: Schema.Types.ObjectId, ref:"Project" },
   markUpBy: Number,
   status: String,
+  recurrExp: { type: Schema.Types.ObjectId, ref:"RecurringExpense" },
   fileInfos: [{
     fileName: String,
     filePath: String,
