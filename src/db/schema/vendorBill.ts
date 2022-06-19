@@ -41,6 +41,7 @@ interface IVendorBill extends Document {
   balanceDue: number;
   status: string;
   notes: string;
+  recurrBill?: Types.ObjectId;
   fileInfos: {
     fileName: string;
     filePath: string;
@@ -87,6 +88,7 @@ const vendorBillSchema = new Schema<IVendorBill>(
     balanceDue: Number,
     status: String,
     notes: String,
+    recurrBill: { type: Schema.Types.ObjectId, ref: "RecurringBill" },
     fileInfos: [{
       fileName: String,
       filePath: String,
