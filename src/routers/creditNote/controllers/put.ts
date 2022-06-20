@@ -29,7 +29,7 @@ export async function applyToInvoicePut(req: Request, res: Response) {
       if (credit.credited > 0) {        
         const invoice : any = await SaleInvoice.findOne({ _id: credit.id });
         invoicesD.push(invoice);
-        if (invoice.grandTotal < invoice.withholdingTax + invoice.paidAmount + credit.credited) {
+        if (invoice.grandTotal < invoice.withholdingTax + invoice.paidAmount + invoice.credits + credit.credited) {
           return res.status(403).json({ message: "credited amount greater than invoice balance" });
         } else {
           creditAmount += credit.credited;
@@ -68,7 +68,7 @@ export async function applyToInvoicePut(req: Request, res: Response) {
         
         let creditNotes = (invoicesD[i].creditNotes);
         let creditDetails = invoicesD[i].creditDetails;
-        let paidAmount = invoicesD[i].paidAmount;
+        let credits = invoicesD[i].credits;
         if (creditNotes) {
           creditNotes.includes(id) ? null : creditNotes.push(id);
         } else {
@@ -81,7 +81,7 @@ export async function applyToInvoicePut(req: Request, res: Response) {
           creditDetails.forEach((cred : any, i : number) => {
             if (cred.id.toString() === id) {
               cred.credited += credit.credited;
-              paidAmount += credit.credited;
+              credits += credit.credited;
               noCred = true;
             } 
           })
@@ -91,11 +91,11 @@ export async function applyToInvoicePut(req: Request, res: Response) {
             id: id,
             credited: credit.credited,
           })
-          paidAmount += credit.credited;
+          credits += credit.credited;
         }
         invoicesD[i].creditNotes = creditNotes;
         invoicesD[i].creditDetails = creditDetails;
-        invoicesD[i].paidAmount = paidAmount;
+        invoicesD[i].credits = credits;
         await SaleInvoice.findByIdAndUpdate(invoicesD[i]._id, invoicesD[i]);
         i += 1;
       }
@@ -103,6 +103,7 @@ export async function applyToInvoicePut(req: Request, res: Response) {
     creditNote.invoices = invoices;
     creditNote.invoiceDetails = invoiceDetails;
     creditNote.creditUsed = creditNote.creditUsed + creditAmount;
+    console.log(creditNote)
     await CreditNote.findByIdAndUpdate(creditNote._id, creditNote);
     res.status(200).json({ message: 'Credit updated'});
   } catch (e) {

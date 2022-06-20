@@ -8,10 +8,8 @@ export default async function controllerGet(req: Request, res: Response) {
     const { id } = req.params;
     if (id) {
       const note = await CreditNote.findById(id)
+        .populate("invoices")
         .populate("customer")
-        .populate("tax")
-        .populate("associatedInvoice")
-        .populate("employee");
       if (!note) {
         return res.status(404).json({ message: "Credit Note not found" });
       }
@@ -19,9 +17,8 @@ export default async function controllerGet(req: Request, res: Response) {
     }
     const notes = await CreditNote.find({})
       .populate("customer")
-      .populate("tax")
-      .populate("associatedInvoice")
-      .populate("employee");
+      .populate("invoices")
+    console.log(notes);
     return res.status(200).json(notes);
   } catch (err) {
     console.log(err)

@@ -46,6 +46,7 @@ import vendorCreditRouter from "./vendorCredit";
 import vendorTransaction from "./vendorTransaction";
 import stockRouter from "./Stock";
 import fileCred from "./filesCrud";
+import leadStatusRouter from "./leadStats";
 
 
 const router = Router();
@@ -80,6 +81,7 @@ router.use("/sale-order", auth, salesOrderRouter);
 router.use("/deliverychallan", auth, deliveryChallanRouter);
 router.use("/recurring-invoice", auth, recurringInvoice);
 router.use("/lead", auth, leadRouter);
+router.use("/lead-status", auth, leadStatusRouter);
 router.use("/customer", auth, customerRouter);
 router.use("/credit-note", auth, creditNotesRouter);
 router.use("/vendor", auth, vendorRouter);

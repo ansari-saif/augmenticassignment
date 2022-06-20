@@ -39,9 +39,11 @@ interface ISaleInvoice extends Document {
   salesOrder: Types.ObjectId;
   deliveryChallan: Types.ObjectId;
   items: Item[];
+  credits: number;
   creditNotes: [Types.ObjectId];
   creditDetails: [CreditDetails];
   paymentReceived: [PaymentReceived]
+  pdf_url: String,
   orderNumber: string;
   termsAndConditions: string;
   terms: string;
@@ -70,6 +72,7 @@ const saleInvoiceSchema = new Schema<ISaleInvoice>(
     invoice: String,
     grandTotal: Number,
     paidAmount: { type: Number, default: 0 },
+    pdf_url: String,
     withholdingTax: { type: Number, default: 0 },
     paymentReceived: [{
       id: { type: Schema.Types.ObjectId, ref: 'SalePayment' },
@@ -87,6 +90,7 @@ const saleInvoiceSchema = new Schema<ISaleInvoice>(
     salesOrder: { type: Schema.Types.ObjectId, ref: 'saleOrder' },  
     deliveryChallan: { type: Schema.Types.ObjectId, ref: 'deliveryChallan' },  
     customer: { type: Schema.Types.ObjectId, ref: "Customer" },
+    credits: { type: Number, default: 0 },
     creditNotes: [{ type:Types.ObjectId, ref: "CreditNotes" }],
     creditDetails: [
       {
