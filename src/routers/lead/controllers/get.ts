@@ -14,6 +14,10 @@ export default async function controllerGet(req: Request, res: Response) {
     }
   } else {
     const leads = await Lead.find({})
+      .populate('createdBy')
+      .populate('assignedTo')
+      .populate('currentAssigned')
+    console.log(leads);
     res.status(200).send(leads);
   }
 }
