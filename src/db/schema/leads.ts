@@ -55,7 +55,7 @@ const leadSchema = new Schema<ILead>(
     nextAppointment: Date,
     email: String,
     endDate: Date,
-    project: { type: Schema.Types.ObjectId, ref: "Project" },
+    project: [{ type: Schema.Types.ObjectId, ref: "Project" }],
     lead: String,
     phone: String,
     address: {
