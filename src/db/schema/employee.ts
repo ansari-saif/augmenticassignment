@@ -244,14 +244,14 @@ const employeeSchema = new Schema<IEmployee>(
   { _id: false, timestamps: true }
 );
 
-// employeeSchema.pre("save", function (next) {
-//   if (this.isNew) {
-//     Employee.countDocuments({}, (err: any, count: any) => {
-//       if (err) return next(err);
-//       this._id = count + 1;
-//       next();
-//     });
-//   } else next();
-// });
+employeeSchema.pre("save", function (next) {
+  if (this.isNew) {
+    Employee.countDocuments({}, (err: any, count: any) => {
+      if (err) return next(err);
+      this._id = count + `${Math.ceil(Math.random() * 1000)}`;
+      next();
+    });
+  } else next();
+});
 
 export { IEmployee, employeeSchema };
