@@ -22,7 +22,7 @@ export default async function controllerPost(req: Request, res: Response) {
     });
   }
 
-  lead.interest.push(leadInterst);
+  lead.interest.push(leadInterst); // error is created from leads intertrest property.
 
   const projectsLeads = new Set(project.leads);
   projectsLeads.add(lead._id);
