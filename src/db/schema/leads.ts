@@ -1,5 +1,5 @@
 import { Document, Schema, Types } from "mongoose";
-import { Project, Task } from "../../models";
+import { Lead, Project, Task } from "../../models";
 import { Employee } from "../../models/employee";
 
 interface ILeadActivity {
@@ -25,6 +25,7 @@ interface IAddress {
 }
 
 interface ILead extends Document {
+  name: string;
   firstName: string;
   lastName: string;
   status: Types.ObjectId;
@@ -50,6 +51,7 @@ interface ILead extends Document {
 const leadSchema = new Schema<ILead>(
   {
     status: { type: Schema.Types.ObjectId, ref: 'LeadStatus' },
+    name: String,
     firstName: String,
     lastName: String,
     startDate: Date,
@@ -83,5 +85,11 @@ const leadSchema = new Schema<ILead>(
   },
   { timestamps: true }
 );
+
+leadSchema.pre('save', async function(next) {
+  if (this.isNew) {
+    await Lead.findByIdAndUpdate(this._id, { name: `${this.firstName} ${this.lastName}` });
+  }
+})
 
 export { ILead, leadSchema };
