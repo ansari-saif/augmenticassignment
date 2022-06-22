@@ -43,6 +43,7 @@ interface ILead extends Document {
   assignType: string;
   currentAssigned: number;
   activities: ILeadActivity[];
+  interest: [string]; //added this to remove error from.
   // not used
 }
 
