@@ -1,7 +1,8 @@
 import controllerPost from "./post";
-import controllerGet from "./get";
+import { controllerGet, controllerGetStatusList } from "./get";
 
 export {
   controllerPost,
   controllerGet,
+  controllerGetStatusList,
 };

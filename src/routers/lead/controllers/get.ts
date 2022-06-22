@@ -17,7 +17,27 @@ export default async function controllerGet(req: Request, res: Response) {
       .populate('createdBy')
       .populate('assignedTo')
       .populate('currentAssigned')
-    console.log(leads);
+      .populate('project')
+      .populate('status')
     res.status(200).send(leads);
+  }
+}
+
+export async function controllerGetByEmployee(req: Request, res: Response) {
+  const { id } = req.params;
+  if (id) {
+    const leads: any = await Lead.find({ currentAssigned: id })
+      .populate('createdBy')
+      .populate('assignedTo')
+      .populate('currentAssigned')
+      .populate('project')
+      .populate('status');
+    if (!leads) {
+      return res.status(404).send({ message: "Lead not found" });
+    } else {
+      return res.status(200).send(leads);
+    }
+  } else {
+    return res.status(404).send({ message: "No employee provided" });
   }
 }
