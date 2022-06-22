@@ -10,9 +10,10 @@ dashboardRouter.get("/", async (req, res) => {
   const employeeCount = await Employee.find().count();
   const customerCount = await Customer.find().count();
 
-  const leadCount = await Lead.find({
-    $nor: [{ status: "Lead Won" }, { status: "Lead Lost" }],
-  }).count();
+  const leadCount = await Lead.find().populate("status").count();
+  // const leadCount = await Lead.find({
+  //   $nor: [{ status: "Lead Won" }, { status: "Lead Lost" }],
+  // }).count();
   const invoices = await SaleInvoice.find({})
     .limit(5)
     .populate("customer")

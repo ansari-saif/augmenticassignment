@@ -7,15 +7,7 @@ export default async function controllerPost(
   res: Response
 ) {
   const data = req.body;
-  const lead = new Lead({
-    ...data,
-    createdBy: req.user.id,
-    assignedTo: req.user.id,
-  });
-  lead.save((err, lead) => {
-    if (err) {
-      return res.status(500).send(err);
-    }
-    return res.status(201).send(lead);
-  });
+  const lead = await Lead.create(data);
+  console.log('lead');
+  res.status(200).send(lead);
 }

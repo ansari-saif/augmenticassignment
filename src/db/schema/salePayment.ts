@@ -2,7 +2,7 @@ import { Document, Schema, Types } from "mongoose";
 import { SaleInvoice } from "../../models";
 
 interface invoice {
-  _id: Types.ObjectId;
+  id: Types.ObjectId;
   paidAmount: number;
   withholdingTax: number;
   invoiceNumber: string,
@@ -31,7 +31,7 @@ interface ISalePayment extends Document {
 const salePaymentSchema = new Schema<ISalePayment>(
   {
     invoice: [{ 
-      _id: {type: Schema.Types.ObjectId, ref: "SaleInvoice" },
+      id: {type: Schema.Types.ObjectId, ref: "SaleInvoice" },
       paidAmount: { type: Number, default: 0 },
       withholdingTax: { type: Number, default: 0 },
       invoiceNumber: String,

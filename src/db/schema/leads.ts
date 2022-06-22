@@ -9,67 +9,69 @@ interface ILeadActivity {
   dateTime: Date;
 }
 
-interface ILeadNote {
-  id: number;
-  title: string;
-  dateTime: Date;
-  description: string;
-}
+// interface ILeadNote {
+//   id: number;
+//   title: string;
+//   dateTime: Date;
+//   description: string;
+// }
 
-interface ILeadInterest {
-  plot: Types.ObjectId;
-  project: Types.ObjectId;
-  leadType: string;
+interface IAddress {
+  addressLine1: string;
+  addressLine2: string;
+  city: string;
+  state: string;
+  zipCode: string;
 }
 
 interface ILead extends Document {
-  status: string;
+  firstName: string;
+  lastName: string;
+  status: Types.ObjectId;
   startDate: Date;
   email: string;
+  nextAppointment: Date;
   createdBy: number;
   endDate: Date;
-  description: string;
-  project: Types.ObjectId[];
-  interest: ILeadInterest[];
-  name: string;
+  project: Types.ObjectId;
+  lead: string;
   phone: string;
-  address: string;
-  assignedTo: number;
-  notes: ILeadNote[];
+  address: IAddress;
+  assignedTo: [number];
+  pointDiscussed: string;
+  totalCalls: string;
+  assignType: string;
+  currentAssigned: number;
   activities: ILeadActivity[];
+  interest: [string]; //added this to remove error from.
+  // not used
 }
 
 const leadSchema = new Schema<ILead>(
   {
-    status: {
-      type: String,
-      default: "New Lead",
-    },
+    status: { type: Schema.Types.ObjectId, ref: 'LeadStatus' },
+    firstName: String,
+    lastName: String,
     startDate: Date,
+    nextAppointment: Date,
     email: String,
     endDate: Date,
-    description: String,
     project: [{ type: Schema.Types.ObjectId, ref: "Project" }],
-    name: String,
+    lead: String,
     phone: String,
-    interest: [
-      {
-        plot: { type: Schema.Types.ObjectId },
-        project: { type: Schema.Types.ObjectId, ref: "Project" },
-        leadType: { type: String, default: "New Lead" },
-      },
-    ],
-    address: String,
+    address: {
+      addressLine1: String,
+      addressLine2: String,
+      city: String,
+      state: String,
+      zipCode: String,
+    },
+    assignType: String,
     createdBy: { type: Number, ref: "Employee" },
-    assignedTo: { type: Number, ref: "Employee" },
-    notes: [
-      {
-        id: Number,
-        title: String,
-        dateTime: Date,
-        description: String,
-      },
-    ],
+    assignedTo: [{ type: Number, ref: "Employee" }],
+    currentAssigned: { type: Number, ref: "Employee" },
+    totalCalls: String,
+    pointDiscussed: String,
     activities: [
       {
         id: Number,
@@ -81,32 +83,5 @@ const leadSchema = new Schema<ILead>(
   },
   { timestamps: true }
 );
-
-leadSchema.pre("save", async function (next) {
-  if (this.isNew) {
-    const { project } = this;
-    await Employee.findByIdAndUpdate(this.assignedTo, {
-      $push: {
-        activities: {
-          activityType: "Lead Add",
-          dateTime: new Date(),
-          description: `Lead ${this.name} has been added`,
-          link: `/profile/lead-profile/${this._id}`,
-        },
-      },
-    }).catch(next);
-    await Project.findOneAndUpdate(
-      { _id: project, members: { $ne: this.assignedTo } },
-      {
-        $push: {
-          members: this.assignedTo,
-        },
-      }
-    ).catch(next);
-    next();
-  } else {
-    next();
-  }
-});
 
 export { ILead, leadSchema };

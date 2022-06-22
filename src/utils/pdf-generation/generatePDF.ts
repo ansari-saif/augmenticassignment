@@ -149,7 +149,7 @@ export const generateSalesOrderPDF = async (order: any) => {
   };
   
   const options = {
-    format: "A4",
+    format: "A3",
     orientation: "portrait",
     border: "5mm",
   };
