@@ -9,12 +9,12 @@ interface ILeadActivity {
   dateTime: Date;
 }
 
-// interface ILeadNote {
-//   id: number;
-//   title: string;
-//   dateTime: Date;
-//   description: string;
-// }
+interface ILeadNote {
+  id: number;
+  title: string;
+  dateTime: Date;
+  description: string;
+}
 
 interface IAddress {
   addressLine1: string;
@@ -31,6 +31,8 @@ interface ILead extends Document {
   status: Types.ObjectId;
   startDate: Date;
   email: string;
+  notes: [ILeadNote];
+  activities: [ILeadActivity];
   nextAppointment: Date;
   createdBy: number;
   endDate: Date;
@@ -43,7 +45,6 @@ interface ILead extends Document {
   totalCalls: string;
   assignType: string;
   currentAssigned: number;
-  activities: ILeadActivity[];
   interest: [string]; //added this to remove error from.
   // not used
 }
@@ -69,6 +70,14 @@ const leadSchema = new Schema<ILead>(
       zipCode: String,
     },
     assignType: String,
+    notes: [
+      {
+        id: Number,
+        title: String,
+        dateTime: Date,
+        description: String,
+      },
+    ],
     createdBy: { type: Number, ref: "Employee" },
     assignedTo: [{ type: Number, ref: "Employee" }],
     currentAssigned: { type: Number, ref: "Employee" },
