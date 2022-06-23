@@ -16,7 +16,10 @@ interface subPlot extends Document {
   }[];
   facing: string;
   area: number;
+  areaCost: string;
   dimension: string;
+  corner: string;
+  other: string;
   cost: string;
   component: {
     x: string;
@@ -81,6 +84,9 @@ const projectSchema = new Schema<IProject>(
         facing: String,
         dimension: String,
         area: Number,
+        areaCost: String,
+        corner: String,
+        other: String,
         cost: String,
         component: {
           x: String,
