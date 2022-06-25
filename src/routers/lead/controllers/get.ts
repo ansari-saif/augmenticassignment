@@ -24,7 +24,6 @@ export default async function controllerGet(req: Request, res: Response) {
       .populate('currentAssigned')
       .populate('project')
       .populate('status')
-    console.log(leads);
     res.status(200).send(leads);
   }
 }
