@@ -95,10 +95,15 @@ const leadSchema = new Schema<ILead>(
   { timestamps: true }
 );
 
-leadSchema.pre('save', async function(next) {
-  if (this.isNew) {
-    await Lead.findByIdAndUpdate(this._id, { name: `${this.firstName} ${this.lastName}` });
-  }
+// leadSchema.pre('save', async function(next) {
+//   if (this.isNew) {
+//     await Lead.findByIdAndUpdate(this._id, { name: `${this.firstName} ${this.lastName}` });
+//   }
+// })
+
+leadSchema.pre("save", function(next) {
+  this.name = `${this?.firstName} ${this?.lastName}`;
+  next();
 })
 
 export { ILead, leadSchema };
