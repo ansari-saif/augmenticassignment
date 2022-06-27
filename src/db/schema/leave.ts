@@ -16,7 +16,7 @@ interface Ileave extends Document {
 const leaveSchema = new Schema<Ileave>(
   {
     leaveType: { type: Schema.Types.ObjectId, ref: "LeaveType" },
-    employee: { type: Number, required: true },
+    employee: { type: Number, ref: "Employee", required: true },
     fromDate: Date,
     toDate: Date,
     reason: String,
