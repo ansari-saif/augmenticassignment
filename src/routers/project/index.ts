@@ -8,6 +8,7 @@ import {
   controllerPostLayout,
   controllerPostSubPlots,
   controllerPostLandDivisionCSV,
+  controllerStatusPut,
 } from "./controllers";
 import taskRouter from "./routers";
 
@@ -23,6 +24,7 @@ projectRouter.post("/:id/layout", controllerPostLayout);
 projectRouter.post("/:id/subPlots", controllerPostSubPlots);
 projectRouter.post("/:id/landDivision/csv", controllerPostLandDivisionCSV);
 projectRouter.put("/:id", controllerPut);
+projectRouter.put("/status/:id", controllerStatusPut);
 projectRouter.delete("/:id", controllerDelete);
 
 export default projectRouter;
