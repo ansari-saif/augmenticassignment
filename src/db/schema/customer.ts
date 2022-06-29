@@ -42,6 +42,7 @@ interface ICustomer extends Document {
   shippingAddress: Address;
   contactPersons: Array<contactPersons>;
   invoices: Array<invoiceId>;
+  lead: Types.ObjectId;
   // not sure about these
   address: string;
   creditNotes: number[];
@@ -86,6 +87,7 @@ const customerSchema = new Schema<ICustomer>(
       phone: String,
       fax: String,    
     },
+    lead: { type: Schema.Types.ObjectId, ref: "Lead" },
     contactPersons: [
       {
         firstName: String,

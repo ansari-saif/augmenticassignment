@@ -45,7 +45,8 @@ interface ILead extends Document {
   totalCalls: string;
   assignType: string;
   currentAssigned: number;
-  interest: [string]; //added this to remove error from.
+  interest: [string]; 
+  customer: Types.ObjectId;
   // not used
 }
 
@@ -83,6 +84,7 @@ const leadSchema = new Schema<ILead>(
     currentAssigned: { type: Number, ref: "Employee" },
     totalCalls: String,
     pointDiscussed: String,
+    customer: { type: Types.ObjectId, ref: "Customer" },
     activities: [
       {
         id: Number,

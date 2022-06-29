@@ -8,12 +8,14 @@ import {
   controllerPostLandDivisionCSV,
 } from "./post";
 import controllerPut from "./put";
+import { controllerStatusPut } from './put';
 
 export {
   controllerDelete,
   controllerGet,
   controllerPost,
   controllerPut,
+  controllerStatusPut,
   controllerPostAttachment,
   controllerPostLayout,
   controllerPostSubPlots,
