@@ -1,5 +1,5 @@
 import { Document, Schema, Types } from "mongoose";
-import { Project, Task } from "../../models";
+import { Lead, Project, Task } from "../../models";
 import { Employee } from "../../models/employee";
 
 interface ILeadActivity {
@@ -9,12 +9,12 @@ interface ILeadActivity {
   dateTime: Date;
 }
 
-// interface ILeadNote {
-//   id: number;
-//   title: string;
-//   dateTime: Date;
-//   description: string;
-// }
+interface ILeadNote {
+  id: number;
+  title: string;
+  dateTime: Date;
+  description: string;
+}
 
 interface IAddress {
   addressLine1: string;
@@ -25,11 +25,14 @@ interface IAddress {
 }
 
 interface ILead extends Document {
+  name: string;
   firstName: string;
   lastName: string;
   status: Types.ObjectId;
   startDate: Date;
   email: string;
+  notes: [ILeadNote];
+  activities: [ILeadActivity];
   nextAppointment: Date;
   createdBy: number;
   endDate: Date;
@@ -42,14 +45,15 @@ interface ILead extends Document {
   totalCalls: string;
   assignType: string;
   currentAssigned: number;
-  activities: ILeadActivity[];
-  interest: [string]; //added this to remove error from.
+  interest: [string]; 
+  customer: Types.ObjectId;
   // not used
 }
 
 const leadSchema = new Schema<ILead>(
   {
     status: { type: Schema.Types.ObjectId, ref: 'LeadStatus' },
+    name: String,
     firstName: String,
     lastName: String,
     startDate: Date,
@@ -67,11 +71,20 @@ const leadSchema = new Schema<ILead>(
       zipCode: String,
     },
     assignType: String,
+    notes: [
+      {
+        id: Number,
+        title: String,
+        dateTime: Date,
+        description: String,
+      },
+    ],
     createdBy: { type: Number, ref: "Employee" },
     assignedTo: [{ type: Number, ref: "Employee" }],
     currentAssigned: { type: Number, ref: "Employee" },
     totalCalls: String,
     pointDiscussed: String,
+    customer: { type: Types.ObjectId, ref: "Customer" },
     activities: [
       {
         id: Number,
@@ -83,5 +96,16 @@ const leadSchema = new Schema<ILead>(
   },
   { timestamps: true }
 );
+
+// leadSchema.pre('save', async function(next) {
+//   if (this.isNew) {
+//     await Lead.findByIdAndUpdate(this._id, { name: `${this.firstName} ${this.lastName}` });
+//   }
+// })
+
+leadSchema.pre("save", function(next) {
+  this.name = `${this?.firstName} ${this?.lastName}`;
+  next();
+})
 
 export { ILead, leadSchema };

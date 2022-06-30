@@ -21,7 +21,7 @@ export default async function controllerGet(req: Request, res: Response) {
   } else {
     const { userId } = req.query;
     if (!userId) {
-      const Projects: IProject[] = await Project.find()
+      const Projects: IProject[] = await Project.find(req.query)
         .populate("leads")
         .populate("members")
         .populate("createdBy");

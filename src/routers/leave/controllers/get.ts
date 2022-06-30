@@ -17,6 +17,12 @@ export default async function controllerGet(
   // const employeeLeaves = await Leave.find({ employee: employee._id });
 
   const query = req.params.id ? {employee: req.params.id} : {};
-  const employeeLeaves = await Leave.find(query).populate("leaveType");
+  const employeeLeaves = await Leave.find(query).populate("leaveType").populate({ 
+    path: "employee", select: "name jobRole",
+    populate : {
+      path: "jobRole",
+      select: "name"
+    }
+  });
   res.status(200).json(employeeLeaves);
 }

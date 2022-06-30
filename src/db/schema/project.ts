@@ -16,7 +16,10 @@ interface subPlot extends Document {
   }[];
   facing: string;
   area: number;
+  areaCost: string;
   dimension: string;
+  corner: string;
+  other: string;
   cost: string;
   component: {
     x: string;
@@ -32,6 +35,7 @@ interface IProject extends Document {
   name: string;
   startDate: Date;
   endDate: Date;
+  saleStatus: string;
   description: string;
   leads: Types.ObjectId[];
   members: number[];
@@ -45,6 +49,7 @@ interface IProject extends Document {
   attachments: ProjectAttachment[];
   layout: string;
   subPlots: subPlot[];
+  landArea : number;
 }
 
 const projectSchema = new Schema<IProject>(
@@ -56,6 +61,7 @@ const projectSchema = new Schema<IProject>(
     },
     startDate: Date,
     endDate: Date,
+    saleStatus: String,
     description: String,
     leads: [{ type: Schema.Types.ObjectId, ref: "Lead" }],
     members: [{ type: Number, ref: "Employee" }],
@@ -81,6 +87,9 @@ const projectSchema = new Schema<IProject>(
         facing: String,
         dimension: String,
         area: Number,
+        areaCost: String,
+        corner: String,
+        other: String,
         cost: String,
         component: {
           x: String,
@@ -104,6 +113,7 @@ const projectSchema = new Schema<IProject>(
         uploader: { type: Number, ref: "Employee" },
       },
     ],
+    landArea: { type: Number, default: 0 },
   },
   {
     timestamps: true,

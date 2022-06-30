@@ -70,6 +70,7 @@ interface IEmployee extends Document {
   email: string;
   firstName: string;
   lastName: string;
+  name: string;
   gender: GENDER;
   address: Address;
   mobileNo: string;
@@ -121,6 +122,7 @@ const employeeSchema = new Schema<IEmployee>(
     },
     firstName: String,
     lastName: String,
+    name: String,
     gender: {
       type: String,
       enum: Object.values(GENDER),
@@ -253,5 +255,10 @@ employeeSchema.pre("save", function (next) {
     });
   } else next();
 });
+
+employeeSchema.pre("save", function(next) {
+  this.name = `${this?.firstName} ${this?.lastName}`;
+  next();
+})
 
 export { IEmployee, employeeSchema };

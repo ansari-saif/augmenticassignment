@@ -87,11 +87,14 @@ export async function controllerPostLandDivisionCSV(
       console.error(err);
       return res.status(400).send(err);
     }
+    // console.log({records})
     const keys = records[0];
+    // console.log({keys});
     const subPlots = records.slice(1).map((record: any) => {
       return record.reduce(
         (acc: any, value: any, index: number) => {
           acc[keys[index]] = value;
+          // console.log({acc})
           return acc;
         },
         { name: "" }
