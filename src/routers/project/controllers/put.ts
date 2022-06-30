@@ -36,8 +36,7 @@ export async function controllerStatusPut(
         });
         subPlot.sold = true;
         project.subPlots[project.subPlots.findIndex((p: any) => p._id === plot)] = subPlot;
-        const updateProject = await Project.findByIdAndUpdate(id, project);
-
+        
         const leadData: any = await Lead.findById(lead);
         const cust = {
           firstName: leadData.firstName,
@@ -56,6 +55,8 @@ export async function controllerStatusPut(
         };
         const customer = await Customer.create(cust);
         await Lead.findByIdAndUpdate(lead, { customer: customer._id });
+        subPlot.soldTo = customer._id;
+        const updateProject = await Project.findByIdAndUpdate(id, project);
 
         return res.status(200).json(customer);
       }

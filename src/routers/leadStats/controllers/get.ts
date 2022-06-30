@@ -7,14 +7,17 @@ import { LeadStatus } from "../../../models/LeadStatus";
 export async function controllerGet(req: Request, res: Response) {
   const { id } = req.params;
   if (id) {
-    const status = await LeadStatus.findById(id)
+    const status = await LeadStatus.findById(id);
     if (!status) {
       return res.status(404).json({ message: "status not found" });
     }
     return res.status(200).json(status);
   }
-  const status = await LeadStatus.find();
+  let status = await LeadStatus.find();
   status.sort((a,b) => a.position - b.position);
+  status.forEach(stat => {
+    stat.position +=1;
+  })
   return res.status(200).json(status);
 };
 
@@ -37,19 +40,4 @@ export async function controllerGetStatusList(req: Request, res: Response) {
     }
   });
   res.status(200).json(statusObj)
-}
-
-export async function controllerGetStatusLeads(req: Request, res: Response) {
-  try {
-    const { id } = req.params;
-    const leads = await Lead.find({ status: id });
-    if (leads.length > 0) {
-      res.status(200).send({ length: leads.length });
-    } else {
-      await LeadStatus.findByIdAndDelete(id)
-      res.status(200).send({ msg: 'deleted successfully' });
-    }
-  } catch (err) {
-    console.log(err)
-  }
 }
