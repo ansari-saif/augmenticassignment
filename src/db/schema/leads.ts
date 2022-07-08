@@ -7,6 +7,7 @@ interface ILeadActivity {
   type: string;
   description: string;
   dateTime: Date;
+  employee: Number;
 }
 
 interface ILeadNote {
@@ -91,6 +92,7 @@ const leadSchema = new Schema<ILead>(
         activityType: String,
         description: String,
         dateTime: Date,
+        employee: { type: Number, ref: "Employee"}
       },
     ],
   },
