@@ -70,7 +70,7 @@ const saleInvoiceSchema = new Schema<ISaleInvoice>(
     orderNumber: String,
     termsAndConditions: String,
     invoice: String,
-    grandTotal: Number,
+    grandTotal: { type: Number, default: 0 },
     paidAmount: { type: Number, default: 0 },
     pdf_url: String,
     withholdingTax: { type: Number, default: 0 },
