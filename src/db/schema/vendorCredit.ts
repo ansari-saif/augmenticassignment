@@ -11,6 +11,7 @@ interface IVendorCredit extends Document {
     itemDetails: string;
     account: string;
     quantity: number;
+    unit: string;
     rate: number;
     discount: {discountType: string; discountValue: number;};
     amount: number;
@@ -48,6 +49,7 @@ const vendorCreditSchema = new Schema<IVendorCredit>(
       itemDetails: String,
       account: String,
       quantity: Number,
+      unit: { type: String, default: "pcs." },
       rate: Number,
       amount: Number,
     }],
