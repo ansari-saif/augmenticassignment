@@ -1,6 +1,7 @@
 import { IVendorBill } from "../../db/schema/vendorBill";
 
-const pdf = require("pdf-creator-node");
+// const pdf = require("pdf-creator-node");
+var pdf = require('dynamic-html-pdf');
 import fs from "fs";
 import { Router } from "express";
 import path from "path";
@@ -12,22 +13,31 @@ export const generateBillPDF = async (billData: any) => {
 
   try {
     const html = fs.readFileSync(path.join(__dirname , "Bill_Template.html"), "utf8");
-    // console.log(billData)
+    pdf.registerHelper('ifCond', function (this:any, v1: any, v2: any, options: any,) {
+      if (v1 === v2) {
+          return options.fn(this);
+      }
+      return options.inverse(this);
+    })
+  
+    const options = {
+        format: "A2",
+        orientation: "portrait",
+        border: "5mm",
+        childProcessOptions: {
+          env: {
+            OPENSSL_CONF: '/dev/null',
+          },
+        }
+    };
     const document = {
-      html: html,
-      data: {
+      type: 'file',     // 'file' or 'buffer'
+      template: html,
+      context: {
         billData : billData,
       },
       path: path.join(__dirname , `generated/${billData._id}.pdf`),
-      type: "",
     };
-    
-    const options = {
-      format: "A4",
-      orientation: "portrait",
-      border: "5mm",
-    };
-
     const res = await pdf.create(document, options);
     console.log("FILE CREATED")
     return document.path;
@@ -39,22 +49,31 @@ export const generateBillPDF = async (billData: any) => {
 
 export const generatePurchaseOrderPDF = async (purchaseOrderData: any) => {
   const html = fs.readFileSync(path.join(__dirname , "Purchase_Order_Template.html"), "utf8");
-  // console.log(purchaseOrderData)
+  pdf.registerHelper('ifCond', function (this:any, v1: any, v2: any, options: any,) {
+    if (v1 === v2) {
+        return options.fn(this);
+    }
+    return options.inverse(this);
+  })
+
+  const options = {
+      format: "A2",
+      orientation: "portrait",
+      border: "5mm",
+      childProcessOptions: {
+        env: {
+          OPENSSL_CONF: '/dev/null',
+        },
+      }
+  };
   const document = {
-    html: html,
-    data: {
+    type: 'file',     // 'file' or 'buffer'
+    template: html,
+    context: {
       purchaseOrderData : purchaseOrderData,
     },
     path: path.join(__dirname , `generated/${purchaseOrderData._id}.pdf`),
-    type: "",
   };
-
-  const options = {
-    format: "A4",
-    orientation: "portrait",
-    border: "5mm",
-  };
-
   const res = await pdf.create(document, options);
   console.log("FILE CREATED")
   return document.path;
@@ -63,22 +82,31 @@ export const generatePurchaseOrderPDF = async (purchaseOrderData: any) => {
 export const generateVendorCreditPDF = async (creditData: any) => {
   try {
     const html = fs.readFileSync(path.join(__dirname , "Vendor_Credit_Template.html"), "utf8");
-    // console.log(creditData)
+    pdf.registerHelper('ifCond', function (this:any, v1: any, v2: any, options: any,) {
+      if (v1 === v2) {
+          return options.fn(this);
+      }
+      return options.inverse(this);
+    })
+  
+    const options = {
+        format: "A2",
+        orientation: "portrait",
+        border: "5mm",
+        childProcessOptions: {
+          env: {
+            OPENSSL_CONF: '/dev/null',
+          },
+        }
+    };
     const document = {
-      html: html,
-      data: {
+      type: 'file',     // 'file' or 'buffer'
+      template: html,
+      context: {
         creditData : creditData,
       },
       path: path.join(__dirname , `generated/${creditData._id}.pdf`),
-      type: "",
-    };
-  
-    const options = {
-      format: "A4",
-      orientation: "portrait",
-      border: "5mm",
-    };
-  
+    };    
     const res = await pdf.create(document, options);
     console.log("FILE CREATED");
     return document.path;
@@ -90,69 +118,101 @@ export const generateVendorCreditPDF = async (creditData: any) => {
 
 export const generatePurchaseMadePDF = async (payInfo: any) => {
   const html = fs.readFileSync(path.join(__dirname , "Purchase_Made_Template.html"), "utf8");
-  // console.log(payInfo)
+  pdf.registerHelper('ifCond', function (this:any, v1: any, v2: any, options: any,) {
+    if (v1 === v2) {
+        return options.fn(this);
+    }
+    return options.inverse(this);
+  })
+
+  const options = {
+      format: "A2",
+      orientation: "portrait",
+      border: "5mm",
+      childProcessOptions: {
+        env: {
+          OPENSSL_CONF: '/dev/null',
+        },
+      }
+  };
   const document = {
-    html: html,
-    data: {
+    type: 'file',     // 'file' or 'buffer'
+    template: html,
+    context: {
       payInfo : payInfo,
     },
     path: path.join(__dirname , `generated/${payInfo._id}.pdf`),
-    type: "",
   };
-
-  const options = {
-    format: "A4",
-    orientation: "portrait",
-    border: "5mm",
-  };
-
   const res = await pdf.create(document, options);
   console.log("FILE CREATED")
   return document.path;
 };
 
 export const generateSaleEstimatePDF = async (estimate: any) => {
-  const html = fs.readFileSync(path.join(__dirname , "Sale_Estimate_Template.html"), "utf8");
-  const document = {
-    html: html,
-    data: {
-      saleEstimateData : estimate,
-    },
-    path: path.join(__dirname , `generated/${estimate._id}.pdf`),
-    type: "",
-  };
-  console.log('getting')
   try {
-
-  } catch (e) {}
-  const options = {
-    format: "A4",
-    orientation: "portrait",
-    border: "5mm",
-  };
-  const res = await pdf.create(document, options);
-  console.log("FILE CREATED")
-  return document.path;
+    const html = fs.readFileSync(path.join(__dirname , "Sale_Estimate_Template.html"), "utf8");
+    pdf.registerHelper('ifCond', function (this:any, v1: any, v2: any, options: any,) {
+      if (v1 === v2) {
+          return options.fn(this);
+      }
+      return options.inverse(this);
+    })
+  
+    const options = {
+        format: "A2",
+        orientation: "portrait",
+        border: "5mm",
+        childProcessOptions: {
+          env: {
+            OPENSSL_CONF: '/dev/null',
+          },
+        }
+    };
+    const document = {
+      type: 'file',     // 'file' or 'buffer'
+      template: html,
+      context: {
+        saleEstimateData : estimate,
+      },
+      path: path.join(__dirname , `generated/${estimate._id}.pdf`),
+    };
+    const res = await pdf.create(document, options);
+    console.log("FILE CREATED")
+    return document.path;
+  } catch (e) {
+    console.log(e);
+    return '';
+  }
 };
 
 export const generateSalesOrderPDF = async (order: any) => {
-  console.log('function called')
   const html = fs.readFileSync(path.join(__dirname , "Sale_Order_Template.html"), "utf8");
-  console.log('tamplate acquired')
+  pdf.registerHelper('ifCond', function (this:any, v1: any, v2: any, options: any,) {
+    if (v1 === v2) {
+        return options.fn(this);
+    }
+    return options.inverse(this);
+  })
+
+  const options = {
+      format: "A2",
+      orientation: "portrait",
+      border: "5mm",
+      childProcessOptions: {
+        env: {
+          OPENSSL_CONF: '/dev/null',
+        },
+      }
+  };
   const document = {
-    html: html,
-    data: {
+    type: 'file',     // 'file' or 'buffer'
+    template: html,
+    context: {
       saleOrderData : order,
     },
-    path: path.join(__dirname , `generated/${order._id}.pdf`),
-    type: "",
+    path: path.join(__dirname , `generated/${order._id}.pdf`),    // it is not required if type is buffer
   };
   
-  const options = {
-    format: "A3",
-    orientation: "portrait",
-    border: "5mm",
-  };
   console.log('executing function')
   const res = await pdf.create(document, options);
   console.log("FILE CREATED")
@@ -161,20 +221,32 @@ export const generateSalesOrderPDF = async (order: any) => {
 
 export const generateDeliveryChallanPDF = async (challan: any) => {
   const html = fs.readFileSync(path.join(__dirname , "Delivery_Challan_Template.html"), "utf8");
-  const document = {
-    html: html,
-    data: {
-      deliveryChallan : challan,
-    },
-    path: path.join(__dirname , `generated/${challan._id}.pdf`),
-    type: "",
-  };
+  pdf.registerHelper('ifCond', function (this:any, v1: any, v2: any, options: any,) {
+    if (v1 === v2) {
+        return options.fn(this);
+    }
+    return options.inverse(this);
+  })
 
   const options = {
-    format: "A4",
-    orientation: "portrait",
-    border: "5mm",
+      format: "A2",
+      orientation: "portrait",
+      border: "5mm",
+      childProcessOptions: {
+        env: {
+          OPENSSL_CONF: '/dev/null',
+        },
+      }
   };
+  const document = {
+    type: 'file',     // 'file' or 'buffer'
+    template: html,
+    context: {
+      deliveryChallan : challan,
+    },
+    path: path.join(__dirname , `generated/${challan._id}.pdf`),    // it is not required if type is buffer
+  };
+
   const res = await pdf.create(document, options);
   console.log("FILE CREATED")
   return document.path;
@@ -182,19 +254,31 @@ export const generateDeliveryChallanPDF = async (challan: any) => {
 
 export const generateCreditNotePDF = async (note: any) => {
   const html = fs.readFileSync(path.join(__dirname , "Credit_Note_Template.html"), "utf8");
-  const document = {
-    html: html,
-    data: {
-      creditNoteData : note,
-    },
-    path: path.join(__dirname , `generated/${note._id}.pdf`),
-    type: "",
-  };
+
+  pdf.registerHelper('ifCond', function (this:any, v1: any, v2: any, options: any,) {
+    if (v1 === v2) {
+        return options.fn(this);
+    }
+    return options.inverse(this);
+  })
 
   const options = {
-    format: "A4",
-    orientation: "portrait",
-    border: "5mm",
+      format: "A2",
+      orientation: "portrait",
+      border: "5mm",
+      childProcessOptions: {
+        env: {
+          OPENSSL_CONF: '/dev/null',
+        },
+      }
+  };
+  const document = {
+    type: 'file',     // 'file' or 'buffer'
+    template: html,
+    context: {
+      creditNoteData: note
+    },
+    path: path.join(__dirname , `generated/${note._id}.pdf`),    // it is not required if type is buffer
   };
   const res = await pdf.create(document, options);
   console.log("FILE CREATED")
@@ -202,25 +286,33 @@ export const generateCreditNotePDF = async (note: any) => {
 };
 
 export const generateSaleInvoicePDF = async (invoice: any) => {
-  console.log('function started to execute')
   const html = fs.readFileSync(path.join(__dirname , "Sale_Invoice_Template.html"), "utf8");
-  console.log('html acquired')
+  pdf.registerHelper('ifCond', function (this:any, v1: any, v2: any, options: any,) {
+    if (v1 === v2) {
+        return options.fn(this);
+    }
+    return options.inverse(this);
+  })
+
   const document = {
-    html: html,
-    data: {
+    type: 'file',     // 'file' or 'buffer'
+    template: html,
+    context: {
       saleInvoiceData : invoice,
     },
     path: path.join(__dirname , `generated/${invoice._id}.pdf`),
-    type: "",
   };
-  console.log('objects made')
   
   const options = {
-    format: "A4",
+    format: "A2",
     orientation: "portrait",
     border: "5mm",
+    childProcessOptions: {
+      env: {
+        OPENSSL_CONF: '/dev/null',
+      },
+    }
   };
-  console.log('creating');
   const res = await pdf.create(document, options);
   console.log("FILE CREATED")
   return document.path;

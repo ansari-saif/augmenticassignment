@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
-import { Customer, Lead, Project } from "../../../models";
+import { Customer, Lead, Project, SaleInvoice } from "../../../models";
 import { LeadStatus } from "../../../models/LeadStatus";
+import { generateSaleInvoicePDF } from "../../../utils/pdf-generation/generatePDF";
 import RequestWithUser from "../../../utils/requestWithUser";
+import putFile from "../../../utils/s3";
+import fs from 'fs';
 
 export default async function controllerPut(
   req: RequestWithUser,
@@ -73,7 +76,8 @@ export async function controllerStatusPut(
         subPlot.soldTo = customer._id;
         project.subPlots[project.subPlots.findIndex((p: any) => p._id === plot)] = subPlot;
         const updateProject = await Project.findByIdAndUpdate(id, project);
-
+        // Invoice
+        await createInvoice(project, plot, lead, customer, req);
         return res.status(200).json(customer);
       }
       const updateProject = await Project.findByIdAndUpdate(id, project);
@@ -85,12 +89,42 @@ export async function controllerStatusPut(
           employee: req.user.id,
         } }
       });
-      return res.status(200).json(updateProject);
+      return res.status(200);//.json(updateProject);
     } catch (err) {
       console.log(err);
       return res.status(400).json({ msg: 'Some error occured while updating the status' })
     }
   } else {
     return res.status(400).send("No id was provided");
+  }
+}
+
+const createInvoice: any = async (project: any, plot: any, lead: any, customer: any, req: any) => {
+  const latest: any = await SaleInvoice.find({}).sort({ _id: -1 }).limit(1);
+  const inv = `INV-${parseInt(latest[0].invoice.split('-')[1])+1}`;
+  const invoice = {
+    employee: req.user.id,
+    project: project._id,
+    invoiceDate: new Date(),
+    invoice: inv,
+    items: [{
+      item: plot.name,
+      description: project.name,
+      quantity: '1',
+      unitCost: '0',
+      amount: '0',
+    }],
+    customer: customer._id,
+  };
+  try {
+    const saleInvoice: any = await SaleInvoice.create(invoice);
+    const uploadedInvoice = await SaleInvoice.findById(saleInvoice._id).populate(["customer", "tcsTax"]);
+    const pathToFile = await generateSaleInvoicePDF(uploadedInvoice.toJSON())
+    const file = await fs.readFileSync(pathToFile);
+    await putFile(file, `${uploadedInvoice._id}.pdf`);
+    await SaleInvoice.updateOne({ _id : uploadedInvoice._id }, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedInvoice._id}.pdf` });
+    await fs.rmSync(pathToFile);
+  } catch (e) {
+    console.log(e)
   }
 }
