@@ -3,6 +3,7 @@ import { VendorBill } from "../../models/VendorBill";
 import { generateBillPDF } from "../../utils/pdf-generation/generatePDF";
 import putFile, { deleteFile } from "../../utils/s3";
 import fs from 'fs';
+import { Stock } from "../../models/stock";
 
 interface IVendorBill extends Document {
   vendorId : Types.ObjectId;
@@ -11,11 +12,13 @@ interface IVendorBill extends Document {
   billDate: Date;
   dueDate: Date;
   paymentTerms: string;
+  projectId: Types.ObjectId;
   discountType: string;
   transaction: {
     itemDetails: string;
     account: string;
     quantity: number;
+    unit: string;
     rate: number;
     discount: {discountType: string; discountValue: number;};
     customerDetails: Types.ObjectId;
@@ -58,11 +61,13 @@ const vendorBillSchema = new Schema<IVendorBill>(
     billDate: Date,
     dueDate: Date,
     paymentTerms: String,
+    projectId: { type: Schema.Types.ObjectId, ref: "Project" },
     discountType: String,
     transaction: [{
       itemDetails: String,
       account: String,
       quantity: Number,
+      unit: { type: String, default: "pcs." },
       rate: Number,
       discount: {discountType: String, discountValue: Number,},
       customerDetails: { type: Schema.Types.ObjectId, ref: "Vendor" },
@@ -105,22 +110,22 @@ const vendorBillSchema = new Schema<IVendorBill>(
 //   next();
 // })
 
-vendorBillSchema.post("save", async function(next){
-  if(this?.pdf_url === undefined || ""){
-    // UPLOAD FILE TO CLOUD 
-    const uploadedVendorBill = await VendorBill.findOne({_id : this._id}).populate({path: "vendorId", select: "name billAddress"});
+// vendorBillSchema.post("save", async function(next){
+//   if(this?.pdf_url === undefined || ""){
+//     // UPLOAD FILE TO CLOUD 
+//     const uploadedVendorBill = await VendorBill.findOne({_id : this._id}).populate({path: "vendorId", select: "name billAddress"});
   
-    const pathToFile : any = await generateBillPDF(uploadedVendorBill.toJSON());
-    const file = await fs.readFileSync(pathToFile);
-    // console.log(pathToFile);
-    await putFile(file, `${uploadedVendorBill._id}.pdf` );
+//     const pathToFile : any = await generateBillPDF(uploadedVendorBill.toJSON());
+//     const file = await fs.readFileSync(pathToFile);
+//     // console.log(pathToFile);
+//     await putFile(file, `${uploadedVendorBill._id}.pdf` );
 
-    await VendorBill.findByIdAndUpdate(this._id , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
+//     await VendorBill.findByIdAndUpdate(this._id , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
 
-    await fs.rmSync(pathToFile);
-  }
-  next();
-});
+//     await fs.rmSync(pathToFile);
+//   }
+//   next();
+// });
 
 // vendorBillSchema.pre("updateOne", async function(next){
 //     // UPLOAD FILE TO CLOUD 
@@ -141,6 +146,40 @@ vendorBillSchema.post("save", async function(next){
 //   next();
 // });
 
+vendorBillSchema.post("save", async function(next){
+  if(this?.transaction?.length){
+    let billtrx = this?.transaction;
+    let updatedBilltrx = billtrx?.map(bt => {
+      const upbt = {
+        itemDetails: bt.itemDetails,
+        stockNo: `STK-${Math.ceil(Math.random()*100000)}`,
+        quantity: bt?.quantity,
+        leftQuantity: bt?.quantity,
+        unit: bt?.unit,
+        vendorId: this?.vendorId,
+        billId: this?._id,
+        date: this?.billDate,
+        projectId: this?.projectId
+      }
+      return upbt;
+    });
+    
+    // const updtedBillWithTrx = { ...updatedBillData, transaction : updatedBilltrx }
+    // setBillData(updtedBillWithTrx);
+
+    const ustockData = [ ...updatedBilltrx ];
+
+    const resArr = ustockData;
+    resArr.forEach(async (stk : any) => {
+      const stock = await Stock.create(stk);
+      // console.log(stock);
+    });
+
+    // const res = await httpService.post('/stock/billstock', ustockData);
+    // await toast.success("Stock added");
+  }
+  next();
+})
 
 
 export { IVendorBill, vendorBillSchema }

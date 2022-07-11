@@ -3,6 +3,7 @@ import { calculateNextTime } from "../../utils/nextTime";
 
 interface IRecurringBill extends Document {
   vendorId : Types.ObjectId;
+  projectId: Types.ObjectId;
   profileName: string;
   repeatEvery: {
     repeatNumber: number;
@@ -18,6 +19,7 @@ interface IRecurringBill extends Document {
     itemDetails: string;
     account: string;
     quantity: number;
+    unit: string;
     rate: number;
     discount: {discountType: string; discountValue: number;};
     customerDetails: Types.ObjectId;
@@ -47,6 +49,7 @@ interface IRecurringBill extends Document {
 const recurringBillSchema = new Schema<IRecurringBill>(
   {
     vendorId: { type: Schema.Types.ObjectId, ref: "Vendor" },
+    projectId: { type: Schema.Types.ObjectId, ref: "Project" },
     profileName: String,
     repeatEvery: {
       repeatNumber: Number,
@@ -62,9 +65,10 @@ const recurringBillSchema = new Schema<IRecurringBill>(
       itemDetails: String,
       account: String,
       quantity: Number,
+      unit: { type: String, default: "pcs." },
       rate: Number,
       discount: {discountType: String, discountValue: Number,},
-      customerDetails: { type: Schema.Types.ObjectId, ref: "Vendor" },
+      customerDetails: { type: Schema.Types.ObjectId, ref: "Customer" },
       amount: Number,
     }],
     subTotal: Number,

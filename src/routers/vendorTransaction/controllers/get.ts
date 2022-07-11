@@ -10,7 +10,7 @@ import { VendorExpense } from "../../../models/vendorExpense";
 
 export const getVendorBills = async (req: Request, res: Response) => {
   try {
-    const vendorBills = await VendorBill.find(req.query).populate({path: "vendorId", select: "name billAddress"});
+    const vendorBills = await VendorBill.find(req.query).populate({path: "vendorId", select: "name billAddress"}).populate({ path: "projectId", select: "name" });
 
     res.status(200).json(vendorBills);
     
@@ -62,7 +62,7 @@ export const getVendorExpense = async (req: Request, res: Response) => {
 
 export const getVendorPurchaseOrder = async (req: Request, res: Response) => {
   try {
-    const purchaseOrder = await PurchaseOrder.find(req.query).populate({path: "vendorId", select: "name billAddress"}).populate({path: "customerId", select: "displayName shippingAddress"});
+    const purchaseOrder = await PurchaseOrder.find(req.query).populate({path: "vendorId", select: "name billAddress"}).populate({path: "customerId", select: "displayName shippingAddress"}).populate({ path: "projectId", select: "name" });
 
     res.status(200).json(purchaseOrder);
     
@@ -84,7 +84,7 @@ export const getVendorCredit = async (req: Request, res: Response) => {
 
 export const getRecurringExpense = async (req: Request, res: Response) => {
   try {
-    const recurringExpense = await RecurringExpense.find(req.query).populate({path: "vendorId", select: "name billAddress"}).populate({path: "customerId", select: "displayName"});
+    const recurringExpense = await RecurringExpense.find(req.query).populate({path: "vendorId", select: "name billAddress"}).populate({path: "customerId", select: "displayName"}).populate({ path: "projectId", select: "name" }).populate({ path: "projectId", select: "name" });
 
     res.status(200).json(recurringExpense);
     
@@ -95,7 +95,7 @@ export const getRecurringExpense = async (req: Request, res: Response) => {
 
 export const getRecurringBill = async (req: Request, res: Response) => {
   try {
-    const recurringBill = await RecurringBill.find(req.query).populate({path: "vendorId", select: "name billAddress"});
+    const recurringBill = await RecurringBill.find(req.query).populate({path: "vendorId", select: "name billAddress"}).populate({ path: "projectId", select: "name" });
 
     res.status(200).json(recurringBill);
     

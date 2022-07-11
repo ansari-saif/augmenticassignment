@@ -8,7 +8,7 @@ module.exports = async () => {
 
   const recurringBill = await RecurringBill.find();
 
-  const activeBill = recurringBill.filter(bill => bill.status == "Active");
+  const activeBill = recurringBill.filter(bill => bill.status == "ACTIVE");
 
   const neverExpireBill = activeBill.filter(bill => bill.neverExpire == true);
 
@@ -18,7 +18,9 @@ module.exports = async () => {
     const expNextDay = moment(neb?.billNextDate).format("YYYY-MM-DD");
     const vendorBill = {
       vendorId : neb?.vendorId,
-      billNo: `BTX${Math.ceil(new Date().getTime() * Math.random() * 1000)}`,
+      projectId: neb?.projectId,
+      billNo: `BL-${Math.ceil(Math.random()*100000)}`,
+      orderNo: `OD-${Math.ceil(Math.random()*100000)}`,
       billDate : neb?.billStartDate,
       paymentTerms : neb?.paymentTerms,
       discountType : neb?.discountType,
@@ -51,7 +53,9 @@ module.exports = async () => {
     const billEndtDay = moment(meb?.billEndDate).format("YYYY-MM-DD");
     const vendorBill = {
       vendorId : meb?.vendorId,
-      billNo: `BTX${Math.ceil(new Date().getTime() * Math.random() * 1000)}`,
+      projectId: meb?.projectId,
+      billNo: `BL-${Math.ceil(Math.random()*100000)}`,
+      orderNo: `OD-${Math.ceil(Math.random()*100000)}`,
       billDate : meb?.billStartDate,
       paymentTerms : meb?.paymentTerms,
       discountType : meb?.discountType,
