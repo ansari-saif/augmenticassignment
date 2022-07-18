@@ -48,6 +48,7 @@ import stockRouter from "./Stock";
 import fileCred from "./filesCrud";
 import leadStatusRouter from "./leadStats";
 import landSaleRouter from "./landSale";
+import reportRouter from "./report";
 
 
 const router = Router();
@@ -100,4 +101,5 @@ router.use("/vendortrx", auth, vendorTransaction);
 router.use("/landsale", auth, landSaleRouter);
 router.use("/stock", auth, stockRouter);
 router.use("/file", fileCred);
+router.use("/reportdata", auth, reportRouter);
 export default router;
