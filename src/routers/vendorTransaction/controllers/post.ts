@@ -20,16 +20,16 @@ export const vendorBillPost = async(req: Request, res: Response) => {
   try {
     const vendorBill : any = await VendorBill.create(req.body);
     // UPLOAD FILE TO CLOUD 
-    const uploadedVendorBill = await VendorBill.findOne({_id : vendorBill._id}).populate({path: "vendorId", select: "name billAddress"});
+    // const uploadedVendorBill = await VendorBill.findOne({_id : vendorBill._id}).populate({path: "vendorId", select: "name billAddress"});
   
-    const pathToFile : any = await generateBillPDF(uploadedVendorBill.toJSON());
-    const file = await fs.readFileSync(pathToFile);
-    // console.log(pathToFile);
-    await putFile(file, `${uploadedVendorBill._id}.pdf` );
+    // const pathToFile : any = await generateBillPDF(uploadedVendorBill.toJSON());
+    // const file = await fs.readFileSync(pathToFile);
+    // // console.log(pathToFile);
+    // await putFile(file, `${uploadedVendorBill._id}.pdf` );
 
-    await VendorBill.updateOne({_id : vendorBill._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
+    // await VendorBill.updateOne({_id : vendorBill._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
 
-    await fs.rmSync(pathToFile);
+    // await fs.rmSync(pathToFile);
 
     res.status(200).json(vendorBill);
     
@@ -80,20 +80,20 @@ export const vendorPurchaseOrderPost = async(req: Request, res: Response) => {
   try {
     const purchaseOrder : any = await PurchaseOrder.create(req.body);
     // UPLOAD FILE TO CLOUD 
-    const uploadedpurchaseOrder = await PurchaseOrder.findOne({_id : purchaseOrder._id}).populate({path: "vendorId", select: "name billAddress"}).populate({path: "customerId", select: "displayName shippingAddress"});
+    // const uploadedpurchaseOrder = await PurchaseOrder.findOne({_id : purchaseOrder._id}).populate({path: "vendorId", select: "name billAddress"}).populate({path: "customerId", select: "displayName shippingAddress"});
   
-    const pathToFile : any = await generatePurchaseOrderPDF(uploadedpurchaseOrder.toJSON());
-    const file = await fs.readFileSync(pathToFile);
-    // console.log(pathToFile);
-    await putFile(file, `${uploadedpurchaseOrder._id}.pdf` );
+    // const pathToFile : any = await generatePurchaseOrderPDF(uploadedpurchaseOrder.toJSON());
+    // const file = await fs.readFileSync(pathToFile);
+    // // console.log(pathToFile);
+    // await putFile(file, `${uploadedpurchaseOrder._id}.pdf` );
 
-    await PurchaseOrder.updateOne({_id : purchaseOrder._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedpurchaseOrder._id}.pdf`})
+    // await PurchaseOrder.updateOne({_id : purchaseOrder._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedpurchaseOrder._id}.pdf`})
 
-    await fs.rmSync(pathToFile);
+    // await fs.rmSync(pathToFile);
 
-    res.status(200).json({...purchaseOrder._doc , pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedpurchaseOrder._id}.pdf` });
+    // res.status(200).json({...purchaseOrder._doc , pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedpurchaseOrder._id}.pdf` });
 
-    // res.status(200).json(purchaseOrder);
+    res.status(200).json(purchaseOrder);
     
   } catch (err) {
     res.status(500).json({ msg: "Server Error: Purchase Order Data wasn't able to stored" });
@@ -167,7 +167,9 @@ export const vendorRecurringBillPost = async(req: Request, res: Response) => {
     if(billStart == today){
       const vendorBill = {
         vendorId : vendorRecurringBill?.vendorId,
-        billNo: `BTX${Math.ceil(new Date().getTime() * Math.random() * 1000)}`,
+        projectId: vendorRecurringBill?.projectId,
+        billNo: `BL-${Math.ceil(Math.random()*100000)}`,
+        orderNo: `OD-${Math.ceil(Math.random()*100000)}`,
         billDate : vendorRecurringBill?.billStartDate,
         paymentTerms : vendorRecurringBill?.paymentTerms,
         discountType : vendorRecurringBill?.discountType,

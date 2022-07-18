@@ -42,27 +42,29 @@ export async function transferStockPost(req: Request, res: Response) {
   try {
     const transferStk : any = await TransferStock.create(req.body);
 
-    const splitStk : any = await SplitStock.findById(transferStk.splitStockId);
+    const splitStk : any = await Stock.findById(transferStk.stockId);
 
-    await SplitStock.findByIdAndUpdate(transferStk.splitStockId, { usedQuantity: splitStk.usedQuantity - transferStk.transferQuantity,
-    LeftQuantity: splitStk.LeftQuantity - transferStk.transferQuantity
+    await Stock.findByIdAndUpdate(transferStk.stockId, { quantity: splitStk.quantity - transferStk.transferQuantity,
+    leftQuantity: splitStk.leftQuantity - transferStk.transferQuantity
     });
     
     const newSplitStk = {
-      stockId: splitStk?.stockId,
-      vendorId: splitStk?.vendorId,
-      splitStockdate: moment().format("YYYY-MM-DD"),
-      splitStockNo: `SPK-${Math.ceil(Math.random()*100000)}`,
-      projectId: transferStk?.projectTo,
-      usedQuantity: transferStk?.transferQuantity,
+      stockId: splitStk?._id,
+      itemDetails: splitStk?.itemDetails,
+      stockNo: `STK-${Math.ceil(Math.random()*100000)}`,
+      quantity: transferStk?.transferQuantity,
+      leftQuantity: transferStk?.transferQuantity,
+      unit: splitStk?.unit,
       consumedQuantity: 0,
-      LeftQuantity: transferStk?.transferQuantity,
-      referenceNo: splitStk?.referenceNo,
-      purpose: splitStk?.purpose,
-      stockUsed: 0
+      purpose: "nill",
+      vendorId: splitStk?.vendorId,
+      billId: splitStk?.splitStk,
+      date: moment().format("YYYY-MM-DD"),
+      projectId: transferStk?.projectTo,
+
     }
 
-    await SplitStock.create(newSplitStk);
+    await Stock.create(newSplitStk);
 
     res.status(201).json({ msg : "Stocks transferd sucessfully" })
     

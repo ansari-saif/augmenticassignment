@@ -1,10 +1,14 @@
 module.exports = {
+  helloScheduler : {
+    frequency: "3 0 * * *",
+    handler: "src/handlers/sayHello"
+  },
   expenseScheduler : {
-    frequency: "1 0 * * *",
+    frequency: "15 0 * * *",
     handler: "src/handlers/recurringExpenseScheduler"
   },
   billScheduler : {
-    frequency: "1 0 * * *",
+    frequency: "11 0 * * *",
     handler: "src/handlers/recurringBillScheduler"
   },
   invoiceScheduler : {

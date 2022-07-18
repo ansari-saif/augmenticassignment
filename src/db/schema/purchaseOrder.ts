@@ -3,6 +3,7 @@ import { Document, Schema, Types } from "mongoose";
 
 interface IPurchaseOrder extends Document {
   vendorId: Types.ObjectId;
+  projectId: Types.ObjectId;
   deliveryTo: string;
   organisationData: {
     name: string;
@@ -20,6 +21,7 @@ interface IPurchaseOrder extends Document {
     itemDetails: string;
     account: string;
     quantity: number;
+    unit: string;
     rate: number;
     discount: {discountType: string; discountValue: number;};
     amount: number;
@@ -53,6 +55,7 @@ interface IPurchaseOrder extends Document {
 
 const purchaseOrderSchema = new Schema<IPurchaseOrder>({
   vendorId: { type: Schema.Types.ObjectId, ref: "Vendor" },
+  projectId: { type: Schema.Types.ObjectId, ref: "Project" },
   deliveryTo: String,
   organisationData: {
     name: String,
@@ -70,6 +73,7 @@ const purchaseOrderSchema = new Schema<IPurchaseOrder>({
     itemDetails: String,
     account: String,
     quantity: Number,
+    unit: { type: String, default: "pcs." },
     rate: Number,
     discount: {discountType: String, discountValue: Number},
     amount: Number,

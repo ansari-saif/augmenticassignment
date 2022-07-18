@@ -13,9 +13,20 @@ export default async function controllerPut(req: Request, res: Response) {
   }
   const { id } = req.params;
   if (id) {
-    const timesheet = await Timesheet.findOneAndUpdate({ _id: id }, data);
+    const timesheet = await Timesheet.findOneAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          employee: data.employee,
+          date: data.date,
+          hours: data.hours,
+          sessions: data.sessions,
+        },
+        $push: { description: {description:data.description,loggedUser:data?.loggedUser} },
+      }
+    );
     if (timesheet) {
-      res.status(200).json(timesheet);
+      res.status(200).json(timesheet);  
     } else {
       res.status(404).json({ message: "timesheet not found" });
     }

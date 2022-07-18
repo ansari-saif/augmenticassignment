@@ -7,7 +7,7 @@ import { VendorBillPayment } from "../../models/vendorBillPayment";
 
 interface IVendorBillPayment extends Document {
   vendorId : Types.ObjectId;
-  paymentNo: number;
+  paymentNo: string;
   paymentMade: number;
   paymentDate: Date;
   paymentMode: string;
@@ -38,7 +38,7 @@ interface IVendorBillPayment extends Document {
 
 const vendorBillPaymentSchema = new Schema<IVendorBillPayment>({
   vendorId: { type: Schema.Types.ObjectId, ref: "Vendor" },
-  paymentNo: Number,
+  paymentNo: String,
   paymentMade: Number,
   paymentDate: Date,
   paymentMode: String,
@@ -71,7 +71,7 @@ vendorBillPaymentSchema.pre("save", function (next) {
   if (this.isNew) {
     VendorBillPayment.countDocuments({}, (err: any, count: any) => {
       if (err) return next(err);
-      this.paymentNo = count + 1;
+      this.paymentNo = `PYM-${Math.ceil(Math.random()*100000)}`;
       next();
     });
   } else next();
