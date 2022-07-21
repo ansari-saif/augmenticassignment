@@ -177,7 +177,6 @@
           <div class="flex-grow-1"></div>
         </div>
         <hr />
-        {{#ifCond this.saleInvoiceData.customer.billlingAddress '!==' undefined}}
         <div>
           <p class="text-muted">Bill To</p>
           <div class='ml-3'>
@@ -204,7 +203,6 @@
             <div>{{saleInvoiceData.customer.shippingAddress.country}} - {{saleInvoiceData.customer.shippingAddress.zipcode}}</div>
           </div>
         </div>
-        {{/ifCond}}
         <hr />
         <div>
           <table class="table">
