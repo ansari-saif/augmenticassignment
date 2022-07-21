@@ -142,55 +142,57 @@
                 </p>
             </div>
             <div class="overview">
-                <h1>Credit Notes</h1>
-                <p>Credit Notes # {{this.creditNoteData.creditNote}}</p>
+                <h1>Record Payment</h1>
+                <p>Record Payment # {{this.salePayment.paymentNumber}}</p>
             </div>
 
         </div>
         <div class="information">
             <div>
-                <p>Bill To</p>
-                <b>{{this.creditNoteData.customer.displayName}}</b>
-                <p>{{this.creditNoteData.customer.billingAddress.addressLine1}} ,<br> 
-                    {{this.creditNoteData.customer.billingAddress.addressLine2}} , <br>
-                    {{this.creditNoteData.customer.billingAddress.city}},<br> 
-                    {{this.creditNoteData.customer.billingAddress.zipcode}} ,{{this.creditNoteData.customer.billingAddress.state}}<br>
-                    India</p>
-                <br />
-
+                <div>
+                    <p>Bill To</p>
+                    <b>{{this.salePayment.customer.displayName}}</b>
+                    <p>{{this.salePayment.customer.billingAddress.addressLine1}} ,<br> 
+                        {{this.salePayment.customer.billingAddress.addressLine2}} , <br>
+                        {{this.salePayment.customer.billingAddress.city}},<br> 
+                        {{this.salePayment.customer.billingAddress.zipcode}} ,{{this.salePayment.customer.billingAddress.state}}<br>
+                        India</p>
+                    <br />
+                </div>
             </div>
-            <div class="info_2">
-                <div class="flex justify-between w-200">
-                    <div class="right">Ref : </div>
-                    <div>#{{this.creditNoteData.creditNote}}</div>
-                </div>
-                <div class="flex justify-between w-200">
-                    <div class="right">Credit Date : </div>
-                    <div>{{this.creditNoteData.creditDate}}</div>
-                </div>
-                <div class="flex justify-between w-200">
-                    <div class="right">Ref# : </div>
-                    <div>{{this.creditNoteData.reference}}</div>
-                </div>
-
+        </div>
+        <div class="info_2">
+            <div class="flex justify-between w-200">
+                <div class="right">Payment Date : </div>
+                <div>{{this.salePayment.paymentDate}}</div>
+            </div>
+            <div class="flex justify-between w-200">
+                <div class="right">Payment Mode : </div>
+                <div>{{this.salePayment.paymentMode}}</div>
+            </div>
+            <div class="flex justify-between w-200">
+                <div class="right">Ref# : </div>
+                <div>{{this.salePayment.reference}}</div>
             </div>
         </div>
         <div class="main__table">
             <table>
                 <thead>
-                    <td>#</td>
-                    <td>Items & Description</td>
-                    <td>Qty</td>
-                    <td>Rate</td>
-                    <td>Amount</td>
+                    <td>Invoice Number</td>
+                    <td>Invoice Date</td>
+                    <!-- <td>Customer Details</td> -->
+                    <td>Invoice Amount</td>
+                    <td>Withholding Tax</td>
+                    <td>Payment Amount</td>
                 </thead>
-                {{#each this.creditNoteData.items}}
+                {{#each this.salePayment.invoice}}
                 <tr>
-                    <td>{{this._id}}</td>
-                    <td>{{this.item}} - {{this.description}}</td>
-                    <td>{{this.quantity}}</td>
-                    <td>{{this.unitcost}}</td>
-                    <td>{{this.amount}}</td>
+                    <td>{{this.invoiceNumber}}</td>
+                    <td>{{this.invoiceDate}}</td>
+                    <!-- <td>-</td> -->
+                    <td>{{this.invoiceAmount}}</td>
+                    <td>{{this.withholdingTax}}</td>
+                    <td>{{this.paidAmount}}</td>
                 </tr>
                 {{/each}}
             </table>
@@ -199,20 +201,17 @@
             <div></div>
             <div class="info_2">
                 <div class="flex justify-between w-200">
-                    <div class="right">Sub Total : </div>
-                    <div>{{this.creditNoteData.amount}}</div>
+                    <div class="right">Amouont Received : </div>
+                    <div>{{this.salePayment.amountReceived}}</div>
                 </div>
                 <div class="flex justify-between w-200">
-                    <div class="right">Discount : </div>
-                    <div>{{this.creditNoteData.discount}}</div>
+                    <div class="right">Paid Amount : </div>
+                    <div>-{{this.salePayment.paymentAmount}}</div>
+                </div>
                 </div>
                 <div class="flex justify-between w-200">
-                    <div class="right">Tax : </div>
-                    <div>{{this.creditNoteData.taxAmount}}</div>
-                </div>
-                <div class="flex justify-between w-200">
-                    <div class="right bold">Total : </div>
-                    <div class="bold">₹{{this.creditNoteData.grandTotal}}</div>
+                    <div class="right bold">Excess Amount : </div>
+                    <div class="bold">₹{{this.salePayment.excessAmount}}</div>
                 </div>
             </div>
         </div>
@@ -221,14 +220,14 @@
             <div>
                 Notes
             </div>
-            <div>{{this.creditNoteData.customerNotes}}</div>
+            <div>{{this.salePayment.customerNotes}}</div>
         </div>
         <br />
         <div>
             <div>
                 Terms & Conditions
             </div>
-            <div>{{this.creditNoteData.termsAndConditions}}</div>
+            <div>{{this.salePayment.termsAndConditions}}</div>
         </div>
 
         <div class="signature">

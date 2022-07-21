@@ -20,9 +20,9 @@ export default async function controllerPost(req: Request, res: Response) {
     const pathToFile: any  = await generateSalesOrderPDF(uploadedOrder.toJSON());
     const file = await fs.readFileSync(pathToFile);
     await putFile(file, `${uploadedOrder._id}.pdf`);
-    await SalesOrder.updateOne({ _id : uploadedOrder._id }, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedOrder._id}.pdf` });
+    const saleOrder = await SalesOrder.findByIdAndUpdate(uploadedOrder._id , { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedOrder._id}.pdf` }, { new: true });
     await fs.rmSync(pathToFile);
-    res.status(200).json({...order._doc, pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedOrder._id}.pdf`});
+    res.status(200).json(saleOrder);
   } catch (e) {
     console.log(e);
     res.status(500).json({ msg: "Server Error: Sale Estimate data couldn't be created" });

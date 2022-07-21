@@ -1,6 +1,5 @@
 import { IVendorBill } from "../../db/schema/vendorBill";
 
-// const pdf = require("pdf-creator-node");
 var pdf = require('dynamic-html-pdf');
 import fs from "fs";
 import { Router } from "express";
@@ -221,7 +220,7 @@ export const generateSalesOrderPDF = async (order: any) => {
 
 export const generateDeliveryChallanPDF = async (challan: any) => {
   const html = fs.readFileSync(path.join(__dirname , "Delivery_Challan_Template.html"), "utf8");
-  pdf.registerHelper('ifCond', function (this:any, v1: any, v2: any, options: any,) {
+  pdf.registerHelper('ifCond', function (this: any, v1: any, v2: any, options: any,) {
     if (v1 === v2) {
         return options.fn(this);
     }
@@ -246,7 +245,7 @@ export const generateDeliveryChallanPDF = async (challan: any) => {
     },
     path: path.join(__dirname , `generated/${challan._id}.pdf`),    // it is not required if type is buffer
   };
-
+  console.log('new pdf')
   const res = await pdf.create(document, options);
   console.log("FILE CREATED")
   return document.path;
@@ -254,14 +253,6 @@ export const generateDeliveryChallanPDF = async (challan: any) => {
 
 export const generateCreditNotePDF = async (note: any) => {
   const html = fs.readFileSync(path.join(__dirname , "Credit_Note_Template.html"), "utf8");
-
-  pdf.registerHelper('ifCond', function (this:any, v1: any, v2: any, options: any,) {
-    if (v1 === v2) {
-        return options.fn(this);
-    }
-    return options.inverse(this);
-  })
-
   const options = {
       format: "A2",
       orientation: "portrait",
@@ -287,13 +278,6 @@ export const generateCreditNotePDF = async (note: any) => {
 
 export const generateSaleInvoicePDF = async (invoice: any) => {
   const html = fs.readFileSync(path.join(__dirname , "Sale_Invoice_Template.html"), "utf8");
-  pdf.registerHelper('ifCond', function (this:any, v1: any, v2: any, options: any,) {
-    if (v1 === v2) {
-        return options.fn(this);
-    }
-    return options.inverse(this);
-  })
-
   const document = {
     type: 'file',     // 'file' or 'buffer'
     template: html,
@@ -301,6 +285,32 @@ export const generateSaleInvoicePDF = async (invoice: any) => {
       saleInvoiceData : invoice,
     },
     path: path.join(__dirname , `generated/${invoice._id}.pdf`),
+  };
+  
+  const options = {
+    format: "A2",
+    orientation: "portrait",
+    border: "5mm",
+    childProcessOptions: {
+      env: {
+        OPENSSL_CONF: '/dev/null',
+      },
+    }
+  };
+  const res = await pdf.create(document, options);
+  console.log("FILE CREATED")
+  return document.path;
+};
+
+export const generateSalePayment = async (payment: any) => {
+  const html = fs.readFileSync(path.join(__dirname , "Sale_Payment_Template.html"), "utf8");
+  const document = {
+    type: 'file',     // 'file' or 'buffer'
+    template: html,
+    context: {
+      salePayment : payment,
+    },
+    path: path.join(__dirname , `generated/${payment._id}.pdf`),
   };
   
   const options = {

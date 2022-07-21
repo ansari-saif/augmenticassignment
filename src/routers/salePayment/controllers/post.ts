@@ -3,7 +3,10 @@
 import { Request, Response } from "express";
 import { Customer, SaleInvoice } from "../../../models";
 import { SalePayment } from "../../../models/salePayment";
+import { generateSalePayment } from "../../../utils/pdf-generation/generatePDF";
 import { validatePayment } from "../../../validators";
+import fs from 'fs';
+import putFile from "../../../utils/s3";
 
 export default async function controllerPost(req: Request, res: Response) {
   try {
@@ -26,25 +29,28 @@ export default async function controllerPost(req: Request, res: Response) {
       const paidAmount = invData.paidAmount - inv.paidAmount;
       const withholdingTax = invData.withholdingTax - inv.withholdingTax;
 
-      invoice.push({
-        id: inv._id.toString(),
-        paidAmount,
-        withholdingTax,
-        invoiceNumber: inv.invoice,
-        invoiceDate: inv.invoiceDate,
-        invoiceAmount: inv.grandTotal,
-      });
+      if (paidAmount > 0 || withholdingTax > 0) {
+        invoice.push({
+          id: inv._id.toString(),
+          paidAmount,
+          withholdingTax,
+          invoiceNumber: inv.invoice,
+          invoiceDate: inv.invoiceDate,
+          invoiceAmount: inv.grandTotal,
+        });
+      }
 
-      inv.paidAmount = paidAmount;
-      inv.withholdingTax = withholdingTax;
+      inv.paidAmount = invData.paidAmount;
+      inv.withholdingTax = invData.withholdingTax;
       await SaleInvoice.findByIdAndUpdate(inv._id, inv);
     }
 
     data.payment.invoice = invoice;
     
-    const salePayment = await SalePayment.create(data.payment);
+    const salePayment: any = await SalePayment.create(data.payment);
 
     for await (const inv of invoice ) {
+      console.log(inv.invoiceNumber, inv.paidAmount);
       const invoiceData : any = await SaleInvoice.findById(inv.id);
       const paymentReceived = {
         id: salePayment._id,
@@ -55,9 +61,17 @@ export default async function controllerPost(req: Request, res: Response) {
 
       invoiceData.paymentReceived.push(paymentReceived);
       const updatedInvoice = await SaleInvoice.findByIdAndUpdate(invoiceData._id, invoiceData);      
-    }
-    res.status(200).send({ msg: 'Payment received' });
+    };
+
+    const uploadedPayemnt = await SalePayment.findById(salePayment._id).populate(["customer"]);
+    const pathToFile = await generateSalePayment(uploadedPayemnt.toJSON())
+    const file = await fs.readFileSync(pathToFile);
+    await putFile(file, `${uploadedPayemnt._id}.pdf`);
+    const payment = await SalePayment.findByIdAndUpdate(uploadedPayemnt._id, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedPayemnt._id}.pdf` }, { new: true});
+    await fs.rmSync(pathToFile);
+    res.status(200).send(payment);
   } catch (err) {
+    console.log(err)
     res.status(500).send({ msg: 'Error Recording the Payment' })
   }
 }
