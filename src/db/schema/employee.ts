@@ -74,12 +74,14 @@ interface IEmployee extends Document {
   gender: GENDER;
   address: Address;
   mobileNo: string;
+  totalLeaves: string;
+  employeeType: string;
   dob: Date;
   previousExperience: PreviousExperience[];
   education: Education[];
   userAuthorites: USER_AUTHORITIES[];
   managerUserId: Number;
-  department: Types.ObjectId;
+  department: string;
   active: Boolean;
   joinDate: Date;
   workLocation: Types.ObjectId;
@@ -159,8 +161,10 @@ const employeeSchema = new Schema<IEmployee>(
       numberOfChildren: Number,
     },
     mobileNo: String,
+    totalLeaves: String,
+    employeeType: String,
     dob: Date,
-    department: { type: Schema.Types.ObjectId, ref: "Department" },
+    department: String,
     previousExperience: [
       {
         startDate: Date,
