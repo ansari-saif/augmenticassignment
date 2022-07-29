@@ -26,6 +26,7 @@ interface ISalePayment extends Document {
   paymentNumber: string;
   reference: string;
   withholdingTax: number;
+  pdf_url: string;
 }
 
 const salePaymentSchema = new Schema<ISalePayment>(
@@ -51,6 +52,7 @@ const salePaymentSchema = new Schema<ISalePayment>(
     notes: String,
     paymentNumber: String,
     reference: String,
+    pdf_url: String,
     withholdingTax: { type: Number, default: 0 },
   },
   {

@@ -21,14 +21,14 @@ export default async function controllerPut(req: Request, res: Response) {
     const file = await fs.readFileSync(pathToFile);
 
     await putFile(file, `${uploadedOrder._id}.pdf`);
-    await SalesOrder.updateOne({ _id : uploadedOrder._id }, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedOrder._id}.pdf` });
+    const newOrder =  await SalesOrder.findByIdAndUpdate(uploadedOrder._id, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedOrder._id}.pdf` });
 
     await fs.rmSync(pathToFile);
     
     if (!salesOrder) {
       return res.status(404).json({ message: "Sale Order not found" });
     }
-    return res.status(200).json(salesOrder);
+    return res.status(200).json(newOrder);
   } catch (e) {
     res.status(500).json({ msg: "Server Error: Purchase Order Data wasn't able to update" });
   }
