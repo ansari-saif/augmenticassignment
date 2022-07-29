@@ -49,6 +49,7 @@ import fileCred from "./filesCrud";
 import leadStatusRouter from "./leadStats";
 import landSaleRouter from "./landSale";
 import reportRouter from "./report";
+import payrollRouter from "./payroll";
 import mailRouter from "./mail";
 
 
@@ -104,4 +105,5 @@ router.use("/landsale", auth, landSaleRouter);
 router.use("/stock", auth, stockRouter);
 router.use("/file", fileCred);
 router.use("/reportdata", auth, reportRouter);
+router.use("/payroll", auth, payrollRouter);
 export default router;
