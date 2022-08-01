@@ -2,6 +2,7 @@
 import { Request, Response } from "express";
 import { Payroll } from "../../../models/payroll";
 
+
 export default async function controllerDelete(req: Request, res: Response) {
   try {
     const { id } = req.params;
