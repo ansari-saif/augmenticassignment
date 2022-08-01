@@ -49,6 +49,8 @@ import fileCred from "./filesCrud";
 import leadStatusRouter from "./leadStats";
 import landSaleRouter from "./landSale";
 import reportRouter from "./report";
+import payrollRouter from "./payroll";
+import mailRouter from "./mail";
 
 
 const router = Router();
@@ -84,6 +86,7 @@ router.use("/deliverychallan", auth, deliveryChallanRouter);
 router.use("/recurring-invoice", auth, recurringInvoice);
 router.use("/lead", auth, leadRouter);
 router.use("/lead-status", auth, leadStatusRouter);
+router.use("/mail", auth, mailRouter);
 router.use("/customer", auth, customerRouter);
 router.use("/credit-note", auth, creditNotesRouter);
 router.use("/vendor", auth, vendorRouter);
@@ -102,4 +105,5 @@ router.use("/landsale", auth, landSaleRouter);
 router.use("/stock", auth, stockRouter);
 router.use("/file", fileCred);
 router.use("/reportdata", auth, reportRouter);
+router.use("/payroll", auth, payrollRouter);
 export default router;

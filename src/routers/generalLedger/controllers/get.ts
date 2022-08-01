@@ -10,9 +10,9 @@ export default async function generalLedgerGet(req: Request, res: Response) {
 }
 
 export async function userTypeGet(req: Request, res: Response) {
-  const employee = await Employee.find().select("firstName lastName");
+  const employee = await Employee.find().select("name");
   const vendor = await Vendor.find().select("name");
-  const customer = await Customer.find().select("name");
+  const customer = await Customer.find().select("displayName");
 
   const userTypeList = {
     vendor,

@@ -7,20 +7,20 @@ enum CURRENCY {
 
 interface IGenralLedger extends Document {
   date : Date,
-  journalId : number,
+  journalId : string,
   referenceId : string,
   notes : string,
   journalType : string,
   currency : CURRENCY,
   category: string,
   clientName: {
-    userId: Types.ObjectId,
+    userId: string,
     name: string
   },
   transaction : {
     account : string,
     description: string,
-    contact: string,
+    // contact: string,
     debits: number,
     credits: number
   }[],
@@ -33,7 +33,7 @@ const generalLedgerSchema = new Schema<IGenralLedger>(
       type: Date
     },
     journalId : {
-      type: Number,
+      type: String,
       required: [true, "please add journal Id"]
     },
     referenceId: String,
@@ -46,13 +46,13 @@ const generalLedgerSchema = new Schema<IGenralLedger>(
     },
     category: String,
     clientName: {
-      userId: Types.ObjectId,
+      userId: String,
       name: String
     },
     transaction : [{
       account: String,
       description: String,
-      contact: String,
+      // contact: String,
       debits: Number,
       credits: Number
     }],
