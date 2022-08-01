@@ -14,7 +14,7 @@ interface IGenralLedger extends Document {
   currency : CURRENCY,
   category: string,
   clientName: {
-    userId: Types.ObjectId,
+    userId: string,
     name: string
   },
   transaction : {
@@ -46,7 +46,7 @@ const generalLedgerSchema = new Schema<IGenralLedger>(
     },
     category: String,
     clientName: {
-      userId: Types.ObjectId,
+      userId: String,
       name: String
     },
     transaction : [{

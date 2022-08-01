@@ -1,5 +1,8 @@
 
+import moment from "moment";
 import { Document, Types, Schema } from "mongoose";
+import { GeneralLedger } from "../../models/generalLedger";
+import { Employee } from "../../models/employee";
 
 interface IPayroll extends Document {
   employeeId : number;
@@ -79,5 +82,33 @@ const payrollSchema = new Schema<IPayroll>({
 {
   timestamps: true
 });
+
+payrollSchema.post("save", async function(next){
+
+  const emp = await Employee.findById(this?.employeeId);
+  const tt = 0 - this?.netSalary;
+  const gl = {
+    date: moment().format("YYYY-MM-DD"),
+    journalId: `JL-${Math.ceil(Math.random()*100000)}`,
+    referenceId: `RTX-${Math.ceil(Math.random()*100000)}`,
+    notes: "payroll",
+    journalType : "payed",
+    currency: "INR",
+    category: "employee",
+    clientName: { 
+      userId: this?.employeeId,
+      name: emp?.name
+    },
+    transaction: [{
+      account: "cash",
+      description: "Payroll Payment",
+      debits: this?.netSalary,
+      credits: 0
+    }],
+    total: tt
+  }
+  await GeneralLedger.create(gl)
+  next();
+})
 
 export { IPayroll, payrollSchema };
