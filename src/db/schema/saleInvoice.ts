@@ -21,7 +21,7 @@ interface PaymentReceived {
   paymentMode: string;
   amount: number;
 }
-
+// todo: add population function for credit notes
 interface ISaleInvoice extends Document {
   amount: number;
   customer: Types.ObjectId;
@@ -40,10 +40,9 @@ interface ISaleInvoice extends Document {
   deliveryChallan: Types.ObjectId;
   items: Item[];
   credits: number;
-  creditNotes: [Types.ObjectId];
   creditDetails: [CreditDetails];
-  paymentReceived: [PaymentReceived]
-  pdf_url: String,
+  paymentReceived: [PaymentReceived];
+  pdf_url: String;
   orderNumber: string;
   termsAndConditions: string;
   terms: string;
@@ -91,7 +90,6 @@ const saleInvoiceSchema = new Schema<ISaleInvoice>(
     deliveryChallan: { type: Schema.Types.ObjectId, ref: 'deliveryChallan' },  
     customer: { type: Schema.Types.ObjectId, ref: "Customer" },
     credits: { type: Number, default: 0 },
-    creditNotes: [{ type:Types.ObjectId, ref: "CreditNotes" }],
     creditDetails: [
       {
         id: { type: Schema.Types.ObjectId, ref: 'CreditNotes' },

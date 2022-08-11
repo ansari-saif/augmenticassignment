@@ -29,12 +29,13 @@ export async function controllerStatusPut(
   res: Response
 ) {
   const { id } = req.params;
+  console.log(id)
   if (id) {
     try {
       let { project, status, plot, lead } = req.body;
       const leadStatus = await LeadStatus.find();
       if (status === 'Lead Won') {
-        const subPlot = project.subPlots.find((p: any) => p._id === plot);
+        const subPlot = project.subPlots.find((p: any) => p._id === plot._id);
         subPlot.leadsInfo.forEach((l: any) => {
           if (l.lead !== lead) {
             l.leadType = 'Lead Lost'
@@ -74,7 +75,7 @@ export async function controllerStatusPut(
           } }
         });
         subPlot.soldTo = customer._id;
-        project.subPlots[project.subPlots.findIndex((p: any) => p._id === plot)] = subPlot;
+        project.subPlots[project.subPlots.findIndex((p: any) => p._id === plot._id)] = subPlot;
         const updateProject = await Project.findByIdAndUpdate(id, project);
         // Invoice
         await createInvoice(project, plot, lead, customer, req);
@@ -89,7 +90,7 @@ export async function controllerStatusPut(
           employee: req.user.id,
         } }
       });
-      return res.status(200);//.json(updateProject);
+      return res.status(200).json(updateProject);
     } catch (err) {
       console.log(err);
       return res.status(400).json({ msg: 'Some error occured while updating the status' })
@@ -102,10 +103,12 @@ export async function controllerStatusPut(
 const createInvoice: any = async (project: any, plot: any, lead: any, customer: any, req: any) => {
   const latest: any = await SaleInvoice.find({}).sort({ _id: -1 }).limit(1);
   const inv = `INV-${parseInt(latest[0].invoice.split('-')[1])+1}`;
+  const today = new Date();
+  const date = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`
   const invoice = {
     employee: req.user.id,
     project: project._id,
-    invoiceDate: new Date(),
+    invoiceDate: date,
     invoice: inv,
     items: [{
       item: plot.name,

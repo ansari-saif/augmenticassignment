@@ -31,13 +31,12 @@ interface ICreditNote extends Document {
   status: string;
   creditUsed: number;
   tax: Types.ObjectId;
-  invoices: [Types.ObjectId];
   invoiceDetails: [InoviceDetails];
   termsAndConditions: string;
   associatedInvoice: number;
   employee: number;
 }
-
+//  todo: add population function for invoice
 const creditNoteSchema = new Schema<ICreditNote>(
   {
     customer: { type: Schema.Types.ObjectId, ref: "Customer" },
@@ -62,7 +61,6 @@ const creditNoteSchema = new Schema<ICreditNote>(
     creditUsed: { type: Number, default: 0 },
     subject: String,
     tax: { type: Schema.Types.ObjectId, ref: "Tax" },
-    invoices: [{ type: Schema.Types.ObjectId, ref: "SaleInvoice"}],
     invoiceDetails: [
       {
         id: { type: Schema.Types.ObjectId, ref: "SaleInvoice" },

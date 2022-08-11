@@ -11,7 +11,7 @@ const validatePayment = (payment: ISalePayment) => {
   if (!payment.paymentMode)
     errors.push({ message: "Payment mode is required" });
   if (!payment.customer) errors.push({ message: "Customer is required" });
-  if (!payment.paymentNumber) errors.push({ message: "Payment number is required" });
+  // if (!payment.paymentNumber) errors.push({ message: "Payment number is required" });
   if (!payment.depositTo) errors.push({ message: "Deposit avenue is required" });
   return errors;
 };
