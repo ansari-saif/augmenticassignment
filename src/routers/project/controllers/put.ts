@@ -29,12 +29,11 @@ export async function controllerStatusPut(
   res: Response
 ) {
   const { id } = req.params;
-  console.log(id)
   if (id) {
     try {
       let { project, status, plot, lead } = req.body;
       const leadStatus = await LeadStatus.find();
-      if (status === 'Lead Won') {
+      if (status === 'won leads') {
         const subPlot = project.subPlots.find((p: any) => p._id === plot._id);
         subPlot.leadsInfo.forEach((l: any) => {
           if (l.lead !== lead) {
@@ -61,7 +60,7 @@ export async function controllerStatusPut(
           },
         };
         const customer = await Customer.create(cust);
-        const leadId: any = leadStatus.filter((v,i) => v.name === 'Lead Won');
+        const leadId: any = leadStatus.filter((v,i) => v.name === 'won leads');
         await Lead.findByIdAndUpdate(lead, {
           customer: customer._id,
           status: leadId[0]._id.toString(),
@@ -79,6 +78,7 @@ export async function controllerStatusPut(
         const updateProject = await Project.findByIdAndUpdate(id, project);
         // Invoice
         await createInvoice(project, plot, lead, customer, req);
+        console.log(customer);
         return res.status(200).json(customer);
       }
       const updateProject = await Project.findByIdAndUpdate(id, project);
