@@ -15,6 +15,8 @@ export default async function controllerPost(req: Request, res: Response) {
     return;
   }
   try {
+    const latest: any = await DeliveryChallan.find({}).sort({_id: -1}).limit(1);
+    data.deliveryChallan = `DC-${parseInt(latest[0].deliveryChallan.split('-')[1])+1}`;
     const challan : any  = await DeliveryChallan.create(data);
     const uploadedChallan = await DeliveryChallan.findOne({ _id: challan._id }).populate(["customer"]);
     const pathToFile = await generateDeliveryChallanPDF(uploadedChallan.toJSON());

@@ -20,6 +20,8 @@ export default async function controllerPost(
     return;
   }
   try {
+    const latest: any = await SaleInvoice.find({}).sort({_id: -1}).limit(1);
+    data.invoice = `INV-${parseInt(latest[0].invoice.split('-')[1])+1}`;
     const saleInvoice: any = await SaleInvoice.create(data);
     const uploadedInvoice = await SaleInvoice.findById(saleInvoice._id).populate(["customer", "tcsTax"]);
     const pathToFile = await generateSaleInvoicePDF(uploadedInvoice.toJSON())
@@ -27,7 +29,7 @@ export default async function controllerPost(
     await putFile(file, `${uploadedInvoice._id}.pdf`);
     const invoice = await SaleInvoice.findByIdAndUpdate(uploadedInvoice._id, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedInvoice._id}.pdf` }, { new: true});
     await fs.rmSync(pathToFile);
-    res.status(200).send({...invoice});
+    res.status(200).send(invoice);
   } catch (e) {
     console.log(e)
     res.status(500).json({ msg: "Server Error: Sale Estimate data couldn't be created" });

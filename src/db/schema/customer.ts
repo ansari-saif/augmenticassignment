@@ -19,6 +19,12 @@ interface contactPersons {
   phone: string;
 }
 
+interface comments {
+  employee: number;
+  comment: String;
+  date: Date;
+}
+
 type invoiceId = Types.ObjectId 
 
 interface ICustomer extends Document {
@@ -43,6 +49,7 @@ interface ICustomer extends Document {
   contactPersons: Array<contactPersons>;
   invoices: Array<invoiceId>;
   lead: Types.ObjectId;
+  comments: [comments];
   // not sure about these
   address: string;
   creditNotes: number[];
@@ -97,6 +104,11 @@ const customerSchema = new Schema<ICustomer>(
         phone: String,      
       },
     ],
+    comments: [{
+      employee: { type: Number, ref: "Employee" },
+      comment: String,
+      date: Date,
+    }],
 //  not sure about these
     creditNotes: [{ type: Number, ref: "CreditNote" }],
     invoices: [
