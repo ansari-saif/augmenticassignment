@@ -9,7 +9,7 @@ interface ILeadStatus extends Document {
 const leadStatusSchema = new Schema<ILeadStatus>(
   {
     name: String,
-    position: { type: Number, unique: true },
+    position: { type: Number, unique: false },
     allowed: [{ type: Schema.Types.ObjectId, ref: 'LeadStatus' }],
   },
   { timestamps: true }

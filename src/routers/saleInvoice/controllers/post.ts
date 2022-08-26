@@ -16,12 +16,15 @@ export default async function controllerPost(
   const errors = validateSaleInvoice(data);
   if (errors.length) {
     console.log(errors)
-    res.status(400).json({ errors });
-    return;
+    return res.status(400).json({ errors });
   }
   try {
     const latest: any = await SaleInvoice.find({}).sort({_id: -1}).limit(1);
-    data.invoice = `INV-${parseInt(latest[0].invoice.split('-')[1])+1}`;
+    if (latest.length > 0 && latest[latest.length-1].customerId) {
+      data.invoice = `INV-${parseInt(latest[0].invoice.split('-')[1])+1}`;
+    } else {
+      data.invoice = 'INV-1';
+    }
     const saleInvoice: any = await SaleInvoice.create(data);
     const uploadedInvoice = await SaleInvoice.findById(saleInvoice._id).populate(["customer", "tcsTax"]);
     const pathToFile = await generateSaleInvoicePDF(uploadedInvoice.toJSON())

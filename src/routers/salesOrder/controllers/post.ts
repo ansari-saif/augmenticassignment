@@ -16,7 +16,11 @@ export default async function controllerPost(req: Request, res: Response) {
   }
   try {
     const latest: any = await SalesOrder.find({}).sort({_id: -1}).limit(1);
-    data.salesOrder = `SO-${parseInt(latest[0].salesOrder.split('-')[1])+1}`;
+    if (latest.length > 0 && latest[latest.length-1].salesOrder) {
+      data.salesOrder = `SO-${parseInt(latest[0].salesOrder.split('-')[1])+1}`;
+    } else {
+      data.salesOrder = 'SO-1';
+    }
     const order : any  = await SalesOrder.create(data);
     const uploadedOrder = await SalesOrder.findOne({ _id: order._id }).populate(["customer"]);
     const pathToFile: any  = await generateSalesOrderPDF(uploadedOrder.toJSON());

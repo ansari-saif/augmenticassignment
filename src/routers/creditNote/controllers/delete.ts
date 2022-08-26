@@ -2,6 +2,7 @@
 
 import { Request, Response } from "express";
 import { CreditNote } from "../../../models";
+import { deleteFile } from "../../../utils/s3";
 
 export default async function controllerDelete(req: Request, res: Response) {
   const { id } = req.params;
@@ -12,6 +13,7 @@ export default async function controllerDelete(req: Request, res: Response) {
     }
     return res.status(200).json(note);
   }
+  await deleteFile(`${id}.pdf`);
   const notes = await CreditNote.find({});
   return res.status(200).json(notes);
 }
