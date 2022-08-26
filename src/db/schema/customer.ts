@@ -29,6 +29,7 @@ type invoiceId = Types.ObjectId
 
 interface ICustomer extends Document {
   customerType: string;
+  customerId: string;
   firstName: string;
   lastName: string;
   displayName: string;

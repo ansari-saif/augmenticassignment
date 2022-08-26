@@ -140,12 +140,12 @@ export async function saleInvoice(req: Request, res: Response) {
     const saleInvoice: any = await SaleInvoice.findById(data.id);
 
     data.context = {
-      invoice: saleInvoice.invoice,
-      invoiceDate: saleInvoice.invoiceDate?.toString().split('05:30:00')[0],
-      amount: saleInvoice.amount,
-      adjustments: saleInvoice.adjustments,
-      discount: saleInvoice.discount,
-      taxType: saleInvoice.taxType.toUpperCase(),
+      invoice: saleInvoice?.invoice,
+      invoiceDate: saleInvoice?.invoiceDate?.toString().split('05:30:00')[0],
+      amount: saleInvoice?.amount,
+      adjustments: saleInvoice?.adjustments,
+      discount: saleInvoice?.discount,
+      taxType: saleInvoice?.taxType?.toUpperCase(),
       taxAmount: saleInvoice.taxationAmount,
       withholdingTax: saleInvoice.withholdingTax,
       paidAmount: saleInvoice.paidAmount,

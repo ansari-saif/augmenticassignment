@@ -14,6 +14,7 @@ export async function controllerGet(req: Request, res: Response) {
     return res.status(200).json(status);
   }
   let status = await LeadStatus.find();
+  status = await LeadStatus.find();
   status.sort((a,b) => a.position - b.position);
   status.forEach(stat => {
     stat.position +=1;

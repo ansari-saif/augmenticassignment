@@ -52,11 +52,9 @@ export default async function controllerPost(req: Request, res: Response) {
 
     data.payment.invoice = invoice;
     
-    console.log(data.payment);
     const salePayment: any = await SalePayment.create(data.payment);
 
     for await (const inv of invoice ) {
-      console.log(inv.invoiceNumber, inv.paidAmount);
       const invoiceData : any = await SaleInvoice.findById(inv.id);
       const paymentReceived = {
         id: salePayment._id,

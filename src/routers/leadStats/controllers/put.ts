@@ -5,38 +5,24 @@ export default async function controllerPut(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const data = req.body;
-    const leads = await LeadStatus.find();
 
-    const lead: any = leads.find((l) => data.name === l.name);
-    
-    if (lead) {
-      await LeadStatus.findByIdAndDelete(lead._id);
-
-      if (data.position < lead.position) {
-        const leadsArr = leads.reverse();
-        for await (const l of leadsArr) {
-          if (l.position < lead.position && l.position > data.position) {
-            l.position += 1;
-            await LeadStatus.findByIdAndUpdate(l._id, l);
-          }
-        };
-        await LeadStatus.create(data);
-      } else if (data.position > lead.position) {
-        for await (const l of leads) {
-          if (l.position > lead.position && l.position < data.position) {
-            l.position -= 1;
-            await LeadStatus.findByIdAndUpdate(l._id, l);
-          }
-        }
-        await LeadStatus.create(data);
+    const leads = await LeadStatus.find({});
+    const index = leads.findIndex((i:any) => i.name === data.name);
+    leads.splice(index, 1);
+    leads.splice(data.position, 0, data)
+    let i = 0;
+    for await (let status of leads) {
+      status.position = i;
+      console.log(status.position);
+      if (status.name === data.name) {
+        await LeadStatus.create(status);
       } else {
-        await LeadStatus.create(data);
-      }
-      return res.status(200);
-    } else {
-      return res.status(400).json({ msg: 'Lead status not found' })
+        await LeadStatus.findByIdAndUpdate(status._id, status);
+      };
+      i++;
     }
-  } catch (err) {
+    return res.status(200);
+    } catch (err) {
     console.log(err)
     res.status(404).send({ msg: 'Error occured while creating status' })
   }};

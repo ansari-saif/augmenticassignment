@@ -35,7 +35,7 @@ const sendMail = async ({
 
   const info = await transporter.sendMail({
     from: 'testemail@agumentikgroup.com',
-    to: `${to[0]}`,
+    to: to,
     subject: subject,
     template: `${template}`,
     text: body,

@@ -33,7 +33,7 @@ export async function controllerStatusPut(
     try {
       let { project, status, plot, lead } = req.body;
       const leadStatus = await LeadStatus.find();
-      if (status === 'won leads') {
+      if (status === 'Lead Won') {
         const subPlot = project.subPlots.find((p: any) => p._id === plot._id);
         subPlot.leadsInfo.forEach((l: any) => {
           if (l.lead !== lead) {
@@ -43,24 +43,33 @@ export async function controllerStatusPut(
         subPlot.sold = true;
         
         const leadData: any = await Lead.findById(lead);
-        const cust = {
-          firstName: leadData.firstName,
-          lastName: leadData.lastName,
-          email: leadData.email,
-          phone: leadData.phone,
-          lead: leadData._id,
-          displayName: `${leadData.lastName} ${leadData.firstName}`,
-          customerType: 'Individual',
-          billingAddress: {
-            addressLine1: leadData.address.addressLine1,
-            addressLine2: leadData.address.addressLine2,
-            city: leadData.address.city,
-            state: leadData.address.state,
-            zipcode: leadData.address.zipCode,
-          },
-        };
-        const customer = await Customer.create(cust);
-        const leadId: any = leadStatus.filter((v,i) => v.name === 'won leads');
+        let customer: any = {};
+        if (lead.customer) {
+          customer = await Customer.findById(lead.customer);
+        } else {
+          const latest: any = await Customer.find({}).sort({ id: -1 }).limit(1);        
+          const cust: any = {
+            firstName: leadData.firstName,
+            lastName: leadData.lastName,
+            email: leadData.email,
+            phone: leadData.phone,
+            lead: leadData._id,
+            displayName: `${leadData.lastName} ${leadData.firstName}`,
+            customerType: 'Individual',
+            billingAddress: {
+              addressLine1: leadData.address.addressLine1,
+              addressLine2: leadData.address.addressLine2,
+              city: leadData.address.city,
+              state: leadData.address.state,
+              zipcode: leadData.address.zipCode,
+            },
+          };
+          latest.length >0 && latest[latest.length-1].customerId
+            ? cust.customerId = `CUST-${parseInt(latest[0].customerId.split('-')[1])+1}`
+            : cust.customerId = 'CUST-1'
+          customer = await Customer.create(cust);
+        }
+        const leadId: any = leadStatus.filter((v,i) => v.name === 'Lead Won');
         await Lead.findByIdAndUpdate(lead, {
           customer: customer._id,
           status: leadId[0]._id.toString(),
@@ -78,7 +87,6 @@ export async function controllerStatusPut(
         const updateProject = await Project.findByIdAndUpdate(id, project);
         // Invoice
         await createInvoice(project, plot, lead, customer, req);
-        console.log(customer);
         return res.status(200).json(customer);
       }
       const updateProject = await Project.findByIdAndUpdate(id, project);
