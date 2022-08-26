@@ -4,6 +4,7 @@ import { Project } from "../../models";
 interface ILandSale extends Document {
   landOwnerName : string;
   payDate: Date;
+  registrationDate: Date;
   totalAmount : number;
   advanceAmount: number;
   balanceAmount : number;
@@ -20,8 +21,9 @@ interface ILandSale extends Document {
   projectId : Types.ObjectId;
   mouza: string;
   typesofkisam : string;
-  dateOfMutation: string;
-  dateOfConversion: string;
+  dateOfMutation: Date;
+  dateOfConversion: Date;
+  typeOfLand: string;
   remarks: string;
 }
 
@@ -29,6 +31,7 @@ const landSaleSchema = new Schema<ILandSale>(
   {
     landOwnerName : String,
     payDate: Date,
+    registrationDate: Date,
     totalAmount : Number,
     advanceAmount: Number,
     balanceAmount : Number,
@@ -45,8 +48,9 @@ const landSaleSchema = new Schema<ILandSale>(
     projectId : { type: Schema.Types.ObjectId, ref: "Project" },
     mouza: String,
     typesofkisam : String,
-    dateOfMutation: String,
-    dateOfConversion: String,
+    dateOfMutation: Date,
+    dateOfConversion: Date,
+    typeOfLand: String,
     remarks: String,
   }
 )
