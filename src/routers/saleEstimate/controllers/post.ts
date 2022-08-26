@@ -15,6 +15,8 @@ export default async function controllerPost(req: Request, res: Response) {
     return;
   }
   try {
+    const latest: any = await SaleEstimate.find({}).sort({_id: -1}).limit(1);
+    data.estimate = `EST-${parseInt(latest[0].estimate.split('-')[1])+1}`;
     const estimate : any  = await SaleEstimate.create(data);
     const uploadedEstimate = await SaleEstimate.findOne({ _id: estimate._id }).populate(["customer", "tax"]);
     const pathToFile = await generateSaleEstimatePDF(uploadedEstimate.toJSON())
@@ -26,7 +28,6 @@ export default async function controllerPost(req: Request, res: Response) {
       { new: true }
     );
     await fs.rmSync(pathToFile);
-    console.log(saleEstimate);
     return res.status(200).json(saleEstimate);
   } catch (e) {
     return res.status(500).json({ msg: "Server Error: Sale Estimate data couldn't be created" });

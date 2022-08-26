@@ -15,7 +15,12 @@ export default async function controllerPost(req: Request, res: Response) {
     if (errors.length) {
       res.status(400).json({ errors });
       return;
-    }
+    };
+
+    const latest: any = await SalePayment.find({}).sort({_id: -1}).limit(1);
+    latest.length > 0 
+      ? data.payment.paymentNumber = `RP-${parseInt(latest[0].paymentNumber.split('-')[1])+1}`
+      : data.payment.paymentNumber = `RP-1`;
 
     const invoices = [...data.invoices];
     let invoice : any = [];
@@ -47,6 +52,7 @@ export default async function controllerPost(req: Request, res: Response) {
 
     data.payment.invoice = invoice;
     
+    console.log(data.payment);
     const salePayment: any = await SalePayment.create(data.payment);
 
     for await (const inv of invoice ) {

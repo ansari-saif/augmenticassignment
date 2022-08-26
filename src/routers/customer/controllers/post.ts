@@ -2,6 +2,7 @@
 
 import { Request, Response } from "express";
 import { Customer } from "../../../models";
+import RequestWithUser from "../../../utils/requestWithUser";
 
 export default async function controllerPost(req: Request, res: Response) {
   const data = req.body;

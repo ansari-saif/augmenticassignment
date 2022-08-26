@@ -81,7 +81,7 @@ interface IEmployee extends Document {
   education: Education[];
   userAuthorites: USER_AUTHORITIES[];
   managerUserId: Number;
-  department: string;
+  department: Types.ObjectId;
   active: Boolean;
   joinDate: Date;
   workLocation: Types.ObjectId;

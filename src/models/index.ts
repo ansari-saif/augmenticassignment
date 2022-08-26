@@ -4,6 +4,7 @@ import { Department } from "./department";
 import { Role } from "./role";
 import { CalendarEvent } from "./calendarEvent";
 import { LeaveType } from "./leaveType";
+import { EmployeeType } from "./employeeType";
 import { Overtime } from "./overtime";
 import { Category } from "./category";
 import { Location } from "./location";
@@ -34,6 +35,7 @@ export {
   Role,
   CalendarEvent,
   LeaveType,
+  EmployeeType,
   Overtime,
   Category,
   Location,

@@ -9,6 +9,7 @@ import validateHoliday from "./validateHoliday";
 import validateInvestment from "./validateInvestment";
 import validateJob from "./validateJob";
 import validateLeaveType from "./validateLeaveType";
+import validateEmployeeType from "./validateEmployeeType";
 import validateLoan from "./validateLoan";
 import validateLocation from "./validateLocation";
 import validateOvertime from "./validateOvertime";
@@ -33,6 +34,7 @@ export {
   validateCalendarEvent,
   validateHoliday,
   validateLeaveType,
+  validateEmployeeType,
   validateOvertime,
   validateCategory,
   validateLocation,
