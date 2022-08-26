@@ -110,22 +110,7 @@ const vendorBillSchema = new Schema<IVendorBill>(
 //   next();
 // })
 
-// vendorBillSchema.post("save", async function(next){
-//   if(this?.pdf_url === undefined || ""){
-//     // UPLOAD FILE TO CLOUD 
-//     const uploadedVendorBill = await VendorBill.findOne({_id : this._id}).populate({path: "vendorId", select: "name billAddress"});
-  
-//     const pathToFile : any = await generateBillPDF(uploadedVendorBill.toJSON());
-//     const file = await fs.readFileSync(pathToFile);
-//     // console.log(pathToFile);
-//     await putFile(file, `${uploadedVendorBill._id}.pdf` );
 
-//     await VendorBill.findByIdAndUpdate(this._id , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
-
-//     await fs.rmSync(pathToFile);
-//   }
-//   next();
-// });
 
 // vendorBillSchema.pre("updateOne", async function(next){
 //     // UPLOAD FILE TO CLOUD 
@@ -178,8 +163,43 @@ vendorBillSchema.post("save", async function(next){
     // const res = await httpService.post('/stock/billstock', ustockData);
     // await toast.success("Stock added");
   }
+
+  // Stock
+
+  if(this?.pdf_url === undefined || ""){
+    // UPLOAD FILE TO CLOUD 
+    const uploadedVendorBill = await VendorBill.findOne({_id : this._id}).populate({path: "vendorId", select: "name billAddress"});
+  
+    const pathToFile : any = await generateBillPDF(uploadedVendorBill.toJSON());
+    const file = await fs.readFileSync(pathToFile);
+    // console.log(pathToFile);
+    await putFile(file, `${uploadedVendorBill._id}.pdf` );
+
+    await VendorBill.findByIdAndUpdate(this._id , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
+
+    await fs.rmSync(pathToFile);
+  }
+
+
   next();
-})
+});
+
+// vendorBillSchema.post("save", async function(next){
+//   if(this?.pdf_url === undefined || ""){
+//     // UPLOAD FILE TO CLOUD 
+//     const uploadedVendorBill = await VendorBill.findOne({_id : this._id}).populate({path: "vendorId", select: "name billAddress"});
+  
+//     const pathToFile : any = await generateBillPDF(uploadedVendorBill.toJSON());
+//     const file = await fs.readFileSync(pathToFile);
+//     // console.log(pathToFile);
+//     await putFile(file, `${uploadedVendorBill._id}.pdf` );
+
+//     await VendorBill.findByIdAndUpdate(this._id , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedVendorBill._id}.pdf`})
+
+//     await fs.rmSync(pathToFile);
+//   }
+//   next();
+// });
 
 
 export { IVendorBill, vendorBillSchema }
