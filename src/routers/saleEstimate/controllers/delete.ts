@@ -15,6 +15,6 @@ export default async function controllerDelete(req: Request, res: Response) {
     return res.status(200).json(saleEstimate);
 
   } catch (e) {
-    res.status(500).json({ msg: "Server Error: Estimate wasn't" })
+    return res.status(500).json({ msg: "Server Error: Estimate wasn't" })
   }
 }

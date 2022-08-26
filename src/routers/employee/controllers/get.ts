@@ -23,6 +23,7 @@ export default async function controllerGet(req: Request, res: Response) {
       .populate("jobRole").populate("workLocation").populate("department")
       .limit(parseInt(limit as string))
       .skip(parseInt(limit as string) * (parseInt(page as string) - 1));
+    console.log(employees)
     res.status(200).json(employees);
   }
 }

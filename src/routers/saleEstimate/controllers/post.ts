@@ -16,7 +16,11 @@ export default async function controllerPost(req: Request, res: Response) {
   }
   try {
     const latest: any = await SaleEstimate.find({}).sort({_id: -1}).limit(1);
-    data.estimate = `EST-${parseInt(latest[0].estimate.split('-')[1])+1}`;
+    if (latest.length > 0 && latest[latest.length-1].estimate) {
+      data.estimate = `EST-${parseInt(latest[0].estimate.split('-')[1])+1}`;
+    } else {
+      data.estimate = 'EST-1';
+    }
     const estimate : any  = await SaleEstimate.create(data);
     const uploadedEstimate = await SaleEstimate.findOne({ _id: estimate._id }).populate(["customer", "tax"]);
     const pathToFile = await generateSaleEstimatePDF(uploadedEstimate.toJSON())

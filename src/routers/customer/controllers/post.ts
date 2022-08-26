@@ -11,6 +11,12 @@ export default async function controllerPost(req: Request, res: Response) {
     contactPersons.push(value);
   });
   data.contactPersons = contactPersons;
+  const latest: any = await Customer.find({}).sort({ id: -1 }).limit(1);
+  if (latest.length >0 && latest[latest.length-1].customerId) {
+    data.customerId = `CUST-${parseInt(latest[0].customerId.split('-')[1])+1}`;
+  } else {
+    data.customerId = 'CUST-1';
+  }
   const customer = new Customer({
     ...data,
   });
