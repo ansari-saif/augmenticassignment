@@ -33,21 +33,34 @@ const sendMail = async ({
 
   transporter.use('compile', hbs(handlebarOptions));
 
-  const info = await transporter.sendMail({
-    from: 'testemail@agumentikgroup.com',
-    to: to,
-    subject: subject,
-    template: `${template}`,
-    text: body,
-    context: context,
-    attachments: [
-      {
-        filename: `${fileName}.pdf`,
-        href: `${pdf_url}`,
-      }
-    ],
-  });
+  let info;
 
+  if(pdf_url){
+    info = await transporter.sendMail({
+      from: 'testemail@agumentikgroup.com',
+      to: to,
+      subject: subject,
+      template: `${template}`,
+      text: body,
+      context: context,
+      attachments: [
+        {
+          filename: `${fileName}.pdf`,
+          href: `${pdf_url}`,
+        }
+      ],
+    });
+  } else {
+    info = await transporter.sendMail({
+      from: 'testemail@agumentikgroup.com',
+      to: to,
+      subject: subject,
+      template: `${template}`,
+      text: body,
+      context: context
+    });
+  }
+  
   return info;
 
 }

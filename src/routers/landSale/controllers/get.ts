@@ -5,7 +5,7 @@ import { LandSale } from "../../../models/landSale";
 export async function controllerGet(req: Request, res: Response) {
   try {
      
-    const landSale = await LandSale.find(req.query).populate({ path: "projectId", select: "name" });
+    const landSale = await LandSale.find(req.query).populate({ path: "projectId", select: "name" }).populate({ path: "vendorId", select: "name" });
  
     res.status(200).json(landSale); 
 
