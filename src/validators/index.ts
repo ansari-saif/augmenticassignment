@@ -3,6 +3,7 @@ import validateCandidate from "./validateCandidate";
 import validateCategory from "./validateCategory";
 import validateClient from "./validateClient";
 import validateDepartment from "./validateDepartment";
+import validateEmployeeTask from "./validateEmployeeTask";
 import validateEmployee from "./validateEmployee";
 import validateGoal from "./validateGoal";
 import validateHoliday from "./validateHoliday";
@@ -28,6 +29,7 @@ export {
   verifyProject,
   verifyTask,
   validateDepartment,
+  validateEmployeeTask,
   validateRole,
   validateEmployee,
   validateClient,
