@@ -3,6 +3,9 @@
 import { Request, Response } from "express";
 import { updateLocale } from "moment";
 import { CreditNote, SaleInvoice } from "../../../models";
+import { generateCreditNotePDF } from "../../../utils/pdf-generation/generatePDF";
+import fs from 'fs';
+import putFile, { deleteFile } from "../../../utils/s3";
 
 export async function controllerPut(req: Request, res: Response) {
   const { id } = req.params;
@@ -78,8 +81,25 @@ export async function applyToInvoicePut(req: Request, res: Response) {
     };
     creditNote.creditUsed += creditAmount;
 
+    creditNote.balance = creditNote.grandTotal - creditNote.creditUsed;
+
     const updatedCreditNote = await CreditNote.findByIdAndUpdate(id, creditNote, { new: true });
-    return res.status(200).send(updatedCreditNote);
+
+    // Update PDF 
+
+    const uploadedNotes = await CreditNote.findOne({ _id: updatedCreditNote?._id }).populate(["customer"]);
+
+    // delete previse file 
+    await deleteFile(`${uploadedNotes._id}.pdf`);
+
+    const pathToFile = await generateCreditNotePDF(uploadedNotes.toJSON());
+    const file = await fs.readFileSync(pathToFile);
+    await putFile(file, `${uploadedNotes._id}.pdf`);
+    const nextUpdtcreditNote = await CreditNote.findByIdAndUpdate(uploadedNotes._id, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedNotes._id}.pdf` });
+    await fs.rmSync(pathToFile);
+    res.status(200).send(nextUpdtcreditNote);
+
+    // return res.status(200).send(updatedCreditNote);
   } catch (e) {
     console.log(e);
   }
