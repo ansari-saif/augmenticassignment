@@ -30,6 +30,7 @@ interface ICreditNote extends Document {
   pdf_url: string;
   status: string;
   creditUsed: number;
+  balance: number;
   tax: Types.ObjectId;
   invoiceDetails: [InoviceDetails];
   termsAndConditions: string;
@@ -59,6 +60,7 @@ const creditNoteSchema = new Schema<ICreditNote>(
     ],
     reference: String,
     creditUsed: { type: Number, default: 0 },
+    balance: { type: Number },
     subject: String,
     tax: { type: Schema.Types.ObjectId, ref: "Tax" },
     invoiceDetails: [

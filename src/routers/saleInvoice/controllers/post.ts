@@ -20,7 +20,7 @@ export default async function controllerPost(
   }
   try {
     const latest: any = await SaleInvoice.find({}).sort({_id: -1}).limit(1);
-    if (latest.length > 0 && latest[latest.length-1].customerId) {
+    if (latest.length > 0 && latest[latest.length-1].invoice) {
       data.invoice = `INV-${parseInt(latest[0].invoice.split('-')[1])+1}`;
     } else {
       data.invoice = 'INV-1';

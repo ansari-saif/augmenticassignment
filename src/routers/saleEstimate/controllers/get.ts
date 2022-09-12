@@ -6,7 +6,7 @@ import { SaleEstimate } from "../../../models/saleEstimate";
 export default async function controllerGet(req: Request, res: Response) {
   const { id } = req.params;
   if (id) {
-    const saleEstimate = await SaleEstimate.findById(id).populate('tax').populate('customer');;
+    const saleEstimate = await SaleEstimate.findById(id).populate('tax').populate('customer').populate('project').populate('employee');
     if (!saleEstimate) {
       return res.status(404).json({ message: "SaleEstimate not found" });
     }

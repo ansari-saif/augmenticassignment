@@ -21,6 +21,8 @@ export default async function controllerPost(req: Request, res: Response) {
       ? data.creditNote = `CN-${parseInt(latest[0].creditNote.split('-')[1])+1}`
       : data.creditNote = 'CN-1'
 
+    data.balance = data.grandTotal;
+
     const note : any  = await CreditNote.create(data);
     const uploadedNotes = await CreditNote.findOne({ _id: note._id }).populate(["customer"]);
     const pathToFile = await generateCreditNotePDF(uploadedNotes.toJSON());
