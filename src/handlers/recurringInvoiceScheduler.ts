@@ -9,7 +9,7 @@ module.exports = async () => {
 
   const recurringInvoice = await RecurringInvoice.find();
 
-  const activeInvoice = recurringInvoice.filter(inv => inv.status == "Active");
+  const activeInvoice = recurringInvoice.filter(inv => inv.status == "ACTIVE");
 
   const neverExpireInv = activeInvoice.filter(inv => inv.neverExpires === true); 
 
@@ -32,7 +32,7 @@ module.exports = async () => {
       termsAndConditions: inv?.termsAndConditions,
       terms: inv?.terms,
       adjustments: inv?.adjustments,
-      status: 'Active',
+      status: 'OPEN',
 
     }
 
@@ -66,7 +66,7 @@ module.exports = async () => {
       termsAndConditions: inv?.termsAndConditions,
       terms: inv?.terms,
       adjustments: inv?.adjustments,
-      status: 'Active',
+      status: 'OPEN',
     };
 
     const sameOrAfter = moment(invEndDay).isSameOrAfter(today, 'day');
@@ -83,7 +83,7 @@ module.exports = async () => {
 
           const updatedRecInvoice = await RecurringInvoice.findByIdAndUpdate(inv._id, {...inv, nextDate: updateNextDate });
         } else {
-          const updatedRecInvoice = await RecurringInvoice.findByIdAndUpdate(inv._id, { status: 'Expired' });
+          const updatedRecInvoice = await RecurringInvoice.findByIdAndUpdate(inv._id, { status: 'INACTIVE' });
         }
       }
     }
