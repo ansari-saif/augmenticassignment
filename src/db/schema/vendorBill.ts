@@ -131,7 +131,7 @@ const vendorBillSchema = new Schema<IVendorBill>(
 //   next();
 // });
 
-vendorBillSchema.post("save", async function(next){
+vendorBillSchema.post("save", async function(){
   if(this?.transaction?.length){
     let billtrx = this?.transaction;
     let updatedBilltrx = billtrx?.map(bt => {
@@ -181,7 +181,7 @@ vendorBillSchema.post("save", async function(next){
   }
 
 
-  next();
+  // next();
 });
 
 // vendorBillSchema.post("save", async function(next){

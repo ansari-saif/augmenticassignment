@@ -21,7 +21,7 @@ export default async function controllerGet(req: Request, res: Response) {
     }
     return res.status(200).send(customer);
   } else {
-    const customers = await Customer.find()
+    const customers = await Customer.find().sort({ updatedAt: -1 });
     return res.status(200).send(customers);
   }
 }
@@ -97,7 +97,13 @@ export async function getNotes(req: Request, res: Response) {
   const { id } = req.params;
   try {
     if (id) {
-      const notes = await CreditNote.find({ customer: id }).populate("customer").populate("invoice");
+      const notes = await CreditNote.find({ customer: id }).populate("customer").populate({
+        path: "invoiceDetails",
+        populate: {
+          path: "id",
+          select: "invoice"
+        }
+      });
       return res.status(200).send(notes);
     }
   } catch (e) {

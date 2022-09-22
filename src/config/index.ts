@@ -8,7 +8,7 @@ module.exports = {
     handler: "src/handlers/recurringExpenseScheduler"
   },
   billScheduler : {
-    frequency: "11 0 * * *",
+    frequency: "55 0 * * *",
     handler: "src/handlers/recurringBillScheduler"
   },
   invoiceScheduler : {
