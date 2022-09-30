@@ -7,6 +7,7 @@ import { generateSalePayment } from "../../../utils/pdf-generation/generatePDF";
 import { validatePayment } from "../../../validators";
 import fs from 'fs';
 import putFile from "../../../utils/s3";
+import { CustomerTimeline } from "../../../models/customerTimeline";
 
 export default async function controllerPost(req: Request, res: Response) {
   try {
@@ -54,6 +55,13 @@ export default async function controllerPost(req: Request, res: Response) {
     
     const salePayment: any = await SalePayment.create(data.payment);
 
+    await CustomerTimeline.create({
+      customer: salePayment?.customer, 
+      timelineType: "salePayment Created",
+      description: `Sale Payment ${salePayment?.paymentNumber} Created`,
+      // link: "",
+    });
+
     for await (const inv of invoice ) {
       const invoiceData : any = await SaleInvoice.findById(inv.id);
       const paymentReceived = {
@@ -64,6 +72,9 @@ export default async function controllerPost(req: Request, res: Response) {
       };
 
       invoiceData.paymentReceived.push(paymentReceived);
+      let balanceDue = invoiceData?.grandTotal - invoiceData?.paidAmount - invoiceData?.withholdingTax;
+      invoiceData.balance = balanceDue;
+      invoiceData.status = balanceDue <= 0 ? "PAID" : "PARTIAL";
       const updatedInvoice = await SaleInvoice.findByIdAndUpdate(invoiceData._id, invoiceData);      
     };
 
@@ -71,7 +82,7 @@ export default async function controllerPost(req: Request, res: Response) {
     const pathToFile = await generateSalePayment(uploadedPayemnt.toJSON())
     const file = await fs.readFileSync(pathToFile);
     await putFile(file, `${uploadedPayemnt._id}.pdf`);
-    const payment = await SalePayment.findByIdAndUpdate(uploadedPayemnt._id, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedPayemnt._id}.pdf` }, { new: true});
+    const payment = await SalePayment.findByIdAndUpdate(uploadedPayemnt._id, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedPayemnt._id}.pdf` }, { new: true}).populate({ path: 'customer', select: 'displayName billingAddress email' });
     await fs.rmSync(pathToFile);
     res.status(200).send(payment);
   } catch (err) {

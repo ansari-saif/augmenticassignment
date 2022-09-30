@@ -10,6 +10,6 @@ export default async function controllerGet(req: Request, res: Response) {
     }
     return res.status(200).json(salesOrder);
   }
-  const salesOrder = await SalesOrder.find({}).populate('customer');
+  const salesOrder = await SalesOrder.find({}).populate('customer').sort({ updatedAt: -1 });
   return res.status(200).json(salesOrder);
 }

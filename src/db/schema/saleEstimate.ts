@@ -50,7 +50,7 @@ const saleEstimateSchema = new Schema(
     isInvoiced: { type: Boolean, default: false},
     reference: String,
     subject: String,
-    status: { type: String, default: 'DRAFT' },
+    status: { type: String, default: 'OPEN' },
     grandTotal: Number,
     customer: { type: Schema.Types.ObjectId, ref: "Customer" },
     items: [

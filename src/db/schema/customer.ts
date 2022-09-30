@@ -1,4 +1,5 @@
 import { Document, Schema, Types } from "mongoose";
+import { CustomerTimeline } from "../../models/customerTimeline";
 
 interface Address {
   attention: string;
@@ -121,7 +122,23 @@ const customerSchema = new Schema<ICustomer>(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
+
+customerSchema.pre("remove", async function (next) {
+  console.log(`Timeline being removed from customer ${this?._id}`);
+  await CustomerTimeline.deleteMany({ customer: this._id });
+  next();
+})
+
+// Reverse populate with virtuals 
+customerSchema.virtual('timeline', {
+  ref: 'CustomerTimeline',
+  localField: '_id',
+  foreignField: 'customer',
+  justOne: false
+});
 
 export { ICustomer, customerSchema };

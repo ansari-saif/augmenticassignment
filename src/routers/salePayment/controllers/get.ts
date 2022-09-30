@@ -16,6 +16,6 @@ export default async function controllerGet(req: Request, res: Response) {
   }
   const salePayments = await SalePayment.find({})
     .populate('customer')
-    .populate("invoice")
+    .populate("invoice").sort({ updatedAt: -1 })
   return res.status(200).json(salePayments);
 }

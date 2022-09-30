@@ -33,6 +33,7 @@ interface ISaleInvoice extends Document {
   grandTotal: number;
   paidAmount: number;
   withholdingTax: number;
+  balance: number;
   invoice: string;
   invoiceDate: Date;
   estimate: Types.ObjectId;
@@ -73,6 +74,7 @@ const saleInvoiceSchema = new Schema<ISaleInvoice>(
     paidAmount: { type: Number, default: 0 },
     pdf_url: String,
     withholdingTax: { type: Number, default: 0 },
+    balance: Number,
     paymentReceived: [{
       id: { type: Schema.Types.ObjectId, ref: 'SalePayment' },
       payment: String,
@@ -105,9 +107,14 @@ const saleInvoiceSchema = new Schema<ISaleInvoice>(
         amount: Number,
       },
     ],
-    status: { type: String, default: 'DRAFT' },
+    status: { type: String, default: 'OPEN' },
   },
   { timestamps: true }
 );
+
+saleInvoiceSchema.pre('save', async function(next){
+  this.balance = this.grandTotal;
+  next();
+})
 
 export { ISaleInvoice, saleInvoiceSchema };

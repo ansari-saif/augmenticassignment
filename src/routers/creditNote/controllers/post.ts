@@ -6,6 +6,7 @@ import putFile from "../../../utils/s3";
 import validateCreditNotes from "../../../validators/validateCreditNotes";
 import fs from 'fs';
 import { generateCreditNotePDF } from "../../../utils/pdf-generation/generatePDF";
+import { CustomerTimeline } from "../../../models/customerTimeline";
 
 export default async function controllerPost(req: Request, res: Response) {
   const data = req.body;
@@ -24,11 +25,19 @@ export default async function controllerPost(req: Request, res: Response) {
     data.balance = data.grandTotal;
 
     const note : any  = await CreditNote.create(data);
+
+    await CustomerTimeline.create({
+      customer: note?.customer, 
+      timelineType: "Credit Note Created",
+      description: `Credit Note ${note?.creditNote} Created`,
+      // link: "",
+    });
+
     const uploadedNotes = await CreditNote.findOne({ _id: note._id }).populate(["customer"]);
     const pathToFile = await generateCreditNotePDF(uploadedNotes.toJSON());
     const file = await fs.readFileSync(pathToFile);
     await putFile(file, `${uploadedNotes._id}.pdf`);
-    const creditNote = await CreditNote.findByIdAndUpdate(uploadedNotes._id, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedNotes._id}.pdf` });
+    const creditNote = await CreditNote.findByIdAndUpdate(uploadedNotes._id, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedNotes._id}.pdf` }).populate({ path: 'customer', select: 'displayName billingAddress email' });
     await fs.rmSync(pathToFile);
     res.status(200).send(creditNote);
   } catch (e) {
