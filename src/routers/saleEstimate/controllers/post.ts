@@ -6,6 +6,8 @@ import { generateSaleEstimatePDF } from "../../../utils/pdf-generation/generateP
 import validateSalesEstimate from "../../../validators/validateSaleEstimate";
 import fs from 'fs';
 import putFile from "../../../utils/s3";
+import moment from "moment";
+import { CustomerTimeline } from "../../../models/customerTimeline";
 
 export default async function controllerPost(req: Request, res: Response) {
   const data = req.body;
@@ -22,7 +24,15 @@ export default async function controllerPost(req: Request, res: Response) {
       data.estimate = 'EST-1';
     }
     const estimate : any  = await SaleEstimate.create(data);
+    await CustomerTimeline.create({
+      customer: estimate?.customer, 
+      timelineType: "Estimate Created",
+      description: `Estimate ${estimate?.estimate} created`,
+      // link: "",
+    });
+
     const uploadedEstimate = await SaleEstimate.findOne({ _id: estimate._id }).populate(["customer", "tax"]);
+    // uploadedEstimate.estimateDate : string = await moment(uploadedEstimate?.estimateDate).format('YYYY-MM-DD') || moment().format('YYYY-MM-DD');
     const pathToFile = await generateSaleEstimatePDF(uploadedEstimate.toJSON())
     const file = await fs.readFileSync(pathToFile);
     await putFile(file, `${uploadedEstimate._id}.pdf`);
@@ -30,7 +40,7 @@ export default async function controllerPost(req: Request, res: Response) {
       uploadedEstimate._id, 
       { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedEstimate._id}.pdf` },
       { new: true }
-    );
+    ).populate({ path: 'customer', select: 'displayName billingAddress email' });
     await fs.rmSync(pathToFile);
     return res.status(200).json(saleEstimate);
   } catch (e) {

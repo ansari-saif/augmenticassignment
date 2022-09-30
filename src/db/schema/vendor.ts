@@ -2,6 +2,7 @@
 
 import { Document, Schema, Types } from "mongoose";
 import { Vendor } from "../../models";
+import { VendorTimeline } from "../../models/vendorTimeline";
 
 interface IVendor extends Document {
   name: string;
@@ -123,7 +124,23 @@ const vendorSchema = new Schema<IVendor>(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
+
+vendorSchema.pre("remove", async function (next) {
+  console.log(`Timeline being removed from vendor ${this?._id}`);
+  await VendorTimeline.deleteMany({ vendor: this._id });
+  next();
+})
+
+// Reverse populate with virtuals 
+vendorSchema.virtual('timeline', {
+  ref: 'VendorTimeline',
+  localField: '_id',
+  foreignField: 'vendor',
+  justOne: false
+});
 
 export { IVendor, vendorSchema };

@@ -29,7 +29,7 @@ export default async function controllerGet(req: Request, res: Response) {
           path: "id",
           select: "invoice"
         }
-      })
+      }).sort({ updatedAt: -1 })
     return res.status(200).json(notes);
   } catch (err) {
     console.log(err)

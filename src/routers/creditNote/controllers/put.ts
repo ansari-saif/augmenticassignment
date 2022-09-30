@@ -6,12 +6,21 @@ import { CreditNote, SaleInvoice } from "../../../models";
 import { generateCreditNotePDF } from "../../../utils/pdf-generation/generatePDF";
 import fs from 'fs';
 import putFile, { deleteFile } from "../../../utils/s3";
+import { CustomerTimeline } from "../../../models/customerTimeline";
 
 export async function controllerPut(req: Request, res: Response) {
   const { id } = req.params;
   const data = req.body;
   if (id) {
     const note = await CreditNote.findByIdAndUpdate(id, data);
+
+    await CustomerTimeline.create({
+      customer: note?.customer, 
+      timelineType: "Credit Note Updated",
+      description: `Credit Note ${note?.creditNote} Updated`,
+      // link: "",
+    });
+
     if (!note) {
       return res.status(404).json({ message: "SaleInvoice not found" });
     }
@@ -50,6 +59,11 @@ export async function applyToInvoicePut(req: Request, res: Response) {
         if (cred.id.toString() === id) {
           cred.credited += data[i].credited;
           inv.paidAmount += data[i].credited;
+
+          let balanceDue = inv?.grandTotal - inv.paidAmount - inv?.withholdingTax;
+          inv.balance = balanceDue;
+          inv.status = balanceDue <= 0 ? "PAID" : "PARTIAL";
+
           await SaleInvoice.findByIdAndUpdate(data[i].id, inv);
           exists = true;
         }
@@ -58,9 +72,14 @@ export async function applyToInvoicePut(req: Request, res: Response) {
       if (!exists) {        
         inv.creditDetails.push({
           id: id,
-          credited: data[i].cedited,
+          credited: data[i].credited,
         });
         inv.paidAmount += data[i].credited;
+
+        let balanceDue = inv?.grandTotal - inv.paidAmount - inv?.withholdingTax;
+          inv.balance = balanceDue;
+          inv.status = balanceDue <= 0 ? "PAID" : "PARTIAL";
+
         await SaleInvoice.findByIdAndUpdate(data[i].id, inv)
       }
     });
@@ -83,6 +102,8 @@ export async function applyToInvoicePut(req: Request, res: Response) {
 
     creditNote.balance = creditNote.grandTotal - creditNote.creditUsed;
 
+    creditNote.status = (creditNote.grandTotal - creditNote.creditUsed) <= 0 ? "CLOSED" : "PARTIAL"
+
     const updatedCreditNote = await CreditNote.findByIdAndUpdate(id, creditNote, { new: true });
 
     // Update PDF 
@@ -95,7 +116,7 @@ export async function applyToInvoicePut(req: Request, res: Response) {
     const pathToFile = await generateCreditNotePDF(uploadedNotes.toJSON());
     const file = await fs.readFileSync(pathToFile);
     await putFile(file, `${uploadedNotes._id}.pdf`);
-    const nextUpdtcreditNote = await CreditNote.findByIdAndUpdate(uploadedNotes._id, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedNotes._id}.pdf` });
+    const nextUpdtcreditNote = await CreditNote.findByIdAndUpdate(uploadedNotes._id, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedNotes._id}.pdf` }).populate({ path: 'customer', select: 'displayName billingAddress email' });
     await fs.rmSync(pathToFile);
     res.status(200).send(nextUpdtcreditNote);
 

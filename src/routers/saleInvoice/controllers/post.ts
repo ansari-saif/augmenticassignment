@@ -7,6 +7,7 @@ import putFile from "../../../utils/s3";
 import validateSaleInvoice from "../../../validators/validateSaleInvoice";
 import fs from 'fs';
 import { generateSaleInvoicePDF } from "../../../utils/pdf-generation/generatePDF";
+import { CustomerTimeline } from "../../../models/customerTimeline";
 
 export default async function controllerPost(
   req: Request,
@@ -26,11 +27,19 @@ export default async function controllerPost(
       data.invoice = 'INV-1';
     }
     const saleInvoice: any = await SaleInvoice.create(data);
+
+    await CustomerTimeline.create({
+      customer: saleInvoice?.customer, 
+      timelineType: "Invoice Created",
+      description: `Invoice ${saleInvoice?.invoice} Created`,
+      // link: "",
+    });
+
     const uploadedInvoice = await SaleInvoice.findById(saleInvoice._id).populate(["customer", "tcsTax"]);
     const pathToFile = await generateSaleInvoicePDF(uploadedInvoice.toJSON())
     const file = await fs.readFileSync(pathToFile);
     await putFile(file, `${uploadedInvoice._id}.pdf`);
-    const invoice = await SaleInvoice.findByIdAndUpdate(uploadedInvoice._id, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedInvoice._id}.pdf` }, { new: true});
+    const invoice = await SaleInvoice.findByIdAndUpdate(uploadedInvoice._id, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedInvoice._id}.pdf` }, { new: true}).populate({ path: 'customer', select: 'displayName billingAddress email' });
     await fs.rmSync(pathToFile);
     res.status(200).send(invoice);
   } catch (e) {

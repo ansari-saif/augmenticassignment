@@ -183,15 +183,15 @@
             
               <p class='h4'>{{saleInvoiceData.customer.displayName}}</p>
            
-            <div>{{saleInvoiceData.customer.billlingAddress.attention}}</div>
-            <div>{{saleInvoiceData.customer.billlingAddress.addressLine1}}</div>
-            <div>{{saleInvoiceData.customer.billlingAddress.addressLine2}}</div>
-            <div>{{saleInvoiceData.customer.billlingAddress.city}} - {{saleInvoiceData.customer.billlingAddress.state}}</div>
-            <div>{{saleInvoiceData.customer.billlingAddress.country}} - {{saleInvoiceData.customer.billlingAddress.zipcode}}</div>
+            <div>{{saleInvoiceData.customer.billingAddress.attention}}</div>
+            <div>{{saleInvoiceData.customer.billingAddress.addressLine1}}</div>
+            <div>{{saleInvoiceData.customer.billingAddress.addressLine2}}</div>
+            <div>{{saleInvoiceData.customer.billingAddress.city}} - {{saleInvoiceData.customer.billingAddress.state}}</div>
+            <div>{{saleInvoiceData.customer.billingAddress.country}} - {{saleInvoiceData.customer.billingAddress.zipcode}}</div>
           </div>
         </div>
         <div>
-          <p class="text-muted">Ship To</p>
+          <!-- <p class="text-muted">Ship To</p>
           <div class='ml-3'>
             
               <p class='h4'>{{saleInvoiceData.customer.displayName}}</p>
@@ -201,14 +201,14 @@
             <div>{{saleInvoiceData.customer.shippingAddress.addressLine2}}</div>
             <div>{{saleInvoiceData.customer.shippingAddress.city}} - {{saleInvoiceData.customer.shippingAddress.state}}</div>
             <div>{{saleInvoiceData.customer.shippingAddress.country}} - {{saleInvoiceData.customer.shippingAddress.zipcode}}</div>
-          </div>
+          </div> -->
         </div>
         <hr />
         <div>
           <table class="table">
             <thead>
               <tr>
-                <th>#</th>
+                <!-- <th>#</th> -->
                 <th>Item& Description</th>
                 <th>Qty</th>
                 <th>Rate</th> 
@@ -218,7 +218,7 @@
             <tbody>
                 {{#each this.saleInvoiceData.items}}
                 <tr>
-                    <td>{{this._id}}</td>
+                    <!-- <td>{{this._id}}</td> -->
                     <td>{{this.item}}{{this.description}}</td>
                     <td>{{this.quantity}}</td>                    
                     <td>{{this.unitCost}}</td>
