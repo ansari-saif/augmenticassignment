@@ -103,6 +103,9 @@ const purchaseOrderSchema = new Schema<IPurchaseOrder>({
     filePath: String,
   }],
   pdf_url: String,
+},
+{
+  timestamps: true
 });
 
 // 0 0,12 * * *

@@ -74,6 +74,9 @@ const vendorCreditSchema = new Schema<IVendorCredit>(
       filePath: String,
     }],
     pdf_url: String,
+  },
+  {
+    timestamps: true
   }
 );
 

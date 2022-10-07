@@ -14,6 +14,7 @@ import { RecurringExpense } from "../../../models/recurringExpense";
 import { RecurringBill } from "../../../models/recurringBill";
 import { calculateNextTime } from "../../../utils/nextTime";
 import moment from "moment";
+import { VendorTimeline } from "../../../models/vendorTimeline";
 
 
 export const vendorBillPost = async(req: Request, res: Response) => {
@@ -31,6 +32,13 @@ export const vendorBillPost = async(req: Request, res: Response) => {
 
     // await fs.rmSync(pathToFile);
 
+    await VendorTimeline.create({
+      vendor: vendorBill?.vendor, 
+      timelineType: "Bill Created",
+      description: `Vendor Bill ${vendorBill?.billNo} Created`,
+      // link: "",
+    });
+
     res.status(200).json(vendorBill);
     
   } catch (err) {
@@ -45,7 +53,14 @@ export const vendorBillPaymentPost = async(req: Request, res: Response) => {
     const vendorBillPayment : any = await VendorBillPayment.create(req.body);
 
     // UPLOAD FILE TO CLOUD 
-    const uploadedVendorBillPayment = await VendorBillPayment.findOne({_id : vendorBillPayment._id}).populate({path: "vendorId", select: "name billAddress"});
+    const uploadedVendorBillPayment = await VendorBillPayment.findOne({_id : vendorBillPayment._id}).populate({path: "vendorId", select: "name billAddress email"});
+
+    await VendorTimeline.create({
+      vendor: uploadedVendorBillPayment?.vendorId?._id, 
+      timelineType: "Bill Payment Created",
+      description: `Vendor Bill Payment ${uploadedVendorBillPayment?.paymentNo} Created`,
+      // link: "",
+    });
   
     const pathToFile : any = await generatePurchaseMadePDF(uploadedVendorBillPayment.toJSON());
     const file = await fs.readFileSync(pathToFile);
@@ -68,6 +83,13 @@ export const vendorExpensePost = async(req: Request, res: Response) => {
   try {
     const vendorExpense = await VendorExpense.create(req.body);
 
+    await VendorTimeline.create({
+      vendor: vendorExpense?.vendorId, 
+      timelineType: "Expense Created",
+      description: `Vendor Expense ${vendorExpense?.expenseAccount} Created`,
+      // link: "",
+    });
+
     res.status(200).json(vendorExpense);
     
   } catch (err) {
@@ -80,7 +102,14 @@ export const vendorPurchaseOrderPost = async(req: Request, res: Response) => {
   try {
     const purchaseOrder : any = await PurchaseOrder.create(req.body);
     // UPLOAD FILE TO CLOUD 
-    const uploadedpurchaseOrder = await PurchaseOrder.findOne({_id : purchaseOrder._id}).populate({path: "vendorId", select: "name billAddress"}).populate({path: "customerId", select: "displayName shippingAddress"});
+    const uploadedpurchaseOrder = await PurchaseOrder.findOne({_id : purchaseOrder._id}).populate({path: "vendorId", select: "name billAddress email"}).populate({path: "customerId", select: "displayName shippingAddress billingAddress"});
+
+    await VendorTimeline.create({
+      vendor: uploadedpurchaseOrder?.vendorId?._id, 
+      timelineType: "Purchase Order Created",
+      description: `Vendor Purchase Order ${uploadedpurchaseOrder?.purchaseOrderNo} Created`,
+      // link: "",
+    });
   
     const pathToFile : any = await generatePurchaseOrderPDF(uploadedpurchaseOrder.toJSON());
     const file = await fs.readFileSync(pathToFile);
@@ -109,6 +138,13 @@ export const vendorCreditPost = async(req: Request, res: Response) => {
 
     // UPLOAD FILE TO CLOUD 
     const uploadedVendorCredit = await VendorCredit.findOne({_id : vendorCredit._id}).populate({path: "vendorId", select: "name billAddress"});
+
+    await VendorTimeline.create({
+      vendor: uploadedVendorCredit?.vendorId?._id, 
+      timelineType: "Vendor Credit Created",
+      description: `Vendor Credit ${uploadedVendorCredit?.creditOrder} Created`,
+      // link: "",
+    });
   
     const pathToFile : any = await generateVendorCreditPDF(uploadedVendorCredit.toJSON());
     const file = await fs.readFileSync(pathToFile);

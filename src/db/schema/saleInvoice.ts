@@ -36,6 +36,7 @@ interface ISaleInvoice extends Document {
   balance: number;
   invoice: string;
   invoiceDate: Date;
+  expense: Types.ObjectId;
   estimate: Types.ObjectId;
   salesOrder: Types.ObjectId;
   deliveryChallan: Types.ObjectId;
@@ -87,7 +88,8 @@ const saleInvoiceSchema = new Schema<ISaleInvoice>(
     taxationPercentage: Number,
     tcsTax: { type: Schema.Types.ObjectId, ref: "Tax" },
     tdsType: String,
-    estimate: { type: Schema.Types.ObjectId, ref: 'saleEstimate' },  
+    expense: { type: Schema.Types.ObjectId, ref: 'VendorExpense' },  
+    estimate: { type: Schema.Types.ObjectId, ref: 'saleEstimate' }, 
     salesOrder: { type: Schema.Types.ObjectId, ref: 'saleOrder' },  
     deliveryChallan: { type: Schema.Types.ObjectId, ref: 'deliveryChallan' },  
     customer: { type: Schema.Types.ObjectId, ref: "Customer" },

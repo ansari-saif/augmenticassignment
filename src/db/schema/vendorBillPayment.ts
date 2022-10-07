@@ -65,7 +65,11 @@ const vendorBillPaymentSchema = new Schema<IVendorBillPayment>({
     filePath: String,
   }],
   pdf_url : String,
-});
+  },
+  {
+    timestamps: true
+  }
+);
 
 vendorBillPaymentSchema.pre("save", function (next) {
   if (this.isNew) {
