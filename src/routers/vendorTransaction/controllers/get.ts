@@ -10,7 +10,7 @@ import { VendorExpense } from "../../../models/vendorExpense";
 
 export const getVendorBills = async (req: Request, res: Response) => {
   try {
-    const vendorBills = await VendorBill.find(req.query).populate({path: "vendorId", select: "name billAddress"}).populate({ path: "projectId", select: "name" });
+    const vendorBills = await VendorBill.find(req.query).populate({path: "vendorId", select: "name billAddress email"}).populate({ path: "projectId", select: "name" }).sort({ updatedAt: 1 });
 
     res.status(200).json(vendorBills);
     
@@ -21,7 +21,7 @@ export const getVendorBills = async (req: Request, res: Response) => {
 
 export const getVendorBillPayment = async (req: Request, res: Response) => {
   try {
-    const vendorBillPayment = await VendorBillPayment.find(req.query).populate({path: "vendorId", select: "name billAddress"});
+    const vendorBillPayment = await VendorBillPayment.find(req.query).populate({path: "vendorId", select: "name billAddress email"}).sort({ updatedAt: 1 });
 
     res.status(200).json(vendorBillPayment);
     
@@ -34,7 +34,7 @@ export const getPatmentofBill = async (req: Request, res: Response) => {
   try {
     
     const { vendorId, vendorBill }  = req.query;
-    const vendorBillPayment = await VendorBillPayment.find({ vendorId }).populate({path: "vendorId", select: "name billAddress"});
+    const vendorBillPayment = await VendorBillPayment.find({ vendorId }).populate({path: "vendorId", select: "name billAddress email"}).sort({ updatedAt: 1 });
     
     const vendorBillPaymentOfBill = vendorBillPayment.filter(vb => {
       const vendorBillIds = vb.vendorBill.map(vb => vb._id);
@@ -51,7 +51,7 @@ export const getPatmentofBill = async (req: Request, res: Response) => {
 
 export const getVendorExpense = async (req: Request, res: Response) => {
   try {
-    const vendorExpense = await VendorExpense.find(req.query).populate({path: "vendorId", select: "name"}).populate({path: "customerId", select: "displayName"});
+    const vendorExpense = await VendorExpense.find(req.query).populate({path: "vendorId", select: "name email billAddress"}).populate({path: "customerId", select: "displayName billingAddress email"}).sort({ updatedAt: 1 });
 
     res.status(200).json(vendorExpense);
     
@@ -62,7 +62,7 @@ export const getVendorExpense = async (req: Request, res: Response) => {
 
 export const getVendorPurchaseOrder = async (req: Request, res: Response) => {
   try {
-    const purchaseOrder = await PurchaseOrder.find(req.query).populate({path: "vendorId", select: "name billAddress"}).populate({path: "customerId", select: "displayName shippingAddress"}).populate({ path: "projectId", select: "name" });
+    const purchaseOrder = await PurchaseOrder.find(req.query).populate({path: "vendorId", select: "name billAddress email"}).populate({path: "customerId", select: "displayName billingAddress email shippingAddress"}).populate({ path: "projectId", select: "name" }).sort({ updatedAt: 1 });
 
     res.status(200).json(purchaseOrder);
     
@@ -73,7 +73,7 @@ export const getVendorPurchaseOrder = async (req: Request, res: Response) => {
 
 export const getVendorCredit = async (req: Request, res: Response) => {
   try {
-    const vendorCredit = await VendorCredit.find(req.query).populate({path: "vendorId", select: "name billAddress"});
+    const vendorCredit = await VendorCredit.find(req.query).populate({path: "vendorId", select: "name billAddress email"}).sort({ updatedAt: 1 });
 
     res.status(200).json(vendorCredit);
     
@@ -84,7 +84,7 @@ export const getVendorCredit = async (req: Request, res: Response) => {
 
 export const getRecurringExpense = async (req: Request, res: Response) => {
   try {
-    const recurringExpense = await RecurringExpense.find(req.query).populate({path: "vendorId", select: "name billAddress"}).populate({path: "customerId", select: "displayName"}).populate({ path: "projectId", select: "name" }).populate({ path: "projectId", select: "name" });
+    const recurringExpense = await RecurringExpense.find(req.query).populate({path: "vendorId", select: "name billAddress email"}).populate({path: "customerId", select: "displayName billingAddress email"}).populate({ path: "projectId", select: "name" }).populate({ path: "projectId", select: "name" }).sort({ updatedAt: 1 });
 
     res.status(200).json(recurringExpense);
     
@@ -95,7 +95,7 @@ export const getRecurringExpense = async (req: Request, res: Response) => {
 
 export const getRecurringBill = async (req: Request, res: Response) => {
   try {
-    const recurringBill = await RecurringBill.find(req.query).populate({path: "vendorId", select: "name billAddress"}).populate({ path: "projectId", select: "name" });
+    const recurringBill = await RecurringBill.find(req.query).populate({path: "vendorId", select: "name billAddress email"}).populate({ path: "projectId", select: "name billingAddress email" }).sort({ updatedAt: 1 });
 
     res.status(200).json(recurringBill);
     

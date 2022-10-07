@@ -43,6 +43,9 @@ const recurringExpenseSchema = new Schema<IRecurringExpense>({
   projectId: { type: Schema.Types.ObjectId, ref:"Project" },
   markUpBy: Number,
   status: String,
+},
+{
+  timestamps: true
 });
 
 recurringExpenseSchema.pre("save", async function(next){

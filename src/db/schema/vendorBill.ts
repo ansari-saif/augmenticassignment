@@ -99,6 +99,9 @@ const vendorBillSchema = new Schema<IVendorBill>(
       filePath: String,
     }],
     pdf_url : String,
+  },
+  {
+    timestamps: true
   }
 );
 

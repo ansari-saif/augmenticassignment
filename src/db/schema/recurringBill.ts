@@ -89,6 +89,9 @@ const recurringBillSchema = new Schema<IRecurringBill>(
     balanceDue: Number,
     status: String,
     notes: String,
+  },
+  {
+    timestamps: true
   }
 );
 
