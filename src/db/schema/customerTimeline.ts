@@ -6,6 +6,7 @@ interface ICustomerTimeline {
   // dateTime: Date;
   description: string;
   link: string;
+  employee: number;
 }
 
 const customerTimelineSchema = new Schema<ICustomerTimeline>({
@@ -14,6 +15,7 @@ const customerTimelineSchema = new Schema<ICustomerTimeline>({
     // dateTime: Date,
     description: String,
     link: String,
+    employee: { type: Number, ref: "Employee"}
   },
   { timestamps: true }
 );

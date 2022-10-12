@@ -20,7 +20,7 @@ export default async function controllerGet(req: Request, res: Response) {
       res.status(404).json({ error: "Vendor not found" });
     }
   } else {
-    const vendors = await Vendor.find().populate("expenses").sort({ updatedAt: 1 });
+    const vendors = await Vendor.find(req.query).populate("expenses").sort({ updatedAt: 1 });
     res.json(vendors);
   }
 }

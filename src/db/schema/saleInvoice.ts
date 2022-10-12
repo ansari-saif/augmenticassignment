@@ -83,7 +83,7 @@ const saleInvoiceSchema = new Schema<ISaleInvoice>(
       amount: Number,
     }],
     adjustments: Number,
-    taxType: String,
+    taxType: String, 
     taxationAmount: Number,
     taxationPercentage: Number,
     tcsTax: { type: Schema.Types.ObjectId, ref: "Tax" },

@@ -32,6 +32,7 @@ interface IVendorBill extends Document {
   discountAccount: string;
   discountAmount: number;
   taxSystem: string;
+  tcsTax: Types.ObjectId;
   taxType: string;
   taxAmount: number;
   adjustment: {
@@ -81,6 +82,7 @@ const vendorBillSchema = new Schema<IVendorBill>(
     discountAccount: String,
     discountAmount: Number,
     taxSystem: String,
+    tcsTax: { type: Schema.Types.ObjectId, ref: "Tax" },
     taxType: String,
     taxAmount: Number,
     adjustment: {
@@ -158,10 +160,12 @@ vendorBillSchema.post("save", async function(){
     const ustockData = [ ...updatedBilltrx ];
 
     const resArr = ustockData;
-    resArr.forEach(async (stk : any) => {
-      const stock = await Stock.create(stk);
-      // console.log(stock);
-    });
+    // resArr.forEach(async (stk : any) => {
+    //   const stock = await Stock.create(stk);
+    //   // console.log(stock);
+    // });
+
+    await Stock.insertMany([ ...resArr ]);
 
     // const res = await httpService.post('/stock/billstock', ustockData);
     // await toast.success("Stock added");

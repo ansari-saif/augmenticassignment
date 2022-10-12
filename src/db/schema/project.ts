@@ -13,6 +13,8 @@ interface subPlot extends Document {
   leadsInfo: {
     leadType: string;
     lead: Types.ObjectId;
+    isCustomer: Boolean;
+    customer: Types.ObjectId;
   }[];
   facing: string;
   area: number;
@@ -39,6 +41,7 @@ interface IProject extends Document {
   saleStatus: string;
   description: string;
   leads: Types.ObjectId[];
+  leadcustomers: Types.ObjectId[];
   members: number[];
   vendor: Types.ObjectId;
   priority: PRIORITY;
@@ -65,6 +68,7 @@ const projectSchema = new Schema<IProject>(
     saleStatus: String,
     description: String,
     leads: [{ type: Schema.Types.ObjectId, ref: "Lead" }],
+    leadcustomers: [{ type: Schema.Types.ObjectId, ref: "Customer" }],
     members: [{ type: Number, ref: "Employee" }],
     vendor: { type: Schema.Types.ObjectId, ref: "Vendor" },
     priority: { type: String, enum: Object.values(PRIORITY) },
@@ -83,6 +87,8 @@ const projectSchema = new Schema<IProject>(
               type: String,
             },
             lead: { type: Schema.Types.ObjectId, ref: "Lead" },
+            isCustomer: { type: Boolean, default: false },
+            customer: { type: Schema.Types.ObjectId, ref: "Customer" },
           },
         ],
         facing: String,

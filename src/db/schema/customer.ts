@@ -47,6 +47,8 @@ interface ICustomer extends Document {
   facebook: string;
   twitter: string;
   remarks: string;
+  currentAssigned: number;
+  createdBy: number;
   billingAddress: Address;
   shippingAddress: Address;
   contactPersons: Array<contactPersons>;
@@ -57,6 +59,7 @@ interface ICustomer extends Document {
   address: string;
   creditNotes: number[];
   description: string;
+  project: Types.ObjectId[];
 }
 
 const customerSchema = new Schema<ICustomer>(
@@ -78,6 +81,8 @@ const customerSchema = new Schema<ICustomer>(
     facebook: String,
     twitter: String,
     remarks: String,
+    currentAssigned: { type: Number, ref: "Employee" },
+    createdBy: { type: Number, ref: "Employee" },
     billingAddress: {
       attention: String,
       addressLine1: String,
@@ -119,6 +124,7 @@ const customerSchema = new Schema<ICustomer>(
       { type: Schema.Types.ObjectId, ref: "SaleInvoice" },
     ],
     description: String,
+    project: [{ type: Schema.Types.ObjectId, ref: "Project" }],
   },
   {
     timestamps: true,
@@ -128,7 +134,7 @@ const customerSchema = new Schema<ICustomer>(
 );
 
 customerSchema.pre("remove", async function (next) {
-  console.log(`Timeline being removed from customer ${this?._id}`);
+  // console.log(`Timeline being removed from customer ${this?._id}`);
   await CustomerTimeline.deleteMany({ customer: this._id });
   next();
 })
