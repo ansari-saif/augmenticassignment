@@ -6,6 +6,7 @@ interface IVendorTimeline {
   // dateTime: Date;
   description: string;
   link: string;
+  employee: number;
 }
 
 const vendorTimelineSchema = new Schema<IVendorTimeline>({
@@ -14,6 +15,7 @@ const vendorTimelineSchema = new Schema<IVendorTimeline>({
     // dateTime: Date,
     description: String,
     link: String,
+    employee: { type: Number, ref: "Employee"}
   },
   { timestamps: true }
 );

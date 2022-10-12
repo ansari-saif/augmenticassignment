@@ -17,10 +17,11 @@ export default async function controllerGet(req: Request, res: Response) {
           select: "firstName lastName"
         }
       })
+      .populate('project')
       .populate("timeline");
-      console.log(customer);
+      // console.log(customer);
     if (!customer) {
-      return res.status(404).send({ message: "Lead not found" });
+      return res.status(404).send({ message: "Customer not found" });
     }
     return res.status(200).send(customer);
   } else {

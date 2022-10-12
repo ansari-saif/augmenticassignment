@@ -10,6 +10,7 @@ export default async function controllerGet(req: Request, res: Response) {
       .populate("members")
       .populate("createdBy")
       .populate("subPlots.leadsInfo.lead")
+      .populate("subPlots.leadsInfo.customer")
       .populate("subPlots.leadsInfo.lead.assignedTo")
       .populate("subPlots.soldBy")
       .populate("subPlots.soldTo");
@@ -24,7 +25,7 @@ export default async function controllerGet(req: Request, res: Response) {
       const Projects: IProject[] = await Project.find(req.query)
         .populate("leads")
         .populate("members")
-        .populate("createdBy");
+        .populate("createdBy").sort({ updatedAt: -1 });
       res.status(200).send(Projects);
     } else {
       const Projects: IProject[] = await Project.find({
@@ -32,8 +33,9 @@ export default async function controllerGet(req: Request, res: Response) {
       })
         .populate("leads")
         .populate("members")
-        .populate("createdBy");
+        .populate("createdBy").sort({ updatedAt: -1 });
       res.status(200).send(Projects);
     }
   }
 }
+ 

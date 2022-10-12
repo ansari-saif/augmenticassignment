@@ -35,6 +35,7 @@ interface IPurchaseOrder extends Document {
   discountAmount: number;
   taxSystem: string;
   taxType: string;
+  tcsTax: Types.ObjectId;
   taxAmount: number;
   adjustment: {
     adjustmentName: string;
@@ -87,6 +88,7 @@ const purchaseOrderSchema = new Schema<IPurchaseOrder>({
   discountAmount: Number,
   taxSystem: String,
   taxType: String,
+  tcsTax: { type: Schema.Types.ObjectId, ref: "Tax" },
   taxAmount: Number,
   adjustment: {
     adjustmentName: String,

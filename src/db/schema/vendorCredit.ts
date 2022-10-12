@@ -16,6 +16,12 @@ interface IVendorCredit extends Document {
     discount: {discountType: string; discountValue: number;};
     amount: number;
   }[];
+  vendorBill: {
+    billId: Types.ObjectId;
+    billNo: string;
+    credit: number;
+    date: Date;
+  }[];
   subTotal: number;
   discount: {
     discountType: string;
@@ -52,6 +58,12 @@ const vendorCreditSchema = new Schema<IVendorCredit>(
       unit: { type: String, default: "pcs." },
       rate: Number,
       amount: Number,
+    }],
+    vendorBill: [{
+      billId: { type: Schema.Types.ObjectId, ref: "VendorBill" },
+      billNo: String,
+      credit: Number,
+      date: Date
     }],
     subTotal: Number,
     discount: {

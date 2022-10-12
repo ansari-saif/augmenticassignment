@@ -5,6 +5,7 @@ import { generateSaleInvoicePDF } from "../../../utils/pdf-generation/generatePD
 import RequestWithUser from "../../../utils/requestWithUser";
 import putFile from "../../../utils/s3";
 import fs from 'fs';
+import { CustomerTimeline } from "../../../models/customerTimeline";
 
 export default async function controllerPut(
   req: RequestWithUser,
@@ -31,73 +32,205 @@ export async function controllerStatusPut(
   const { id } = req.params;
   if (id) {
     try {
-      let { project, status, plot, lead } = req.body;
+      let { project, status, plot, lead, leadcustomer } = req.body;
       const leadStatus = await LeadStatus.find();
       if (status === 'Lead Won') {
-        const subPlot = project.subPlots.find((p: any) => p._id === plot._id);
-        subPlot.leadsInfo.forEach((l: any) => {
-          if (l.lead !== lead) {
-            l.leadType = 'Lead Lost'
+        if(leadcustomer) {
+
+          const subPlot = project.subPlots.find((p: any) => p._id === plot._id);
+          subPlot.leadsInfo.forEach((l: any) => {
+            if (l.lead) {
+              l.leadType = 'Lead Lost'
+            }
+            if (l.customer !== leadcustomer) {
+              l.leadType = 'Lead Lost'
+            }
+            if (l.customer === leadcustomer) {
+              l.leadType = 'Lead Won'
+            }
+
+          });
+          subPlot.sold = true;
+
+          let customer: any = {};
+          customer = await Customer.findById(leadcustomer);
+          
+
+          const leadId: any = leadStatus.filter((v,i) => v.name === 'Lead Won');
+
+          await CustomerTimeline.create({
+            customer: leadcustomer, 
+            timelineType: "Status Update",
+            description: `Status updated to ${status} of ${plot?.name} in ${project?.name}`,
+            // link: "",
+          });
+
+          subPlot.soldTo = customer._id;
+
+          project.subPlots[project.subPlots.findIndex((p: any) => p._id === plot._id)] = subPlot;
+
+          const updateProject = await Project.findByIdAndUpdate(id, project);
+          // Invoice
+          await createInvoice(project, plot, lead, customer, req);
+          return res.status(200).json(customer);
+
+        } else{
+
+          // const subPlot = project.subPlots.find((p: any) => p._id === plot._id);
+          // subPlot.leadsInfo.forEach((l: any) => {
+          //   if (l.customer) {
+          //     l.leadType = 'Lead Lost'
+          //   }
+          //   if (l.lead !== lead) {
+          //     l.leadType = 'Lead Lost'
+          //   }
+          //   if (l.lead === lead) {
+          //     l.leadType = 'Lead Won'
+          //   }
+          // });
+          // subPlot.sold = true;
+          
+          const leadData: any = await Lead.findById(lead);
+          let customer: any = {};
+          if (lead?.customer) {
+            customer = await Customer.findById(lead?.customer);
+          } else {
+            const latest: any = await Customer.find({}).sort({ id: -1 }).limit(1);        
+            const cust: any = {
+              firstName: leadData.firstName,
+              lastName: leadData.lastName,
+              email: leadData.email,
+              phone: leadData.phone,
+              lead: leadData._id,
+              displayName: leadData.name,
+              customerType: 'Individual',
+              billingAddress: {
+                addressLine1: leadData.address.addressLine1,
+                addressLine2: leadData.address.addressLine2,
+                city: leadData.address.city,
+                state: leadData.address.state,
+                zipcode: leadData.address.zipCode,
+              },
+              currentAssigned: leadData?.currentAssigned,
+              project: [ ...leadData?.project ],
+              createdBy: req.user.id,
+            };
+            latest.length >0 && latest[latest.length-1].customerId
+              ? cust.customerId = `CUST-${parseInt(latest[0].customerId.split('-')[1])+1}`
+              : cust.customerId = 'CUST-1'
+            customer = await Customer.create(cust);
           }
-        });
-        subPlot.sold = true;
-        
-        const leadData: any = await Lead.findById(lead);
-        let customer: any = {};
-        if (lead.customer) {
-          customer = await Customer.findById(lead.customer);
-        } else {
-          const latest: any = await Customer.find({}).sort({ id: -1 }).limit(1);        
-          const cust: any = {
-            firstName: leadData.firstName,
-            lastName: leadData.lastName,
-            email: leadData.email,
-            phone: leadData.phone,
-            lead: leadData._id,
-            displayName: `${leadData.lastName} ${leadData.firstName}`,
-            customerType: 'Individual',
-            billingAddress: {
-              addressLine1: leadData.address.addressLine1,
-              addressLine2: leadData.address.addressLine2,
-              city: leadData.address.city,
-              state: leadData.address.state,
-              zipcode: leadData.address.zipCode,
-            },
-          };
-          latest.length >0 && latest[latest.length-1].customerId
-            ? cust.customerId = `CUST-${parseInt(latest[0].customerId.split('-')[1])+1}`
-            : cust.customerId = 'CUST-1'
-          customer = await Customer.create(cust);
+
+          const subPlot = project.subPlots.find((p: any) => p._id === plot._id);
+          subPlot.leadsInfo.forEach((l: any) => {
+            if (l.customer) {
+              l.leadType = 'Lead Lost'
+            }
+            if (l.lead !== lead) {
+              l.leadType = 'Lead Lost'
+            }
+            if (l.lead === lead) {
+              l.leadType = 'Lead Won';
+              l.customer = customer?._id;
+              l.isCustomer = true;
+              // l.lead = undefined;
+            }
+          });
+          subPlot.sold = true;
+
+          // adding lead activity to customer timeline 
+          const newCustTimeline = leadData?.activities.map((act : any) => {
+            return {
+              customer: customer?._id,
+              timelineType: act?.activityType,
+              description: act?.description,
+              employee: act?.employee
+            }
+          });
+
+          await CustomerTimeline.insertMany([ ...newCustTimeline ]);
+
+          const leadId: any = leadStatus.filter((v,i) => v.name === 'Lead Won');
+          await Lead.findByIdAndUpdate(lead, {
+            customer: customer._id,
+            status: leadId[0]._id.toString(),
+          });
+
+          await Lead.findByIdAndUpdate(lead, {
+            $push: { activities: {
+              activityType: 'Status Update',
+              description: `Status updated to ${status} of ${plot?.name} in ${project?.name}`,
+              dateTime: new Date(),
+              employee: req.user.id,
+            } }
+          });
+          subPlot.soldTo = customer._id;
+
+          project.subPlots[project.subPlots.findIndex((p: any) => p._id === plot._id)] = subPlot;
+          const updateProject = await Project.findByIdAndUpdate(id, project);
+
+          // Changing lead to customer info in subPlot of project 
+          const leadPlotUp: any = await Lead.findById(lead).populate('project');
+
+          // console.log("leadpopulate", leadPlotUp)
+
+          const leadprojects = await leadPlotUp?.project;
+
+          leadprojects.forEach(async(leadProject : any) => {
+            
+            let projectSubPlots = leadProject.subPlots;
+            
+            projectSubPlots.forEach((sp : any) => {
+              // console.log(sp?.name);
+              sp?.leadsInfo.forEach((li:any) => {
+                if(li?.lead?.toHexString() == lead){
+                  // console.log("inside");
+                  li.customer = customer?._id;
+                  li.isCustomer = true;
+                }
+              })
+            }) 
+            
+            await Project.findByIdAndUpdate(leadProject._id, { subPlots: projectSubPlots });
+          })
+          
+
+          await CustomerTimeline.create({
+            customer: customer._id, 
+            timelineType: "Status Update",
+            description: `Status updated to ${status} of ${plot?.name} in ${project?.name}`,
+            // link: "",
+          });
+
+          // Invoice
+          await createInvoice(project, plot, lead, customer, req);
+
+          await Lead.findByIdAndDelete(lead);
+
+          return res.status(200).json(customer);
         }
-        const leadId: any = leadStatus.filter((v,i) => v.name === 'Lead Won');
-        await Lead.findByIdAndUpdate(lead, {
-          customer: customer._id,
-          status: leadId[0]._id.toString(),
+      }
+      const updateProject = await Project.findByIdAndUpdate(id, project);
+      if(leadcustomer){
+
+        await CustomerTimeline.create({
+          customer: leadcustomer, 
+          timelineType: "Status Update",
+          description: `Status updated to ${status} of ${plot?.name} in ${project?.name}`,
+          // link: "",
         });
-        await Lead.findByIdAndUpdate(lead, {
+
+      } else {
+
+        const newLead = await Lead.findByIdAndUpdate(lead, {
           $push: { activities: {
             activityType: 'Status Update',
-            description: `Status updated to ${status}`,
+            description: `Status updated to ${status} of ${plot?.name} in ${project?.name}`,
             dateTime: new Date(),
             employee: req.user.id,
           } }
         });
-        subPlot.soldTo = customer._id;
-        project.subPlots[project.subPlots.findIndex((p: any) => p._id === plot._id)] = subPlot;
-        const updateProject = await Project.findByIdAndUpdate(id, project);
-        // Invoice
-        await createInvoice(project, plot, lead, customer, req);
-        return res.status(200).json(customer);
       }
-      const updateProject = await Project.findByIdAndUpdate(id, project);
-      const newLead = await Lead.findByIdAndUpdate(lead, {
-        $push: { activities: {
-          activityType: 'Status Update',
-          description: `Status updated to ${status}`,
-          dateTime: new Date(),
-          employee: req.user.id,
-        } }
-      });
       return res.status(200).json(updateProject);
     } catch (err) {
       console.log(err);
@@ -119,13 +252,15 @@ const createInvoice: any = async (project: any, plot: any, lead: any, customer: 
     invoiceDate: date,
     invoice: inv,
     items: [{
-      item: plot.name,
+      item: plot?.name,
       description: project.name,
-      quantity: '1',
-      unitCost: '0',
-      amount: '0',
+      quantity: 1,
+      unitCost: Number(plot?.cost),
+      amount: Number(plot?.cost),
     }],
     customer: customer._id,
+    amount: Number(plot?.cost),
+    grandTotal: Number(plot?.cost),
   };
   try {
     const saleInvoice: any = await SaleInvoice.create(invoice);

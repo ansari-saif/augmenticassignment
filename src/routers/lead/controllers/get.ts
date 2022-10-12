@@ -23,7 +23,7 @@ export default async function controllerGet(req: Request, res: Response) {
       .populate('assignedTo')
       .populate('currentAssigned')
       .populate('project')
-      .populate('status')
+      .populate('status').sort({ updatedAt: -1 })
     res.status(200).send(leads);
   }
 }

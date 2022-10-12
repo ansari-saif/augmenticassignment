@@ -12,6 +12,7 @@ import fs from 'fs';
 import { RecurringExpense } from "../../../models/recurringExpense";
 import { RecurringBill } from "../../../models/recurringBill";
 import { VendorTimeline } from "../../../models/vendorTimeline";
+import moment from "moment";
 
 
 export const vendorBillPut = async(req: Request, res: Response) => {
@@ -234,7 +235,13 @@ export const vendorCreditToBills = async(req: Request, res: Response) => {
 
     creditToBillList.forEach(async(ele : any) => {
       // await VendorBill.updateOne({_id : ele.id}, {credit : ele.creditPay, balanceDue : ele.balance}); 
-      const vendorBill : any = await VendorBill.findByIdAndUpdate(ele.id, {credit : ele.creditPay, balanceDue : ele.balance}, { new: true });
+      let vendorBill : any;
+      if(Number(ele.balance) == 0){
+        vendorBill = await VendorBill.findByIdAndUpdate(ele.id, {credit : ele.creditPay, balanceDue : ele.balance, status: "PAID"}, { new: true });
+      }else{
+
+        vendorBill = await VendorBill.findByIdAndUpdate(ele.id, {credit : ele.creditPay, balanceDue : ele.balance, status: "PARTIAL"}, { new: true });
+      }
 
       // UPLOAD FILE TO CLOUD 
       const uploadedVendorBill = await VendorBill.findOne({_id : vendorBill._id}).populate({path: "vendorId", select: "name billAddress"});
@@ -251,7 +258,13 @@ export const vendorCreditToBills = async(req: Request, res: Response) => {
       await fs.rmSync(pathToFile);
     });
 
-    res.status(200).json({msg : "credit of bills updated"});
+    const vendorCredit = await VendorCredit.findById(req.params.id);
+    // const prevBillList = await [...vendorCredit?.vendorBill] || [];
+    const prevBillList = vendorCredit?.vendorBill.length ? [ ...vendorCredit?.vendorBill ] : [];
+    const billList = creditToBillList.map((ele : any) => ({billId : ele?.id, billNo: ele?.billNo, credit: ele?.creditPay, date: moment().format("YYYY-MM-DD")}));
+    const updatedVendorCredit = await VendorCredit.findByIdAndUpdate(req.params.id, { vendorBill : [ ...prevBillList, ...billList ] }, { new : true });
+
+    res.status(200).json(updatedVendorCredit);
 
   } catch (err) {
     res.status(500).json({ msg: "Server Error: Bill Credit Data wasn't Updated" });
