@@ -65,7 +65,11 @@ const vendorBillPaymentSchema = new Schema<IVendorBillPayment>({
     filePath: String,
   }],
   pdf_url : String,
-});
+  },
+  {
+    timestamps: true
+  }
+);
 
 vendorBillPaymentSchema.pre("save", function (next) {
   if (this.isNew) {
@@ -91,7 +95,7 @@ vendorBillPaymentSchema.pre("save", async function(next){
           if(vb.balanceDue <= 0){
             await VendorBill.findByIdAndUpdate(vb._id, { balanceDue: bal, payments: paymade, status: "PAID" }, { new: true });
           } else{
-            await VendorBill.findByIdAndUpdate(vb._id, { balanceDue: bal, payments: paymade }, { new: true });
+            await VendorBill.findByIdAndUpdate(vb._id, { balanceDue: bal, payments: paymade, status: "PARTIAL" }, { new: true });
           }
 
           // UPLOAD FILE TO CLOUD 

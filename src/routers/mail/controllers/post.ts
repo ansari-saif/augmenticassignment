@@ -6,7 +6,12 @@ import {
   SaleInvoice,
   CreditNote,
 } from "../../../models";
+import { LandSale } from "../../../models/landSale";
+import { PurchaseOrder } from "../../../models/purchaseOrder";
 import { SalePayment } from "../../../models/salePayment";
+import { VendorBill } from "../../../models/VendorBill";
+import { VendorBillPayment } from "../../../models/vendorBillPayment";
+import { VendorCredit } from "../../../models/vendorCredit";
 import sendMail from "../../../utils/email/nodemailer";
 
 interface mailData {
@@ -17,7 +22,7 @@ interface mailData {
   fileName: string,
   context: any,
   template: string;
-  pdf_url: string;
+  pdf_url?: string;
 }
 
 export async function saleEstimate(req: Request, res: Response) {
@@ -231,3 +236,186 @@ export async function creditNote(req: Request, res: Response) {
     return res.status(200);
   }
 }
+
+// Purchase 
+export async function purchaseBill(req: Request, res: Response) {
+  try {
+    let data: mailData = req.body;
+    if (
+      data.to.length < 1
+      || data.subject === ''
+      || data.fileName === ''
+      || data.body === '' 
+    ) {
+      console.log('error caught')
+      return res.status(200).send({ error: 'Invalid details sent' });
+    };
+
+    const vendorBill: any = await VendorBill.findById(data.id);
+
+    data.context = {
+      billNo: vendorBill?.billNo,
+      billDate: vendorBill?.billDate?.toString().split('05:30:00')[0],
+      subTotal: vendorBill?.subTotal,
+      adjustments: vendorBill?.adjustments?.adjustmentValue,
+      discountAmount: vendorBill?.discountAmount,
+      taxType: vendorBill?.taxType?.toUpperCase(),
+      taxAmount: vendorBill?.taxAmount,
+      payments: vendorBill?.payments,
+      total: vendorBill?.total
+    };
+    data.template = "Pur_Bill";
+    data.pdf_url = vendorBill?.pdf_url;
+
+    const info = await sendMail(data);
+    return res.status(200).send(data);
+
+  } catch (e) {
+    console.log(e)
+    return res.status(200);
+  }
+}
+
+export async function purchaseOrder(req: Request, res: Response) {
+  try {
+    let data: mailData = req.body;
+    if (
+      data.to.length < 1
+      || data.subject === ''
+      || data.fileName === ''
+      || data.body === '' 
+    ) {
+      console.log('error caught')
+      return res.status(200).send({ error: 'Invalid details sent' });
+    };
+
+    const purchaseOrder: any = await PurchaseOrder.findById(data.id);
+
+    data.context = {
+      purchaseOrderNo: purchaseOrder?.purchaseOrderNo,
+      purchareOrderDate: purchaseOrder?.purchareOrderDate?.toString().split('05:30:00')[0],
+      subTotal: purchaseOrder?.subTotal,
+      adjustments: purchaseOrder?.adjustments?.adjustmentValue,
+      discountAmount: purchaseOrder?.discountAmount,
+      taxType: purchaseOrder?.taxType?.toUpperCase(),
+      taxAmount: purchaseOrder?.taxAmount,
+      total: purchaseOrder?.total
+    };
+    data.template = "Pur_Order";
+    data.pdf_url = purchaseOrder?.pdf_url;
+
+    const info = await sendMail(data);
+    return res.status(200).send(data);
+
+  } catch (e) {
+    console.log(e)
+    return res.status(200);
+  }
+}
+
+
+export async function vendorCredit(req: Request, res: Response) {
+  try {
+    let data: mailData = req.body;
+    if (
+      data.to.length < 1
+      || data.subject === ''
+      || data.fileName === ''
+      || data.body === '' 
+    ) {
+      console.log('error caught')
+      return res.status(200).send({ error: 'Invalid details sent' });
+    };
+
+    const vendorCredit: any = await VendorCredit.findById(data.id);
+
+    data.context = {
+      creditOrder: vendorCredit?.creditOrder,
+      vendorCreditDate: vendorCredit?.vendorCreditDate?.toString().split('05:30:00')[0],
+      subTotal: vendorCredit?.subTotal,
+      discountAmount: vendorCredit?.discountAmount,
+      total: vendorCredit?.total,
+      creditUsed: vendorCredit?.creditUsed,
+      balance: vendorCredit?.balance
+    };
+    data.template = "Pur_Credit";
+    data.pdf_url = vendorCredit?.pdf_url;
+
+    const info = await sendMail(data);
+    return res.status(200).send(data);
+
+  } catch (e) {
+    console.log(e)
+    return res.status(200);
+  }
+}
+
+
+export async function vendorPayment(req: Request, res: Response) {
+  try {
+    let data: mailData = req.body;
+    if (
+      data.to.length < 1
+      || data.subject === ''
+      || data.fileName === ''
+      || data.body === '' 
+    ) {
+      console.log('error caught')
+      return res.status(200).send({ error: 'Invalid details sent' });
+    };
+
+    const vendorBillPayment: any = await VendorBillPayment.findById(data.id);
+
+    data.context = {
+      paymentNo: vendorBillPayment?.paymentNo,
+      paymentDate: vendorBillPayment?.paymentDate?.toString().split('05:30:00')[0],
+      paymentMade: vendorBillPayment?.paymentMade,
+      totalPaymentAmount: vendorBillPayment?.totalPaymentAmount,
+    };
+    data.template = "Pur_Payment";
+    data.pdf_url = vendorBillPayment?.pdf_url;
+
+    const info = await sendMail(data);
+    return res.status(200).send(data);
+
+  } catch (e) {
+    console.log(e)
+    return res.status(200);
+  }
+}
+
+
+export async function landSale(req: Request, res: Response) {
+  try {
+    let data: mailData = req.body;
+    if (
+      data.to.length < 1
+      || data.subject === ''
+      || data.body === '' 
+    ) {
+      console.log('error caught')
+      return res.status(200).send({ error: 'Invalid details sent' });
+    };
+
+    const landSale: any = await LandSale.findById(data.id).populate({ path: "projectId", select: "name" });
+
+    data.context = {
+      plotNo: landSale?.plotNo,
+      totalAmount: landSale?.totalAmount,
+      advanceAmount: landSale?.advanceAmount,
+      balanceAmount: landSale?.balanceAmount,
+      project: landSale?.projectId?.name,
+    };
+    data.template = "Land_Sale";
+    data.pdf_url = "";
+    
+    const info = await sendMail(data);
+    
+    return res.status(200).send(data);
+
+  } catch (e) {
+    console.log(e)
+    return res.status(200);
+  }
+}
+

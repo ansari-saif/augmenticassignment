@@ -13,14 +13,14 @@ export default async function controllerGet(req: Request, res: Response) {
         select: "firstName lastName"
       }
     };
-    const vendor = await Vendor.findById(id).populate("expenses projectList").populate(populateObj);
+    const vendor = await (await Vendor.findById(id).populate("expenses projectList").populate(populateObj)).populate("timeline");
     if (vendor) {
       res.json(vendor);
     } else {
       res.status(404).json({ error: "Vendor not found" });
     }
   } else {
-    const vendors = await Vendor.find().populate("expenses");
+    const vendors = await Vendor.find(req.query).populate("expenses").sort({ updatedAt: 1 });
     res.json(vendors);
   }
 }

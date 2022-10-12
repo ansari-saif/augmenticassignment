@@ -1,6 +1,7 @@
 import { Project } from "./project";
 import { Task } from "./task";
 import { Department } from "./department";
+import { EmployeeTask } from "./employeeTask";
 import { Role } from "./role";
 import { CalendarEvent } from "./calendarEvent";
 import { LeaveType } from "./leaveType";
@@ -32,6 +33,7 @@ export {
   Project,
   Task,
   Department,
+  EmployeeTask,
   Role,
   CalendarEvent,
   LeaveType,

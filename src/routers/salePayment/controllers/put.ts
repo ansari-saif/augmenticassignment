@@ -12,7 +12,7 @@ export default async function controllerPut(req: Request, res: Response) {
     res.status(400).json({ errors });
     return;
   }
-  const salePayment = await SalePayment.findByIdAndUpdate(id, data);
+  const salePayment = await SalePayment.findByIdAndUpdate(id, data).populate({ path: 'customer', select: 'displayName billingAddress email' });
   if (!salePayment) {
     return res.status(404).json({ message: "SalePayment not found" });
   }

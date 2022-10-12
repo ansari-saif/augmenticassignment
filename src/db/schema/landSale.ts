@@ -25,6 +25,10 @@ interface ILandSale extends Document {
   dateOfConversion: Date;
   typeOfLand: string;
   remarks: string;
+  fileInfos: {
+    fileName: string;
+    filePath: string;
+  }[];
 }
 
 const landSaleSchema = new Schema<ILandSale>(
@@ -52,6 +56,10 @@ const landSaleSchema = new Schema<ILandSale>(
     dateOfConversion: Date,
     typeOfLand: String,
     remarks: String,
+    fileInfos: [{
+      fileName: String,
+      filePath: String,
+    }],
   }
 )
 

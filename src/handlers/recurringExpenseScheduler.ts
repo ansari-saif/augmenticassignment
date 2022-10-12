@@ -5,7 +5,7 @@ import { calculateNextTime } from "../utils/nextTime";
 
 
 module.exports = async () => {
-  // console.log("in expense sch 1");
+  console.log("in expense sch 1");
   
   let today = moment().format("YYYY-MM-DD")
 
@@ -33,7 +33,8 @@ module.exports = async () => {
       isBillable: nep?.isBillable,
       projectId: nep?.projectId,
       markUpBy: nep?.markUpBy,
-      status: nep?.isBillable ? "UNBILLED" : "NON-BILLABLE"
+      status: nep?.isBillable ? "UNBILLED" : "NON-BILLABLE",
+      recurrExp: nep?._id
     }
     // console.log({ expNextDay, today })
     if(expNextDay == today){
@@ -61,7 +62,8 @@ module.exports = async () => {
       isBillable: mep?.isBillable,
       projectId: mep?.projectId,
       markUpBy: mep?.markUpBy,
-      status: mep?.isBillable ? "UNBILLED" : "NON-BILLABLE"
+      status: mep?.isBillable ? "UNBILLED" : "NON-BILLABLE",
+      recurrExp: mep?._id
     }
 
     const sameOrAfter = moment(expEndtDay).isSameOrAfter(today, "day");

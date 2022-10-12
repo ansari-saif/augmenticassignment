@@ -46,7 +46,7 @@ const salesOrderSchema = new Schema<ISalesOrder>(
     pdf_url: String,
     reference: String,
     grandTotal: Number,
-    status: { type: String, default: 'DRAFT' },
+    status: { type: String, default: 'OPEN' },
     isInvoiced: { type: Boolean, default: false },
     customer:  { type: Schema.Types.ObjectId, ref: "Customer" },
     items: [

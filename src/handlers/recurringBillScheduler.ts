@@ -4,6 +4,7 @@ import { VendorBill } from "../models/VendorBill";
 import { calculateNextTime } from "../utils/nextTime";
 
 module.exports = async () => {
+  console.log("in bill sch")
   let today = moment().format("YYYY-MM-DD");
 
   const recurringBill = await RecurringBill.find();
@@ -21,7 +22,7 @@ module.exports = async () => {
       projectId: neb?.projectId,
       billNo: `BL-${Math.ceil(Math.random()*100000)}`,
       orderNo: `OD-${Math.ceil(Math.random()*100000)}`,
-      billDate : neb?.billStartDate,
+      billDate : moment().format("YYYY-MM-DD"),
       paymentTerms : neb?.paymentTerms,
       discountType : neb?.discountType,
       transaction : neb?.transaction,
@@ -36,7 +37,8 @@ module.exports = async () => {
       total : neb?.total,
       balanceDue: neb?.total,
       status: "OPEN",
-      notes: neb?.notes
+      notes: neb?.notes,
+      recurrBill: neb?._id
     }
 
     if(expNextDay == today){
@@ -56,7 +58,7 @@ module.exports = async () => {
       projectId: meb?.projectId,
       billNo: `BL-${Math.ceil(Math.random()*100000)}`,
       orderNo: `OD-${Math.ceil(Math.random()*100000)}`,
-      billDate : meb?.billStartDate,
+      billDate : moment().format("YYYY-MM-DD"),
       paymentTerms : meb?.paymentTerms,
       discountType : meb?.discountType,
       transaction : meb?.transaction,
@@ -71,7 +73,8 @@ module.exports = async () => {
       total : meb?.total,
       balanceDue: meb?.total,
       status: "OPEN",
-      notes: meb?.notes
+      notes: meb?.notes,
+      recurrBill: meb?._id
     }
 
     const sameOrAfter = moment(billEndtDay).isSameOrAfter(today, "day");

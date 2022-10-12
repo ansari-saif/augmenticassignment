@@ -37,7 +37,7 @@ interface ILead extends Document {
   nextAppointment: Date;
   createdBy: number;
   endDate: Date;
-  project: Types.ObjectId;
+  project: Types.ObjectId[];
   lead: string;
   phone: string;
   address: IAddress;

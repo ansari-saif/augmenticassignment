@@ -21,6 +21,7 @@ export default async function controllerGet(req: Request, res: Response) {
       }
     )
       .populate("jobRole").populate("workLocation").populate("department")
+      .sort({ updatedAt: -1 })
       .limit(parseInt(limit as string))
       .skip(parseInt(limit as string) * (parseInt(page as string) - 1));
     console.log(employees)

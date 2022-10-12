@@ -32,6 +32,7 @@ interface IVendorBill extends Document {
   discountAccount: string;
   discountAmount: number;
   taxSystem: string;
+  tcsTax: Types.ObjectId;
   taxType: string;
   taxAmount: number;
   adjustment: {
@@ -81,6 +82,7 @@ const vendorBillSchema = new Schema<IVendorBill>(
     discountAccount: String,
     discountAmount: Number,
     taxSystem: String,
+    tcsTax: { type: Schema.Types.ObjectId, ref: "Tax" },
     taxType: String,
     taxAmount: Number,
     adjustment: {
@@ -99,6 +101,9 @@ const vendorBillSchema = new Schema<IVendorBill>(
       filePath: String,
     }],
     pdf_url : String,
+  },
+  {
+    timestamps: true
   }
 );
 
@@ -131,7 +136,7 @@ const vendorBillSchema = new Schema<IVendorBill>(
 //   next();
 // });
 
-vendorBillSchema.post("save", async function(next){
+vendorBillSchema.post("save", async function(){
   if(this?.transaction?.length){
     let billtrx = this?.transaction;
     let updatedBilltrx = billtrx?.map(bt => {
@@ -155,10 +160,12 @@ vendorBillSchema.post("save", async function(next){
     const ustockData = [ ...updatedBilltrx ];
 
     const resArr = ustockData;
-    resArr.forEach(async (stk : any) => {
-      const stock = await Stock.create(stk);
-      // console.log(stock);
-    });
+    // resArr.forEach(async (stk : any) => {
+    //   const stock = await Stock.create(stk);
+    //   // console.log(stock);
+    // });
+
+    await Stock.insertMany([ ...resArr ]);
 
     // const res = await httpService.post('/stock/billstock', ustockData);
     // await toast.success("Stock added");
@@ -181,7 +188,7 @@ vendorBillSchema.post("save", async function(next){
   }
 
 
-  next();
+  // next();
 });
 
 // vendorBillSchema.post("save", async function(next){

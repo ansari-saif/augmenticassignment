@@ -55,7 +55,7 @@ const recurringInvoiceSchema = new Schema<IRecurringInvoice>(
     adjustments: Number,
     frequencyUnit: String,
     frequency: Number,
-    status: String,
+    status: { type: String, default: "ACTIVE" },
     neverExpires: {type:Boolean, default: false},
     customer: { type: Schema.Types.ObjectId, ref: "Customer" },
     items: [

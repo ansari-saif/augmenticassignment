@@ -2,6 +2,7 @@
 
 import { Request, Response } from "express";
 import { Customer } from "../../../models";
+import { CustomerTimeline } from "../../../models/customerTimeline";
 import RequestWithUser from "../../../utils/requestWithUser";
 
 export default async function controllerPost(req: Request, res: Response) {
@@ -26,4 +27,16 @@ export default async function controllerPost(req: Request, res: Response) {
     }
     return res.status(201).send(customer);
   });
+}
+
+export async function postTimeline(req: Request, res: Response) {
+  try {
+     
+    const customerTimeline = await CustomerTimeline.create(req.body);
+    return res.status(200).send(customerTimeline);
+
+  } catch (e) {
+    console.log(e);
+    return res.status(400)
+  }
 }

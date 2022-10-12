@@ -11,6 +11,7 @@ import putFile, { deleteFile, updateFile } from "../../../utils/s3"
 import fs from 'fs';
 import { RecurringExpense } from "../../../models/recurringExpense";
 import { RecurringBill } from "../../../models/recurringBill";
+import { VendorTimeline } from "../../../models/vendorTimeline";
 
 
 export const vendorBilldelete = async(req: Request, res: Response) => {
@@ -31,6 +32,14 @@ export const vendorBilldelete = async(req: Request, res: Response) => {
     }
 
     await VendorBill.findByIdAndDelete(req.params.id);
+
+    await VendorTimeline.create({
+      vendor: vendorBill?.vendor, 
+      timelineType: "Bill Deleted",
+      description: `Vendor Bill ${vendorBill?.billNo} Deleted`,
+      // link: "",
+    });
+
     // DELETE PDF TO CLOUD 
     await deleteFile(`${req.params.id}.pdf`);
 
@@ -60,6 +69,13 @@ export const vendorBillPaymentdelete = async(req: Request, res: Response) => {
     }
 
     await VendorBillPayment.findByIdAndDelete(req.params.id);
+
+    await VendorTimeline.create({
+      vendor: vendorBillPayment?.vendorId, 
+      timelineType: "Bill Payment Deleted",
+      description: `Vendor Bill Payment ${vendorBillPayment?.paymentNo} Deleted`,
+      // link: "",
+    });
 
     // DELETE FILE TO CLOUD 
     await deleteFile(`${req.params.id}.pdf`);
@@ -92,6 +108,13 @@ export const vendorPurchaseOrderdelete = async(req: Request, res: Response) => {
 
     await PurchaseOrder.findByIdAndDelete(req.params.id);
 
+    await VendorTimeline.create({
+      vendor: purchaseOrder?.vendorId, 
+      timelineType: "Purchase Order Deleted",
+      description: `Vendor Purchase Order ${purchaseOrder?.purchaseOrderNo} Deleted`,
+      // link: "",
+    });
+
     // DELETE PDF TO CLOUD 
     await deleteFile(`${req.params.id}.pdf`);
 
@@ -123,6 +146,13 @@ export const vendorExpensedelete = async(req: Request, res: Response) => {
 
     await VendorExpense.findByIdAndDelete(req.params.id);
 
+    await VendorTimeline.create({
+      vendor: vendorExpense?.vendorId, 
+      timelineType: "Expense Deleted",
+      description: `Vendor Expense ${vendorExpense?.expenseAccount} Deleted`,
+      // link: "",
+    });
+
     // DELETE FILE TO CLOUD 
     // await deleteFile(`${req.params.id}.pdf`);
 
@@ -153,6 +183,13 @@ export const vendorCreditdelete = async(req: Request, res: Response) => {
     }
 
     await VendorCredit.findByIdAndDelete(req.params.id);
+
+    await VendorTimeline.create({
+      vendor: vendorCredit?.vendorId, 
+      timelineType: "Vendor Credit Deleted",
+      description: `Vendor Credit ${vendorCredit?.creditOrder} Deleted`,
+      // link: "",
+    });
 
     // DELETE FILE TO CLOUD 
     await deleteFile(`${req.params.id}.pdf`);

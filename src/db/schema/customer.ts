@@ -1,4 +1,5 @@
 import { Document, Schema, Types } from "mongoose";
+import { CustomerTimeline } from "../../models/customerTimeline";
 
 interface Address {
   attention: string;
@@ -30,6 +31,7 @@ type invoiceId = Types.ObjectId
 interface ICustomer extends Document {
   customerType: string;
   customerId: string;
+  salutation: string;
   firstName: string;
   lastName: string;
   displayName: string;
@@ -45,6 +47,8 @@ interface ICustomer extends Document {
   facebook: string;
   twitter: string;
   remarks: string;
+  currentAssigned: number;
+  createdBy: number;
   billingAddress: Address;
   shippingAddress: Address;
   contactPersons: Array<contactPersons>;
@@ -55,11 +59,13 @@ interface ICustomer extends Document {
   address: string;
   creditNotes: number[];
   description: string;
+  project: Types.ObjectId[];
 }
 
 const customerSchema = new Schema<ICustomer>(
   {
     customerType: String,
+    salutation: String,
     firstName: String,
     lastName: String,
     displayName: String,
@@ -75,6 +81,8 @@ const customerSchema = new Schema<ICustomer>(
     facebook: String,
     twitter: String,
     remarks: String,
+    currentAssigned: { type: Number, ref: "Employee" },
+    createdBy: { type: Number, ref: "Employee" },
     billingAddress: {
       attention: String,
       addressLine1: String,
@@ -116,10 +124,27 @@ const customerSchema = new Schema<ICustomer>(
       { type: Schema.Types.ObjectId, ref: "SaleInvoice" },
     ],
     description: String,
+    project: [{ type: Schema.Types.ObjectId, ref: "Project" }],
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
+
+customerSchema.pre("remove", async function (next) {
+  // console.log(`Timeline being removed from customer ${this?._id}`);
+  await CustomerTimeline.deleteMany({ customer: this._id });
+  next();
+})
+
+// Reverse populate with virtuals 
+customerSchema.virtual('timeline', {
+  ref: 'CustomerTimeline',
+  localField: '_id',
+  foreignField: 'customer',
+  justOne: false
+});
 
 export { ICustomer, customerSchema };

@@ -178,7 +178,7 @@
         <div class="main__table">
             <table>
                 <thead>
-                    <td>#</td>
+                    <!-- <td>#</td> -->
                     <td>Items & Description</td>
                     <td>Qty</td>
                     <td>Rate</td>
@@ -186,7 +186,7 @@
                 </thead>
                 {{#each this.creditNoteData.items}}
                 <tr>
-                    <td>{{this._id}}</td>
+                    <!-- <td>{{this._id}}</td> -->
                     <td>{{this.item}} - {{this.description}}</td>
                     <td>{{this.quantity}}</td>
                     <td>{{this.unitcost}}</td>
@@ -214,6 +214,15 @@
                     <div class="right bold">Total : </div>
                     <div class="bold">₹{{this.creditNoteData.grandTotal}}</div>
                 </div>
+                <div class="flex justify-between w-200">
+                    <div class="right bold">Credit Used : </div>
+                    <div class="bold">₹{{this.creditNoteData.creditUsed}}</div>
+                </div>
+                <div class="flex justify-between w-200 bg-gray">
+                    <div class="right bold">Credit Remaining : </div>
+                    <div class="bold">₹{{this.creditNoteData.balance}}</div>
+                </div>
+                
             </div>
         </div>
 
