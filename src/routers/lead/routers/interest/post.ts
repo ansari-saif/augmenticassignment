@@ -36,10 +36,10 @@ export default async function controllerPost(req: Request, res: Response) {
       message: "Plot not found",
     });
   }
-  leadPlot.leadsInfo.push({
-    leadType: leadInterst.leadType,
-    lead: lead._id,
-  });
+//   leadPlot.leadsInfo.push({
+//     leadType: leadInterst.leadType,
+//     lead: lead._id,
+//   });
   await lead.save();
   await project.save();
   return res.status(200).json({
