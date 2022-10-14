@@ -29,7 +29,11 @@ interface IRecurringInvoice extends Document {
   termsAndConditions: string;
   childInvoices: [Types.ObjectId];
   status: string;
-  // 
+  discountVarient: {
+    discountType: string;
+    discountValue: number;
+  };
+  //
   paidAmount: number;
   withholdingTax: number;
   terms: string;
@@ -48,7 +52,7 @@ const recurringInvoiceSchema = new Schema<IRecurringInvoice>(
     orderNumber: String,
     termsAndConditions: String,
     profileName: String,
-    project: { type: Schema.Types.ObjectId, ref: 'Project' },
+    project: { type: Schema.Types.ObjectId, ref: "Project" },
     grandTotal: Number,
     paidAmount: { type: Number, default: 0 },
     withholdingTax: { type: Number, default: 0 },
@@ -56,8 +60,12 @@ const recurringInvoiceSchema = new Schema<IRecurringInvoice>(
     frequencyUnit: String,
     frequency: Number,
     status: { type: String, default: "ACTIVE" },
-    neverExpires: {type:Boolean, default: false},
+    neverExpires: { type: Boolean, default: false },
     customer: { type: Schema.Types.ObjectId, ref: "Customer" },
+    discountVarient: {
+      discountType: String,
+      discountValue: Number,
+    },
     items: [
       {
         item: String,
@@ -69,9 +77,9 @@ const recurringInvoiceSchema = new Schema<IRecurringInvoice>(
     ],
     childInvoices: [
       {
-        id: { type: Schema.Types.ObjectId, ref: "SaleInvoice", default: '' },
-      }
-    ]
+        id: { type: Schema.Types.ObjectId, ref: "SaleInvoice", default: "" },
+      },
+    ],
   },
   { timestamps: true }
 );

@@ -14,13 +14,12 @@ interface InoviceDetails {
   credited: number;
 }
 
-
 interface ICreditNote extends Document {
   customer: Types.ObjectId;
   creditDate: Date;
   creditNote: string;
   customerNotes: string;
-  discount: string; 
+  discount: string;
   grandTotal: number;
   items: Item[];
   amount: number;
@@ -36,6 +35,10 @@ interface ICreditNote extends Document {
   termsAndConditions: string;
   associatedInvoice: number;
   employee: number;
+  discountVarient: {
+    discountType: string;
+    discountValue: number;
+  };
 }
 //  todo: add population function for invoice
 const creditNoteSchema = new Schema<ICreditNote>(
@@ -78,6 +81,10 @@ const creditNoteSchema = new Schema<ICreditNote>(
     employee: {
       type: Number,
       ref: "Employee",
+    },
+    discountVarient: {
+      discountType: String,
+      discountValue: Number,
     },
   },
   {
