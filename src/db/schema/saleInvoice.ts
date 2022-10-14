@@ -11,7 +11,7 @@ interface Item {
 }
 
 interface CreditDetails {
-  id: Types.ObjectId,
+  id: Types.ObjectId;
   credited: number;
 }
 
@@ -51,11 +51,15 @@ interface ISaleInvoice extends Document {
   adjustments: number;
   taxType: string;
   taxationAmount: number;
-  taxationPercentage: number
+  taxationPercentage: number;
   tcsTax: Types.ObjectId;
   tdsType: string;
   status: string;
-  // 
+  discountVarient: {
+    discountType: string;
+    discountValue: number;
+  };
+  //
 }
 
 const saleInvoiceSchema = new Schema<ISaleInvoice>(
@@ -76,29 +80,35 @@ const saleInvoiceSchema = new Schema<ISaleInvoice>(
     pdf_url: String,
     withholdingTax: { type: Number, default: 0 },
     balance: Number,
-    paymentReceived: [{
-      id: { type: Schema.Types.ObjectId, ref: 'SalePayment' },
-      payment: String,
-      paymentMode: String,
-      amount: Number,
-    }],
+    paymentReceived: [
+      {
+        id: { type: Schema.Types.ObjectId, ref: "SalePayment" },
+        payment: String,
+        paymentMode: String,
+        amount: Number,
+      },
+    ],
     adjustments: Number,
     taxType: String,
     taxationAmount: Number,
     taxationPercentage: Number,
     tcsTax: { type: Schema.Types.ObjectId, ref: "Tax" },
     tdsType: String,
-    expense: { type: Schema.Types.ObjectId, ref: 'VendorExpense' },  
-    estimate: { type: Schema.Types.ObjectId, ref: 'saleEstimate' }, 
-    salesOrder: { type: Schema.Types.ObjectId, ref: 'saleOrder' },  
-    deliveryChallan: { type: Schema.Types.ObjectId, ref: 'deliveryChallan' },  
+    expense: { type: Schema.Types.ObjectId, ref: "VendorExpense" },
+    estimate: { type: Schema.Types.ObjectId, ref: "saleEstimate" },
+    salesOrder: { type: Schema.Types.ObjectId, ref: "saleOrder" },
+    deliveryChallan: { type: Schema.Types.ObjectId, ref: "deliveryChallan" },
     customer: { type: Schema.Types.ObjectId, ref: "Customer" },
     credits: { type: Number, default: 0 },
+    discountVarient: {
+      discountType: String,
+      discountValue: Number,
+    },
     creditDetails: [
       {
-        id: { type: Schema.Types.ObjectId, ref: 'CreditNotes' },
+        id: { type: Schema.Types.ObjectId, ref: "CreditNotes" },
         credited: Number,
-      }
+      },
     ],
     items: [
       {
@@ -109,14 +119,14 @@ const saleInvoiceSchema = new Schema<ISaleInvoice>(
         amount: Number,
       },
     ],
-    status: { type: String, default: 'OPEN' },
+    status: { type: String, default: "OPEN" },
   },
   { timestamps: true }
 );
 
-saleInvoiceSchema.pre('save', async function(next){
+saleInvoiceSchema.pre("save", async function (next) {
   this.balance = this.grandTotal;
   next();
-})
+});
 
 export { ISaleInvoice, saleInvoiceSchema };
