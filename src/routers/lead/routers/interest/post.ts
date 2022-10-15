@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Lead, Project } from "../../../../models";
 
 export default async function controllerPost(req: Request, res: Response) {
+  console.log("its impro1")
   const { id } = req.params;
   const leadInterst = req.body;
   if (!leadInterst.project || !leadInterst.plot) {
@@ -36,10 +37,11 @@ export default async function controllerPost(req: Request, res: Response) {
       message: "Plot not found",
     });
   }
-  leadPlot.leadsInfo.push({
-    leadType: leadInterst.leadType,
-    lead: lead._id,
-  });
+  console.log("its impro")
+  // leadPlot.leadsInfo.push({
+  //   leadType: leadInterst?.leadType,
+  //   lead: lead?._id,
+  // });
   await lead.save();
   await project.save();
   return res.status(200).json({
