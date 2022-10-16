@@ -31,6 +31,10 @@ interface ISaleEstimate extends Document {
   grandTotal: number;
   customer: Types.ObjectId; 
   pdf_url?:string;
+  discountVarient: {
+    discountType: string;
+    discountValue: number;
+  };
 }
 
 const saleEstimateSchema = new Schema(
@@ -52,6 +56,10 @@ const saleEstimateSchema = new Schema(
     subject: String,
     status: { type: String, default: 'OPEN' },
     grandTotal: Number,
+    discountVarient: {
+      discountType: String,
+      discountValue: Number,
+    },
     customer: { type: Schema.Types.ObjectId, ref: "Customer" },
     items: [
       {
