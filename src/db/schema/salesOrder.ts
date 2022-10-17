@@ -28,6 +28,11 @@ interface ISalesOrder extends Document {
   reference: string;
   grandTotal: number;
   customer: Types.ObjectId; 
+  //
+  discountVarient: {
+    discountType: string;
+    discountValue: number;
+  };
 }
 
 const salesOrderSchema = new Schema<ISalesOrder>(
@@ -46,6 +51,10 @@ const salesOrderSchema = new Schema<ISalesOrder>(
     pdf_url: String,
     reference: String,
     grandTotal: Number,
+    discountVarient: {
+      discountType: String,
+      discountValue: Number,
+    },
     status: { type: String, default: 'OPEN' },
     isInvoiced: { type: Boolean, default: false },
     customer:  { type: Schema.Types.ObjectId, ref: "Customer" },

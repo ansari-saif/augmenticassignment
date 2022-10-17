@@ -29,9 +29,11 @@ export default async function controllerGet(req: Request, res: Response) {
 }
 
 export async function controllerGetByEmployee(req: Request, res: Response) {
+  
   const { id } = req.params;
   if (id) {
-    const leads: any = await Lead.find({ currentAssigned: id })
+    // const leads: any = await Lead.find({ currentAssigned: id })
+    const leads: any = await Lead.find({ createdBy : id })
       .populate('createdBy')
       .populate('assignedTo')
       .populate('currentAssigned')
@@ -40,6 +42,7 @@ export async function controllerGetByEmployee(req: Request, res: Response) {
     if (!leads) {
       return res.status(404).send({ message: "Lead not found" });
     } else {
+      
       return res.status(200).send(leads);
     }
   } else {
