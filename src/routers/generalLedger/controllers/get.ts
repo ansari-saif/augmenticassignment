@@ -5,7 +5,7 @@ import { GeneralLedger } from "../../../models/generalLedger";
 
 
 export default async function generalLedgerGet(req: Request, res: Response) {
-  const generalLedger = await GeneralLedger.find();
+  const generalLedger = await GeneralLedger.find(req.query).populate({ path: "vendor", select: "name" }).populate({ path: "customer", select: "displayName" }).populate({ path: "employee", select: "name" });
   res.status(200).json(generalLedger);
 }
 
