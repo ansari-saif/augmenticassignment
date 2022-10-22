@@ -54,6 +54,8 @@ interface EmployeeActivity {
 
 interface PersonalInformation {
   passportNo: String;
+  pfno: String;
+  esino: String;
   passportExp: Date;
   phoneNo: String;
   nationality: String;
@@ -103,7 +105,7 @@ interface IEmployee extends Document {
     fileName: string;
     filePath: string;
   }[];
-  profile_url?:{
+  profile_url?: {
     fileName: string;
     filePath: string;
   };
@@ -152,6 +154,8 @@ const employeeSchema = new Schema<IEmployee>(
     ticketsAssigned: [{ type: Schema.Types.ObjectId, ref: "Ticket" }],
     personalInformation: {
       passportNo: String,
+      pfno: String,
+      esino: String,
       passportExp: Date,
       phoneNo: String,
       nationality: String,
@@ -234,15 +238,19 @@ const employeeSchema = new Schema<IEmployee>(
         phone: String,
       },
     ],
-    certFile: [{
-      fileName: String,
-      filePath: String,
-    }],
-    fileInfos: [{
-      fileName: String,
-      filePath: String,
-    }],
-    profile_url : {
+    certFile: [
+      {
+        fileName: String,
+        filePath: String,
+      },
+    ],
+    fileInfos: [
+      {
+        fileName: String,
+        filePath: String,
+      },
+    ],
+    profile_url: {
       fileName: String,
       filePath: String,
     },
@@ -260,9 +268,9 @@ employeeSchema.pre("save", function (next) {
   } else next();
 });
 
-employeeSchema.pre("save", function(next) {
+employeeSchema.pre("save", function (next) {
   this.name = `${this?.firstName} ${this?.lastName}`;
   next();
-})
+});
 
 export { IEmployee, employeeSchema };

@@ -1,11 +1,10 @@
-
 import moment from "moment";
 import { Document, Types, Schema } from "mongoose";
 import { GeneralLedger } from "../../models/generalLedger";
 import { Employee } from "../../models/employee";
 
 interface IPayroll extends Document {
-  employeeId : number;
+  employeeId: number;
   fromDate: Date;
   toDate: Date;
   salaryRate: {
@@ -39,76 +38,82 @@ interface IPayroll extends Document {
   };
   netSalary: number;
   description: string;
-};
+  connfirm: number;
+}
 
-const payrollSchema = new Schema<IPayroll>({
-  employeeId : {
-    type: Number, ref: "Employee"
+const payrollSchema = new Schema<IPayroll>(
+  {
+    employeeId: {
+      type: Number,
+      ref: "Employee",
+    },
+    fromDate: Date,
+    toDate: Date,
+    connfirm: Number,
+    salaryRate: {
+      basicSalary: Number,
+      DA: Number,
+      HRA: Number,
+      totalSalary: Number,
+    },
+    attendance: {
+      present: Number,
+      paidLeave: Number,
+      weeklyOff: Number,
+      festival: Number,
+      paidDays: Number,
+    },
+    earnedSalary: {
+      eBasicSalary: Number,
+      eDA: Number,
+      eHRA: Number,
+      incentive: Number,
+      totalEarned: Number,
+    },
+    deduction: {
+      esiAmount: Number,
+      PF: Number,
+      advanceAmt: Number,
+      TDS: Number,
+      LWF: Number,
+      professionalTax: Number,
+      totalDeduction: Number,
+    },
+    netSalary: Number,
+    description: String,
   },
-  fromDate: Date,
-  toDate: Date,
-  salaryRate: {
-    basicSalary: Number,
-    DA: Number,
-    HRA: Number,
-    totalSalary: Number,
-  },
-  attendance: {
-    present: Number,
-    paidLeave: Number,
-    weeklyOff: Number,
-    festival: Number,
-    paidDays: Number,
-  },
-  earnedSalary: {
-    eBasicSalary: Number,
-    eDA: Number,
-    eHRA: Number,
-    incentive: Number,
-    totalEarned: Number,
-  },
-  deduction: {
-    esiAmount: Number,
-    PF: Number,
-    advanceAmt: Number,
-    TDS: Number,
-    LWF: Number,
-    professionalTax: Number,
-    totalDeduction: Number,
-  },
-  netSalary: Number,
-  description: String,
-}, 
-{
-  timestamps: true
-});
+  {
+    timestamps: true,
+  }
+);
 
-payrollSchema.post("save", async function(next){
-
+payrollSchema.post("save", async function (next) {
   const emp = await Employee.findById(this?.employeeId);
   const tt = 0 - this?.netSalary;
   const gl = {
     date: moment().format("YYYY-MM-DD"),
-    journalId: `JL-${Math.ceil(Math.random()*100000)}`,
-    referenceId: `RTX-${Math.ceil(Math.random()*100000)}`,
+    journalId: `JL-${Math.ceil(Math.random() * 100000)}`,
+    referenceId: `RTX-${Math.ceil(Math.random() * 100000)}`,
     notes: "payroll",
-    journalType : "payed",
+    journalType: "payed",
     currency: "INR",
     category: "employee",
-    clientName: { 
+    clientName: {
       userId: this?.employeeId,
-      name: emp?.name
+      name: emp?.name,
     },
-    transaction: [{
-      account: "cash",
-      description: "Payroll Payment",
-      debits: this?.netSalary,
-      credits: 0
-    }],
-    total: tt
-  }
-  await GeneralLedger.create(gl)
+    transaction: [
+      {
+        account: "cash",
+        description: "Payroll Payment",
+        debits: this?.netSalary,
+        credits: 0,
+      },
+    ],
+    total: tt,
+  };
+  await GeneralLedger.create(gl);
   next();
-})
+});
 
 export { IPayroll, payrollSchema };
