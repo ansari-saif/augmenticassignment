@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
-import { Customer, Lead, Project, SaleInvoice } from "../../../models";
+import { Customer, Lead, Project, SaleEstimate, SaleInvoice } from "../../../models";
 import { LeadStatus } from "../../../models/LeadStatus";
-import { generateSaleInvoicePDF } from "../../../utils/pdf-generation/generatePDF";
+import { generateSaleEstimatePDF, generateSaleInvoicePDF } from "../../../utils/pdf-generation/generatePDF";
 import RequestWithUser from "../../../utils/requestWithUser";
 import putFile from "../../../utils/s3";
 import fs from 'fs';
 import { CustomerTimeline } from "../../../models/customerTimeline";
+import moment from "moment";
 
 export default async function controllerPut(
   req: RequestWithUser,
@@ -34,19 +35,19 @@ export async function controllerStatusPut(
     try {
       let { project, status, plot, lead, leadcustomer } = req.body;
       const leadStatus = await LeadStatus.find();
-      if (status === 'Lead Won') {
+      if (status === 'Won') {
         if(leadcustomer) {
 
           const subPlot = project.subPlots.find((p: any) => p._id === plot._id);
           subPlot.leadsInfo.forEach((l: any) => {
             if (l.lead) {
-              l.leadType = 'Lead Lost'
+              l.leadType = 'Lost'
             }
             if (l.customer !== leadcustomer) {
-              l.leadType = 'Lead Lost'
+              l.leadType = 'Lost'
             }
             if (l.customer === leadcustomer) {
-              l.leadType = 'Lead Won'
+              l.leadType = 'Won'
             }
 
           });
@@ -56,7 +57,7 @@ export async function controllerStatusPut(
           customer = await Customer.findById(leadcustomer);
           
 
-          const leadId: any = leadStatus.filter((v,i) => v.name === 'Lead Won');
+          const leadId: any = leadStatus.filter((v,i) => v.name === 'Won');
 
           await CustomerTimeline.create({
             customer: leadcustomer, 
@@ -71,7 +72,7 @@ export async function controllerStatusPut(
 
           const updateProject = await Project.findByIdAndUpdate(id, project);
           // Invoice
-          await createInvoice(project, plot, lead, customer, req);
+          await createEstimate(project, plot, lead, customer, req);
           return res.status(200).json(customer);
 
         } else{
@@ -79,13 +80,13 @@ export async function controllerStatusPut(
           // const subPlot = project.subPlots.find((p: any) => p._id === plot._id);
           // subPlot.leadsInfo.forEach((l: any) => {
           //   if (l.customer) {
-          //     l.leadType = 'Lead Lost'
+          //     l.leadType = 'Lost'
           //   }
           //   if (l.lead !== lead) {
-          //     l.leadType = 'Lead Lost'
+          //     l.leadType = 'Lost'
           //   }
           //   if (l.lead === lead) {
-          //     l.leadType = 'Lead Won'
+          //     l.leadType = 'Won'
           //   }
           // });
           // subPlot.sold = true;
@@ -124,13 +125,13 @@ export async function controllerStatusPut(
           const subPlot = project.subPlots.find((p: any) => p._id === plot._id);
           subPlot.leadsInfo.forEach((l: any) => {
             if (l.customer) {
-              l.leadType = 'Lead Lost'
+              l.leadType = 'Lost'
             }
             if (l.lead !== lead) {
-              l.leadType = 'Lead Lost'
+              l.leadType = 'Lost'
             }
             if (l.lead === lead) {
-              l.leadType = 'Lead Won';
+              l.leadType = 'Won';
               l.customer = customer?._id;
               l.isCustomer = true;
               // l.lead = undefined;
@@ -150,7 +151,7 @@ export async function controllerStatusPut(
 
           await CustomerTimeline.insertMany([ ...newCustTimeline ]);
 
-          const leadId: any = leadStatus.filter((v,i) => v.name === 'Lead Won');
+          const leadId: any = leadStatus.filter((v,i) => v.name === 'Won');
           await Lead.findByIdAndUpdate(lead, {
             customer: customer._id,
             status: leadId[0]._id.toString(),
@@ -203,7 +204,7 @@ export async function controllerStatusPut(
           });
 
           // Invoice
-          await createInvoice(project, plot, lead, customer, req);
+          await createEstimate(project, plot, lead, customer, req);
 
           await Lead.findByIdAndDelete(lead);
 
@@ -241,9 +242,76 @@ export async function controllerStatusPut(
   }
 }
 
+const createEstimate: any = async (project: any, plot: any, lead: any, customer: any, req: any) => {
+  let est;
+  const latest: any = await SaleEstimate.find({}).sort({_id: -1}).limit(1);
+    if (latest.length > 0 && latest[latest.length-1].estimate) {
+      est = `EST-${parseInt(latest[0].estimate.split('-')[1])+1}`;
+    } else {
+      est = 'EST-1';
+    }
+
+  const date = moment().format("YYYY-MM-DD");
+
+  const data = {
+    estimate: est,
+    employee: req?.user?.id,
+    customer: customer?._id,
+    project: project?._id,
+    plot: plot?.name,
+    estimateDate: date,
+    items: [{
+      item: plot?.name,
+      description: project.name,
+      quantity: 1,
+      unitCost: Number(plot?.cost),
+      amount: Number(plot?.cost),
+    }],
+    discount: 0,
+    taxAmount: 0,
+    adjustment: 0,
+    discountVarient: {
+      discountType: "percent",
+      discountValue: 0
+    },
+    amount: Number(plot?.cost),
+    grandTotal: Number(plot?.cost), 
+  };
+
+  try {
+    const estimate : any  = await SaleEstimate.create(data);
+
+    await CustomerTimeline.create({
+      customer: estimate?.customer, 
+      timelineType: "Estimate Created",
+      description: `Estimate ${estimate?.estimate} created`,
+      // link: "",
+    });
+
+    const uploadedEstimate = await SaleEstimate.findOne({ _id: estimate._id }).populate(["customer", "tax"]);
+    const pathToFile = await generateSaleEstimatePDF(uploadedEstimate.toJSON());
+    const file = await fs.readFileSync(pathToFile);
+    await putFile(file, `${uploadedEstimate._id}.pdf`);
+    const saleEstimate = await SaleEstimate.findByIdAndUpdate(
+      uploadedEstimate._id, 
+      { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedEstimate._id}.pdf` },
+      { new: true }
+    ).populate({ path: 'customer', select: 'displayName billingAddress email' });
+    await fs.rmSync(pathToFile);
+
+  } catch (e) {
+    console.log(e)
+  }
+}
+
 const createInvoice: any = async (project: any, plot: any, lead: any, customer: any, req: any) => {
   const latest: any = await SaleInvoice.find({}).sort({ _id: -1 }).limit(1);
-  const inv = `INV-${parseInt(latest[0].invoice.split('-')[1])+1}`;
+  let inv;
+  if(latest.lenght){
+    inv = `INV-${parseInt(latest[0]?.invoice?.split('-')[1])+1}`;
+  } else{
+    inv = `INV-1`;
+  }
   const today = new Date();
   const date = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`
   const invoice = {

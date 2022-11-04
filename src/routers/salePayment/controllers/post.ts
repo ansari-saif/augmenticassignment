@@ -1,7 +1,7 @@
 // create an express post route for the salePayment model
 
 import { Request, Response } from "express";
-import { Customer, SaleInvoice } from "../../../models";
+import { Customer, Project, SaleInvoice } from "../../../models";
 import { SalePayment } from "../../../models/salePayment";
 import { generateSalePayment } from "../../../utils/pdf-generation/generatePDF";
 import { validatePayment } from "../../../validators";
@@ -75,7 +75,36 @@ export default async function controllerPost(req: Request, res: Response) {
       let balanceDue = invoiceData?.grandTotal - invoiceData?.paidAmount - invoiceData?.withholdingTax;
       invoiceData.balance = balanceDue;
       invoiceData.status = balanceDue <= 0 ? "PAID" : "PARTIAL";
-      const updatedInvoice = await SaleInvoice.findByIdAndUpdate(invoiceData._id, invoiceData);      
+      const updatedInv = await SaleInvoice.findByIdAndUpdate(invoiceData._id, invoiceData, { new : true });
+      const updatedInvoice : any = await SaleInvoice.findById(updatedInv?._id).populate("project");
+      // console.log("populate", updatedInvoice);
+      if(updatedInvoice?.status == "PAID"){
+        if(updatedInvoice?.plot){
+          console.log("I am In ");
+
+          const subPlot = await updatedInvoice?.project.subPlots.find((p: any) => p.name == updatedInvoice?.plot);
+          console.log({ subPlot })
+          // let projectSubPlots = leadProject.subPlots;
+
+          subPlot.leadsInfo.forEach((l: any) => {
+            console.log(l.customer, updatedInvoice.customer);
+            if (l.customer?.toHexString() == updatedInvoice.customer?.toHexString()) {
+              console.log("inside");
+              l.leadType = 'Registration'
+            }
+          });
+
+          console.log("sub", subPlot);
+
+          updatedInvoice.project.subPlots[updatedInvoice.project.subPlots.findIndex((p: any) => p.name == updatedInvoice.plot)] = subPlot;
+
+          console.log("subPlots", updatedInvoice.project.subPlots[updatedInvoice.project.subPlots.findIndex((p: any) => p.name == updatedInvoice.plot)]);
+
+          
+          const updateProject = await Project.findByIdAndUpdate(updatedInvoice.project?._id, {subPlots: updatedInvoice.project.subPlots}, {new: true});
+          console.log("updateProject", updateProject?.subPlots);
+        }
+      }
     };
 
     const uploadedPayemnt = await SalePayment.findById(salePayment._id).populate(["customer"]);

@@ -30,6 +30,7 @@ interface ISaleInvoice extends Document {
   dueDate: Date;
   employee: Number;
   project: Types.ObjectId;
+  plot: String;
   grandTotal: number;
   paidAmount: number;
   withholdingTax: number;
@@ -66,6 +67,7 @@ const saleInvoiceSchema = new Schema<ISaleInvoice>(
   {
     employee: { type: Number, ref: "Employee" },
     project: { type: Schema.Types.ObjectId, ref: "Project" },
+    plot: {type: String, default: ""},
     invoiceDate: Date,
     dueDate: Date,
     discount: String,

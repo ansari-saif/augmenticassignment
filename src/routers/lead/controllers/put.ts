@@ -46,7 +46,7 @@ export default async function controllerPut(
     // }
     try {
       const leadData: any = await Lead.findById(id);
-      console.log(leadData);
+      // console.log(leadData);
       if (leadData.currentAssigned !== data.currentAssigned) {
         data.activities = leadData.activities;
         data.activities.push({
