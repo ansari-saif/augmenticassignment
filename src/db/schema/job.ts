@@ -9,7 +9,7 @@ interface IJob extends Document {
   salaryFrom: number;
   salaryTo: number;
   jobType: string;
-  status: boolean;
+  status: Boolean;
   startDate: Date;
   endDate: Date;
   description: string;

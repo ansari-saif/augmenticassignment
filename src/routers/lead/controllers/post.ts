@@ -7,8 +7,8 @@ export default async function controllerPost(
   res: Response
 ) {
   const data = req.body;
-  console.log('request')
-  console.log(data);
+  // console.log('request')
+  // console.log(data);
   const lead = await Lead.create(data);
   res.status(200).json(lead);
 }
