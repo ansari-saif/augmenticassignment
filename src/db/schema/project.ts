@@ -47,6 +47,7 @@ interface IProject extends Document {
   priority: PRIORITY;
   progress: number;
   type: string;
+  subtype: string;
   createdBy: number;
   estimatedCost: number;
   costPerSqFeet: number;
@@ -74,6 +75,7 @@ const projectSchema = new Schema<IProject>(
     priority: { type: String, enum: Object.values(PRIORITY) },
     progress: Number,
     type: String,
+    subtype: String,
     costPerSqFeet: Number,
     createdBy: { type: Number, ref: "Employee" },
     layout: String,

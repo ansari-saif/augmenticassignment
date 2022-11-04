@@ -21,6 +21,7 @@ interface ISalePayment extends Document {
   bankCharges: number;
   depositTo: string;
   excessAmount: number;
+  // unUsedAmount: number;
   ifTax: boolean;
   notes: string;
   paymentNumber: string;
@@ -48,6 +49,7 @@ const salePaymentSchema = new Schema<ISalePayment>(
     bankCharges: { type: Number, default: 0 },
     depositTo: String,
     excessAmount: { type: Number, default: 0 },
+    // unUsedAmount: { type: Number, default: 0 },
     ifTax: Boolean,
     notes: String,
     paymentNumber: String,

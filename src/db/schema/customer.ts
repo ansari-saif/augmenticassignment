@@ -41,6 +41,7 @@ interface ICustomer extends Document {
   companyName: string;
   website: string;
   pan: string;
+  gst: string;
   openingBalance: number;
   paidBalance: number;
   withholdingTax: number;
@@ -75,6 +76,7 @@ const customerSchema = new Schema<ICustomer>(
     companyName: String,
     website: String,
     pan: String,
+    gst: String,
     openingBalance: { type: Number, default: 0 },
     paidBalance: { type: Number, default: 0 },
     withholdingTax: { type: Number, default: 0 },
