@@ -42,6 +42,8 @@ export const vendorBillPost = async(req: Request, res: Response) => {
     res.status(200).json(vendorBill);
     
   } catch (err) {
+    console.log(err);
+    // console.log(err?.message);
     res.status(500).json({ msg: "Server Error: Bill wasn't created" })
   }
 
