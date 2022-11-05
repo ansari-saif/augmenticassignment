@@ -39,7 +39,7 @@ export default async function controllerPost(
     const pathToFile = await generateSaleInvoicePDF(uploadedInvoice.toJSON())
     const file = await fs.readFileSync(pathToFile);
     await putFile(file, `${uploadedInvoice._id}.pdf`);
-    const invoice = await SaleInvoice.findByIdAndUpdate(uploadedInvoice._id, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedInvoice._id}.pdf` }, { new: true}).populate({ path: 'customer', select: 'displayName billingAddress email' });
+    const invoice = await SaleInvoice.findByIdAndUpdate(uploadedInvoice._id, { pdf_url: `https://knmulti.fra1.digitaloceanspaces.com/${uploadedInvoice._id}.pdf` }, { new: true}).populate({ path: 'customer', select: 'displayName billingAddress email' }).populate("project");
     await fs.rmSync(pathToFile);
     res.status(200).send(invoice);
   } catch (e) {

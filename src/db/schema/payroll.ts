@@ -1,11 +1,10 @@
-
 import moment from "moment";
 import { Document, Types, Schema } from "mongoose";
 import { GeneralLedger } from "../../models/generalLedger";
 import { Employee } from "../../models/employee";
 
 interface IPayroll extends Document {
-  employeeId : number;
+  employeeId: number;
   fromDate: Date;
   toDate: Date;
   salaryRate: {
@@ -40,7 +39,8 @@ interface IPayroll extends Document {
   netSalary: number;
   connfirm:number;
   description: string;
-};
+  connfirm: number;
+}
 
 const payrollSchema = new Schema<IPayroll>({
   employeeId : {
@@ -113,5 +113,6 @@ const payrollSchema = new Schema<IPayroll>({
 //   await GeneralLedger.create(gl)
 //   next();
 // })
+
 
 export { IPayroll, payrollSchema };
