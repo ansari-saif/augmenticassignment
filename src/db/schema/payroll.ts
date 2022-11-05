@@ -39,7 +39,6 @@ interface IPayroll extends Document {
   netSalary: number;
   connfirm:number;
   description: string;
-  connfirm: number;
 }
 
 const payrollSchema = new Schema<IPayroll>({
