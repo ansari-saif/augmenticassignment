@@ -10,12 +10,14 @@ import {
   controllerPostLandDivisionCSV,
   controllerStatusPut,
 } from "./controllers";
+import { controllerGetAllStatus } from "./controllers/get";
 import taskRouter from "./routers";
 
 const projectRouter = Router();
 
 projectRouter.use("/tasks", taskRouter);
 
+projectRouter.get("/allstatus", controllerGetAllStatus);
 projectRouter.get("/", controllerGet);
 projectRouter.get("/:id", controllerGet);
 projectRouter.post("/", controllerPost);
