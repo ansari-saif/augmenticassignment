@@ -37,51 +37,51 @@ interface IPayroll extends Document {
     totalDeduction: number;
   };
   netSalary: number;
+  connfirm:number;
   description: string;
   connfirm: number;
 }
 
-const payrollSchema = new Schema<IPayroll>(
-  {
-    employeeId: {
-      type: Number,
-      ref: "Employee",
-    },
-    fromDate: Date,
-    toDate: Date,
-    connfirm: Number,
-    salaryRate: {
-      basicSalary: Number,
-      DA: Number,
-      HRA: Number,
-      totalSalary: Number,
-    },
-    attendance: {
-      present: Number,
-      paidLeave: Number,
-      weeklyOff: Number,
-      festival: Number,
-      paidDays: Number,
-    },
-    earnedSalary: {
-      eBasicSalary: Number,
-      eDA: Number,
-      eHRA: Number,
-      incentive: Number,
-      totalEarned: Number,
-    },
-    deduction: {
-      esiAmount: Number,
-      PF: Number,
-      advanceAmt: Number,
-      TDS: Number,
-      LWF: Number,
-      professionalTax: Number,
-      totalDeduction: Number,
-    },
-    netSalary: Number,
-    description: String,
+const payrollSchema = new Schema<IPayroll>({
+  employeeId : {
+    type: Number, ref: "Employee"
   },
+  
+  fromDate: Date,
+  toDate: Date,
+  salaryRate: {
+    basicSalary: Number,
+    DA: Number,
+    HRA: Number,
+    totalSalary: Number,
+  },
+  attendance: {
+    present: Number,
+    paidLeave: Number,
+    weeklyOff: Number,
+    festival: Number,
+    paidDays: Number,
+  },
+  earnedSalary: {
+    eBasicSalary: Number,
+    eDA: Number,
+    eHRA: Number,
+    incentive: Number,
+    totalEarned: Number,
+  },
+  deduction: {
+    esiAmount: Number,
+    PF: Number,
+    advanceAmt: Number,
+    TDS: Number,
+    LWF: Number,
+    professionalTax: Number,
+    totalDeduction: Number,
+  },
+  netSalary: Number,
+  connfirm: Number,
+  description: String,
+}, 
 {
   timestamps: true
 });
