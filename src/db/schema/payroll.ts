@@ -38,6 +38,7 @@ interface IPayroll extends Document {
     totalDeduction: number;
   };
   netSalary: number;
+  connfirm:number;
   description: string;
 };
 
@@ -45,6 +46,7 @@ const payrollSchema = new Schema<IPayroll>({
   employeeId : {
     type: Number, ref: "Employee"
   },
+  
   fromDate: Date,
   toDate: Date,
   salaryRate: {
@@ -77,6 +79,7 @@ const payrollSchema = new Schema<IPayroll>({
     totalDeduction: Number,
   },
   netSalary: Number,
+  connfirm: Number,
   description: String,
 }, 
 {
