@@ -24,6 +24,13 @@ interface subPlot extends Document {
   other: string;
   cost: string;
   description: string;
+  revenuePlot: [{
+    name: string;
+    area: number;
+    percent: number;
+    cost: number;
+    description: string;
+  }];
   component: {
     x: string;
     y: string;
@@ -101,6 +108,13 @@ const projectSchema = new Schema<IProject>(
         other: { type: String, default: 0 },
         cost: String,
         description:String,
+        revenuePlot: [{
+          name: String,
+          area: Number,
+          percent: Number,
+          cost: Number,
+          description: String
+        }],
         component: {
           x: String,
           y: String,
