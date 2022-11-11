@@ -5,11 +5,13 @@ import {
   controllerPost,
   controllerPut,
 } from "./controllers";
+import { getPatmentofInv } from "./controllers/get";
 import { updatePayCredits } from "./controllers/put";
 
 const salePaymentRouter = Router();
 
 salePaymentRouter.get("/", controllerGet);
+salePaymentRouter.get("/customerinvpay", getPatmentofInv);
 salePaymentRouter.get("/:id", controllerGet);
 salePaymentRouter.delete("/:id", controllerDelete);
 salePaymentRouter.post("/", controllerPost);

@@ -57,7 +57,7 @@ export default async function controllerPost(req: Request, res: Response) {
 
     await CustomerTimeline.create({
       customer: salePayment?.customer, 
-      timelineType: "salePayment Created",
+      timelineType: "Sale Payment Created",
       description: `Sale Payment ${salePayment?.paymentNumber} Created`,
       // link: "",
     });
@@ -76,6 +76,14 @@ export default async function controllerPost(req: Request, res: Response) {
       invoiceData.balance = balanceDue;
       invoiceData.status = balanceDue <= 0 ? "PAID" : "PARTIAL";
       const updatedInv = await SaleInvoice.findByIdAndUpdate(invoiceData._id, invoiceData, { new : true });
+
+      await CustomerTimeline.create({
+        customer: updatedInv?.customer, 
+        timelineType: "Invoice Updated",
+        description: `Invoice ${updatedInv?.invoice} Updated`,
+        // link: "",
+      });
+
       const updatedInvoice : any = await SaleInvoice.findById(updatedInv?._id).populate("project");
       // console.log("populate", updatedInvoice);
       if(updatedInvoice?.status == "PAID"){
@@ -90,7 +98,7 @@ export default async function controllerPost(req: Request, res: Response) {
             console.log(l.customer, updatedInvoice.customer);
             if (l.customer?.toHexString() == updatedInvoice.customer?.toHexString()) {
               console.log("inside");
-              l.leadType = 'Registration'
+              l.leadType = 'Under Registration'
             }
           });
 
@@ -103,6 +111,12 @@ export default async function controllerPost(req: Request, res: Response) {
           
           const updateProject = await Project.findByIdAndUpdate(updatedInvoice.project?._id, {subPlots: updatedInvoice.project.subPlots}, {new: true});
           console.log("updateProject", updateProject?.subPlots);
+          await CustomerTimeline.create({
+            customer: updatedInvoice.customer, 
+            timelineType: "Status Update",
+            description: `Status updated to Under Registration of ${subPlot?.name} in ${updateProject?.name}`,
+            // link: "",
+          });
         }
       }
     };

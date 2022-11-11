@@ -7,14 +7,14 @@ export async function controllerGetInvoice(req: Request, res: Response) {
   const { id } = req.params;
   if (id) {
     const saleInvoice = await SaleInvoice.findById(id)
-      .populate("customer")
+      .populate("customer").populate({ path: "paymentReceived.id", select: "paymentNumber customer" })
     if (!saleInvoice) {
       return res.status(404).json({ message: "SaleInvoice not found" });
     }
     return res.status(200).json(saleInvoice);
   }
   const saleInvoices = await SaleInvoice.find({})
-    .populate("customer").sort({ updatedAt: -1 })
+    .populate("customer").populate({ path: "paymentReceived.id", select: "paymentNumber customer" }).sort({ updatedAt: -1 })
   return res.status(200).json(saleInvoices);
 };
 
