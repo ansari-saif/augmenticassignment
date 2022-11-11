@@ -14,6 +14,8 @@ interface ISaleEstimate extends Document {
   project: String;
   plot: String;
   tax: Types.ObjectId;
+  invoiceId: Types.ObjectId;
+  isInvoiced: boolean;
   estimateDate: Date;
   expiryDate: Date;
   taxAmount: number;
@@ -26,7 +28,6 @@ interface ISaleEstimate extends Document {
   status: string;
   // 
   estimate: string;
-  isInvoiced: boolean;
   reference: string;
   subject: string;
   grandTotal: number;
@@ -44,6 +45,8 @@ const saleEstimateSchema = new Schema(
     project: { type: String, ref: "Project" },
     plot: {type: String, default: ""},
     tax: { type: Schema.Types.ObjectId, ref: "Tax" },
+    invoiceId: { type: Schema.Types.ObjectId, ref: "SaleInvoice" },
+    isInvoiced: { type: Boolean, default: false},
     estimateDate: Date,
     expiryDate: Date,
     taxAmount: Number,
@@ -53,7 +56,6 @@ const saleEstimateSchema = new Schema(
     customerNotes: String,
     termsAndConditions: String,
     estimate: String,
-    isInvoiced: { type: Boolean, default: false},
     reference: String,
     subject: String,
     status: { type: String, default: 'OPEN' },

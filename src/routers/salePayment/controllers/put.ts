@@ -8,6 +8,7 @@ import { validatePayment } from "../../../validators";
 import fs from 'fs';
 import { Project, SaleInvoice } from "../../../models";
 import moment from "moment";
+import { CustomerTimeline } from "../../../models/customerTimeline";
 
 export default async function controllerPut(req: Request, res: Response) {
   const { id } = req.params;
@@ -26,7 +27,7 @@ export default async function controllerPut(req: Request, res: Response) {
 
 export async function updatePayCredits(req: Request, res: Response){
 
-  console.log("Hello");
+  // console.log("Hello");
 
   const { creditList, inv } = req.body;
 
@@ -60,6 +61,13 @@ export async function updatePayCredits(req: Request, res: Response){
       invoice: [ ...invoice ]
     }, { new : true });
 
+    await CustomerTimeline.create({
+      customer: uploadedPayemnt?.customer, 
+      timelineType: "Sale Payment Updated",
+      description: `Sale Payment ${uploadedPayemnt?.paymentNumber} Updated`,
+      // link: "",
+    });
+
     const paymentReceived = {
       id: uploadedPayemnt._id,
       payment: uploadedPayemnt.paymentNumber,
@@ -85,33 +93,48 @@ export async function updatePayCredits(req: Request, res: Response){
 
   const updatedInv = await SaleInvoice.findByIdAndUpdate(invoiceData.id, invoiceData, { new : true });
 
+  await CustomerTimeline.create({
+    customer: updatedInv?.customer, 
+    timelineType: "Invoice Updated",
+    description: `Invoice ${updatedInv?.invoice} Updated`,
+    // link: "",
+  });
+
   const updatedInvoice : any = await SaleInvoice.findById(updatedInv?._id).populate("project");
 
   if(updatedInvoice?.status == "PAID"){
     if(updatedInvoice?.plot){
-      console.log("I am In ");
+      // console.log("I am In ");
 
       const subPlot = await updatedInvoice?.project.subPlots.find((p: any) => p.name == updatedInvoice?.plot);
-      console.log({ subPlot })
+      // console.log({ subPlot })
       // let projectSubPlots = leadProject.subPlots;
 
       subPlot.leadsInfo.forEach((l: any) => {
-        console.log(l.customer, updatedInvoice.customer);
+        // console.log(l.customer, updatedInvoice.customer);
         if (l.customer?.toHexString() == updatedInvoice.customer?.toHexString()) {
-          console.log("inside");
-          l.leadType = 'Registration'
+          // console.log("inside");
+          l.leadType = 'Under Registration'
         }
       });
 
-      console.log("sub", subPlot);
+      // console.log("sub", subPlot);
 
       updatedInvoice.project.subPlots[updatedInvoice.project.subPlots.findIndex((p: any) => p.name == updatedInvoice.plot)] = subPlot;
 
-      console.log("subPlots", updatedInvoice.project.subPlots[updatedInvoice.project.subPlots.findIndex((p: any) => p.name == updatedInvoice.plot)]);
+      // console.log("subPlots", updatedInvoice.project.subPlots[updatedInvoice.project.subPlots.findIndex((p: any) => p.name == updatedInvoice.plot)]);
 
       
       const updateProject = await Project.findByIdAndUpdate(updatedInvoice.project?._id, {subPlots: updatedInvoice.project.subPlots}, {new: true});
-      console.log("updateProject", updateProject?.subPlots);
+
+      await CustomerTimeline.create({
+        customer: updatedInvoice.customer, 
+        timelineType: "Status Update",
+        description: `Status updated to Under Registration of ${subPlot?.name} in ${updateProject?.name}`,
+        // link: "",
+      });
+
+      // console.log("updateProject", updateProject?.subPlots);
     }
   }
 
