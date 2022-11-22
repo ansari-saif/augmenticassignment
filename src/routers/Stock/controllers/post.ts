@@ -41,6 +41,7 @@ export async function splitStockPost(req: Request, res: Response) {
 export async function transferStockPost(req: Request, res: Response) {
   try {
     const transferStk : any = await TransferStock.create(req.body);
+    console.log("Stocks created", transferStk);
 
     const splitStk : any = await Stock.findById(transferStk.stockId);
 

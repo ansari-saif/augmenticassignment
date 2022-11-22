@@ -25,6 +25,8 @@ interface ILandSale extends Document {
   dateOfConversion: Date;
   typeOfLand: string;
   remarks: string;
+  landpataOwnerName:string;
+  landpataOwnerMobile:number;
   fileInfos: {
     fileName: string;
     filePath: string;
@@ -34,6 +36,8 @@ interface ILandSale extends Document {
 const landSaleSchema = new Schema<ILandSale>(
   {
     landOwnerName : String,
+    landpataOwnerMobile : Number,
+    landpataOwnerName : String,
     payDate: Date,
     registrationDate: Date,
     totalAmount : Number,
