@@ -57,6 +57,7 @@ interface IVendor extends Document {
   expenses: number[];
   bills: number[];
   description: string;
+  
   fileInfos: {
     fileName: string;
     filePath: string;

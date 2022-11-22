@@ -19,6 +19,7 @@ export default async function controllerPut(req: Request, res: Response) {
   // }
   const candidate = await Candidate.findByIdAndUpdate(id, data);
   if (candidate) {
+    console.log("candidate",candidate);
     res.status(200).json(candidate);
   } else {
     res.status(404).json({ message: "Candidate not found" });

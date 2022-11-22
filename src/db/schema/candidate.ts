@@ -36,8 +36,7 @@ const candidateSchema = new Schema<ICandidate>(
       required: true,
     },
     resume: {
-      type: String,
-      required: true,
+      type: String
     },
     mobile: {
       type: String,
