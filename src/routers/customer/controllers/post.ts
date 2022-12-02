@@ -27,6 +27,12 @@ export default async function controllerPost(req: Request, res: Response) {
     }
     return res.status(201).send(customer);
   });
+  await CustomerTimeline.create({
+    customer: customer._id, 
+    timelineType: "Customer Created successfully",
+    description: `Customer Created successfully ${""} `,
+    // link: "",
+  });
 }
 
 export async function postTimeline(req: Request, res: Response) {
