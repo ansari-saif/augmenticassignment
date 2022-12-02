@@ -105,6 +105,11 @@ interface IEmployee extends Document {
     fileName: string;
     filePath: string;
   }[];
+  
+  fileInfoPic: {
+    fileName: string;
+    filePath: string;
+  }[];
   profile_url?: {
     fileName: string;
     filePath: string;
@@ -245,6 +250,12 @@ const employeeSchema = new Schema<IEmployee>(
       },
     ],
     fileInfos: [
+      {
+        fileName: String,
+        filePath: String,
+      },
+    ],
+    fileInfoPic: [
       {
         fileName: String,
         filePath: String,
