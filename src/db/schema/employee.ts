@@ -9,6 +9,9 @@ interface Address {
   state: string;
   postalCode: string;
   country: string;
+  localcontact:Number;
+  emergencyContact:Number;
+  
 }
 
 interface PreviousExperience {
@@ -37,6 +40,9 @@ interface otherContacts {
 }
 
 interface BankDetails {
+  bankdetails1:String;
+  bankname:String;
+  branch:String;
   accountHoldersName: String;
   accountNumber: String;
   IFSC: String;
@@ -68,9 +74,11 @@ interface PersonalInformation {
 interface IEmployee extends Document {
   id: Number;
   userName: string;
+  blood:string;
   password: string;
   email: string;
   firstName: string;
+  middleName:string;
   lastName: string;
   name: string;
   gender: GENDER;
@@ -105,6 +113,10 @@ interface IEmployee extends Document {
     fileName: string;
     filePath: string;
   }[];
+  resumeExp: {
+    fileName: string;
+    filePath: string;
+  }[];
   
   fileInfoPic: {
     fileName: string;
@@ -129,7 +141,9 @@ const employeeSchema = new Schema<IEmployee>(
       type: String,
       unique: true,
     },
+    blood:String,
     firstName: String,
+    middleName:String,
     lastName: String,
     name: String,
     gender: {
@@ -154,6 +168,8 @@ const employeeSchema = new Schema<IEmployee>(
         state: String,
         postalCode: String,
         country: String,
+        localcontact: Number,
+        emergencyContact: Number,
       },
     },
     ticketsAssigned: [{ type: Schema.Types.ObjectId, ref: "Ticket" }],
@@ -228,6 +244,10 @@ const employeeSchema = new Schema<IEmployee>(
       },
     ],
     bankDetails: {
+      bankdetails1:String,
+      bankname:String,
+      branch:String,
+
       accountHoldersName: String,
       accountNumber: String,
       IFSC: String,
@@ -244,6 +264,12 @@ const employeeSchema = new Schema<IEmployee>(
       },
     ],
     certFile: [
+      {
+        fileName: String,
+        filePath: String,
+      },
+    ],
+    resumeExp:[
       {
         fileName: String,
         filePath: String,
