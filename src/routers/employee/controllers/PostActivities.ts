@@ -6,6 +6,7 @@ export default async function controllerPostActivities(
   req: Request,
   res: Response
 ) {
+  console.log('req.params');
   const data = req.body;
   data.dateTime = new Date();
   const errors = validateActivities(data);

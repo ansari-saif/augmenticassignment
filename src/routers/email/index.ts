@@ -9,6 +9,7 @@ const emailRouter = Router();
 
 emailRouter.post("/", async (req: Request, res: Response) => {
   const { to, subject, text, html } = req.body;
+  
   if (!to || !subject || !text || !html) {
     return res.status(400).send("Missing parameters");
   }
@@ -19,11 +20,12 @@ emailRouter.post("/", async (req: Request, res: Response) => {
     text,
     html,
   };
+  console.log(msg,"msg");
   try {
-    await mail.send(msg);
-    res.status(200).json({
-      message: "Email sent successfully",
-    });
+    // await mail.send(msg);
+    // res.status(200).json({
+    //   message: "Email sent successfully",
+    // });
   } catch (error: any) {
     console.error(error);
     if (error.response) {
