@@ -13,9 +13,9 @@ export default async function controllerPut(req: Request, res: Response) {
     return;
   }
   const { id } = req.params;
-  console.log("sas");
+  // console.log("sas");
   if (id) {
-    console.log("sas");
+    // console.log("sas");
     const employee = await Employee.findByIdAndUpdate(id, req.body);
     if (employee) {
       res.status(200).json(employee);
@@ -23,7 +23,7 @@ export default async function controllerPut(req: Request, res: Response) {
       res.status(404).json({ message: "Employee not found" });
     }
   } else {
-    
+
     res.status(400).json({ message: "Employee id is required" });
   }
 }
