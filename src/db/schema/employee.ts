@@ -57,9 +57,14 @@ interface EmployeeActivity {
   description: string;
   link: string;
 }
+interface SALARYCOMPONENTS{
+  anualctc:Number;
+  montlyctc:Number;
+}
 
 interface PersonalInformation {
   passportNo: String;
+  pan: String;
   pfno: String;
   esino: String;
   passportExp: Date;
@@ -100,6 +105,7 @@ interface IEmployee extends Document {
   userType: USER_TYPE;
   acceptedTimesheets: Types.ObjectId[];
   salary: Number;
+  SALARYCOMPONENTS :SALARYCOMPONENTS;
   personalInformation: PersonalInformation;
   emergencyContact: otherContacts;
   familyInformation: otherContacts;
@@ -175,6 +181,7 @@ const employeeSchema = new Schema<IEmployee>(
     ticketsAssigned: [{ type: Schema.Types.ObjectId, ref: "Ticket" }],
     personalInformation: {
       passportNo: String,
+      pan: String,
       pfno: String,
       esino: String,
       passportExp: Date,
@@ -184,6 +191,10 @@ const employeeSchema = new Schema<IEmployee>(
       maritalStatus: String,
       employmentOfSpouse: String,
       numberOfChildren: Number,
+    },
+    SALARYCOMPONENTS : {
+      anualctc:Number,
+      montlyctc:Number,
     },
     mobileNo: String,
     totalLeaves: String,
