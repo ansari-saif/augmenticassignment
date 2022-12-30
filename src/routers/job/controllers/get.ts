@@ -9,7 +9,7 @@ export default async function controllerGet(req: Request, res: Response) {
     const job = await Job.findById(id).populate("location").populate("candidates");
     if (job) {
       res.status(200).json(job);
-    } else {
+    } else { 
       res.status(404).json({ message: "Job not found" });
     }
   } else {

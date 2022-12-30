@@ -23,6 +23,7 @@ export default async function controllerPut(req: Request, res: Response) {
       res.status(404).json({ message: "Employee not found" });
     }
   } else {
+    
     res.status(400).json({ message: "Employee id is required" });
   }
 }
