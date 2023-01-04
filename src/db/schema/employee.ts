@@ -83,6 +83,7 @@ interface IEmployee extends Document {
   password: string;
   email: string;
   firstName: string;
+  // employmentType:string;
   middleName:string;
   lastName: string;
   name: string;
@@ -91,6 +92,7 @@ interface IEmployee extends Document {
   mobileNo: string;
   totalLeaves: string;
   employeeType: string;
+  employmentType:string;
   dob: Date;
   previousExperience: PreviousExperience[];
   education: Education[];
@@ -115,6 +117,7 @@ interface IEmployee extends Document {
     fileName: string;
     filePath: string;
   }[];
+  
   fileInfos: {
     fileName: string;
     filePath: string;
@@ -199,6 +202,7 @@ const employeeSchema = new Schema<IEmployee>(
     mobileNo: String,
     totalLeaves: String,
     employeeType: String,
+    employmentType:String,
     dob: Date,
     department: String,
     previousExperience: [
@@ -237,6 +241,7 @@ const employeeSchema = new Schema<IEmployee>(
     ],
     managerUserId: Number,
     active: Boolean,
+    // employmentType:String,
     joinDate: Date,
     workLocation: {
       type: Schema.Types.ObjectId,
