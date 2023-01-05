@@ -23,7 +23,8 @@ export default async function controllerPost (req: any, res: Response) {
 
     if (!req.files?.file) {
       return res.status(400).send({
-        message: "No file was uploaded",
+        // message: "No file was uploaded",
+        // message: "",
       });
     }
 
