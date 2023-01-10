@@ -60,6 +60,9 @@ interface EmployeeActivity {
 interface SALARYCOMPONENTS{
   anualctc:Number;
   montlyctc:Number;
+  basicpercent: Number;
+  housepercent: Number;
+  ConveyancePrice:Number;
 }
 
 interface PersonalInformation {
@@ -198,6 +201,9 @@ const employeeSchema = new Schema<IEmployee>(
     SALARYCOMPONENTS : {
       anualctc:Number,
       montlyctc:Number,
+      basicpercent: Number,
+      housepercent: Number,
+      ConveyancePrice:Number
     },
     mobileNo: String,
     totalLeaves: String,

@@ -104,6 +104,7 @@ export const vendorPurchaseOrderPost = async(req: Request, res: Response) => {
   try {
     const purchaseOrder : any = await PurchaseOrder.create(req.body);
     // UPLOAD FILE TO CLOUD 
+    console.log(purchaseOrder,"purchaseOrder");
     const uploadedpurchaseOrder = await PurchaseOrder.findOne({_id : purchaseOrder._id}).populate({path: "vendorId", select: "name billAddress email"}).populate({path: "customerId", select: "displayName shippingAddress billingAddress"});
 
     await VendorTimeline.create({
@@ -119,11 +120,11 @@ export const vendorPurchaseOrderPost = async(req: Request, res: Response) => {
     await putFile(file, `${uploadedpurchaseOrder._id}.pdf` );
 
     await PurchaseOrder.updateOne({_id : purchaseOrder._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedpurchaseOrder._id}.pdf`})
-
+    
     await fs.rmSync(pathToFile);
 
     res.status(200).json({...purchaseOrder._doc , pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedpurchaseOrder._id}.pdf` });
-
+    console.log(pathToFile,"pdf_url");
     // res.status(200).json(purchaseOrder);
     
   } catch (err) {
