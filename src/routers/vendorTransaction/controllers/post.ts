@@ -122,7 +122,6 @@ export const vendorPurchaseOrderPost = async(req: Request, res: Response) => {
     await PurchaseOrder.updateOne({_id : purchaseOrder._id} , {pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedpurchaseOrder._id}.pdf`})
     
     await fs.rmSync(pathToFile);
-
     res.status(200).json({...purchaseOrder._doc , pdf_url : `https://knmulti.fra1.digitaloceanspaces.com/${uploadedpurchaseOrder._id}.pdf` });
     console.log(pathToFile,"pdf_url");
     // res.status(200).json(purchaseOrder);

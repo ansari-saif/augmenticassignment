@@ -11,7 +11,9 @@ interface Address {
   country: string;
   localcontact:Number;
   emergencyContact:Number;
-  
+  Permanentcity: string;
+  Permanentstate: string;
+  PermanentpostalCode:string;
 }
 
 interface PreviousExperience {
@@ -21,24 +23,6 @@ interface PreviousExperience {
   designation: string;
   responsibilities: string;
 }
-
-interface Education {
-  qualification: string;
-  instution: string;
-  startDate: Date;
-  endDate: Date;
-  university: string;
-  specialization: string;
-  score: Number;
-  gradingSystem: string;
-}
-
-interface otherContacts {
-  name: String;
-  relationship: String;
-  phone: String;
-}
-
 interface BankDetails {
   bankdetails1:String;
   bankname:String;
@@ -49,6 +33,21 @@ interface BankDetails {
   upi: String;
   pan: String;
   aadhar: String;
+}
+interface Education {
+  qualification: string;
+  instution: string;
+  startDate: Date;
+  endDate: Date;
+  university: string;
+  specialization: string;
+  score: Number;
+  gradingSystem: string;
+}
+interface otherContacts {
+  name: String;
+  relationship: String;
+  phone: String;
 }
 
 interface EmployeeActivity {
@@ -99,6 +98,7 @@ interface IEmployee extends Document {
   dob: Date;
   previousExperience: PreviousExperience[];
   education: Education[];
+  bankDetails: BankDetails[];
   userAuthorites: USER_AUTHORITIES[];
   managerUserId: Number;
   department: Types.ObjectId;
@@ -114,7 +114,7 @@ interface IEmployee extends Document {
   personalInformation: PersonalInformation;
   emergencyContact: otherContacts;
   familyInformation: otherContacts;
-  bankDetails: BankDetails;
+  
   ticketsAssigned: [Types.ObjectId];
   certFile: {
     fileName: string;
@@ -182,6 +182,9 @@ const employeeSchema = new Schema<IEmployee>(
         country: String,
         localcontact: Number,
         emergencyContact: Number,
+  Permanentcity: String,
+  Permanentstate: String,
+  PermanentpostalCode:String
       },
     },
     ticketsAssigned: [{ type: Schema.Types.ObjectId, ref: "Ticket" }],
@@ -220,6 +223,31 @@ const employeeSchema = new Schema<IEmployee>(
         responsibilities: String,
       },
     ],
+  //   bankDetails:[
+  //     {
+  //     bankdetails1:String,
+  //     bankname:String,
+  //     branch:String,
+  //     accountHoldersName: String,
+  //     accountNumber: String,
+  //     IFSC: String,
+  //     upi: String,
+  //     pan: String,
+  //     aadhar: String,
+  //     },
+  //  ],
+   bankDetails: [
+    {
+      bankdetails1: String,
+      bankname: String,
+      branch: String,
+      accountHoldersName: String,
+      IFSC: String,
+      specialization: String,
+      accountNumber: Number,
+      upi: String,
+    },
+  ],
     education: [
       {
         qualification: String,
@@ -265,18 +293,7 @@ const employeeSchema = new Schema<IEmployee>(
         link: String,
       },
     ],
-    bankDetails: {
-      bankdetails1:String,
-      bankname:String,
-      branch:String,
-
-      accountHoldersName: String,
-      accountNumber: String,
-      IFSC: String,
-      upi: String,
-      pan: String,
-      aadhar: String,
-    },
+    
     salary: Number,
     familyInformation: [
       {

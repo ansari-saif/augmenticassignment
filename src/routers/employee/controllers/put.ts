@@ -6,18 +6,19 @@ import { validateEmployee } from "../../../validators";
 
 export default async function controllerPut(req: Request, res: Response) {
   const data = req.body;
-  // console.log('data',data);
+  console.log('data',data);
   const errors = validateEmployee(data);
   if (errors.length) {
     res.status(400).json(errors);
     return;
   }
   const { id } = req.params;
-  // console.log("sas");
+  console.log("sas",id);
   if (id) {
     // console.log("sas");
     const employee = await Employee.findByIdAndUpdate(id, req.body);
     if (employee) {
+      // console.log("employee",id)
       res.status(200).json(employee);
     } else {
       res.status(404).json({ message: "Employee not found" });
