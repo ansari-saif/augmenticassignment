@@ -81,6 +81,7 @@ interface PersonalInformation {
 interface IEmployee extends Document {
   id: Number;
   userName: string;
+  addressChecked:string;
   blood:string;
   password: string;
   email: string;
@@ -154,6 +155,7 @@ const employeeSchema = new Schema<IEmployee>(
       unique: true,
     },
     blood:String,
+    addressChecked:String,
     firstName: String,
     middleName:String,
     lastName: String,
