@@ -62,6 +62,7 @@ interface SALARYCOMPONENTS{
   basicpercent: Number;
   housepercent: Number;
   ConveyancePrice:Number;
+  M_HRA:Number;
 }
 
 interface PersonalInformation {
@@ -208,7 +209,8 @@ const employeeSchema = new Schema<IEmployee>(
       montlyctc:Number,
       basicpercent: Number,
       housepercent: Number,
-      ConveyancePrice:Number
+      ConveyancePrice:Number,
+      M_HRA:Number
     },
     mobileNo: String,
     totalLeaves: String,

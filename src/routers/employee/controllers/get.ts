@@ -3,6 +3,7 @@ import { Employee } from "../../../models/employee";
 
 export default async function controllerGet(req: Request, res: Response) {
   const { id } = req.params;
+  console.log(id);
   if (id) {
     const employee = await Employee.findById(id, {
       password: 0,
