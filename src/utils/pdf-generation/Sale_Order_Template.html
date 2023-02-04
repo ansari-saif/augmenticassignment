@@ -137,7 +137,7 @@
                 <b>KN Multi Projects</b>
                 <p>Plot No 31, Basundhara Complex,
                     <br>
-         
+
                     Hanspal, Bhubaneshwar, Odisha 752101
                 </p>
             </div>
@@ -152,10 +152,11 @@
                 <div>
                     <p>Bill To</p>
                     <b>{{this.saleOrderData.customer.displayName}}</b>
-                    <p>{{this.saleOrderData.customer.billingAddress.addressLine1}} ,<br> 
+                    <p>{{this.saleOrderData.customer.billingAddress.addressLine1}} ,<br>
                         {{this.saleOrderData.customer.billingAddress.addressLine2}} , <br>
-                        {{this.saleOrderData.customer.billingAddress.city}},<br> 
-                        {{this.saleOrderData.customer.billingAddress.zipcode}} ,{{this.saleOrderData.customer.billingAddress.state}}<br>
+                        {{this.saleOrderData.customer.billingAddress.city}},<br>
+                        {{this.saleOrderData.customer.billingAddress.zipcode}}
+                        ,{{this.saleOrderData.customer.billingAddress.state}}<br>
                         India</p>
                     <br />
                 </div>
@@ -168,13 +169,13 @@
                         {{this.saleOrderData.customer.shippingAddress.zipcode}} ,{{this.saleOrderData.customer.shippingAddress.state}}<br>
                         India</p>
                     <br /> -->
-                </div>            
+                </div>
             </div>
         </div>
         <div class="info_2">
             <div class="flex justify-between w-200">
                 <div class="right">Order Date : </div>
-                <div>{{this.saleOrderData.orderDate}}</div>
+                <div>{{this.orderDate}}</div>
             </div>
             <div class="flex justify-between w-200">
                 <div class="right">Expected Shipment Date : </div>
@@ -218,32 +219,32 @@
                     <div class="right">Discount : </div>
                     <div>-{{this.saleOrderData.discount}}</div>
                 </div>
-                </div>
-                <div class="flex justify-between w-200">
-                    <div class="right bold">Total : </div>
-                    <div class="bold">₹{{this.saleOrderData.grandTotal}}</div>
-                </div>
+            </div>
+            <div class="flex justify-between w-200">
+                <div class="right bold">Total : </div>
+                <div class="bold">₹{{this.saleOrderData.grandTotal}}</div>
             </div>
         </div>
+    </div>
 
+    <div>
         <div>
-            <div>
-                Notes
-            </div>
-            <div>{{this.saleOrderData.customerNotes}}</div>
+            Notes
         </div>
-        <br />
+        <div>{{this.saleOrderData.customerNotes}}</div>
+    </div>
+    <br />
+    <div>
         <div>
-            <div>
-                Terms & Conditions
-            </div>
-            <div>{{this.saleOrderData.termsAndConditions}}</div>
+            Terms & Conditions
         </div>
+        <div>{{this.saleOrderData.termsAndConditions}}</div>
+    </div>
 
-        <div class="signature">
+    <div class="signature">
 
-            Authorized Signature _________________________
-        </div>
+        Authorized Signature _________________________
+    </div>
 
     </div>
 

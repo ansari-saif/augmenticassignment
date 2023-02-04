@@ -10,6 +10,7 @@ import { CustomerTimeline } from "../../../models/customerTimeline";
 export default async function controllerPut(req: Request, res: Response) {
   const { id } = req.params;
   const data = req.body;
+  
 
   const saleInvoice: any = await SaleInvoice.findByIdAndUpdate(id, data, { new: true });
   await CustomerTimeline.create({
@@ -21,7 +22,7 @@ export default async function controllerPut(req: Request, res: Response) {
   const uploadedInvoice = await SaleInvoice.findOne({ _id: saleInvoice._id }).populate('customer')
 
   await deleteFile(`${uploadedInvoice._id}.pdf`);
-  
+  console.log(uploadedInvoice,'sa')
   const pathToFile = await generateSaleInvoicePDF(uploadedInvoice.toJSON());
   const file = await fs.readFileSync(pathToFile);
 

@@ -137,7 +137,7 @@
                 <b>KN Multi Projects</b>
                 <p>Plot No 31, Basundhara Complex,
                     <br>
-         
+
                     Hanspal, Bhubaneshwar, Odisha 752101
                 </p>
             </div>
@@ -151,10 +151,11 @@
             <div>
                 <p>Bill To</p>
                 <b>{{this.creditNoteData.customer.displayName}}</b>
-                <p>{{this.creditNoteData.customer.billingAddress.addressLine1}} ,<br> 
+                <p>{{this.creditNoteData.customer.billingAddress.addressLine1}} ,<br>
                     {{this.creditNoteData.customer.billingAddress.addressLine2}} , <br>
-                    {{this.creditNoteData.customer.billingAddress.city}},<br> 
-                    {{this.creditNoteData.customer.billingAddress.zipcode}} ,{{this.creditNoteData.customer.billingAddress.state}}<br>
+                    {{this.creditNoteData.customer.billingAddress.city}},<br>
+                    {{this.creditNoteData.customer.billingAddress.zipcode}}
+                    ,{{this.creditNoteData.customer.billingAddress.state}}<br>
                     India</p>
                 <br />
 
@@ -166,7 +167,7 @@
                 </div>
                 <div class="flex justify-between w-200">
                     <div class="right">Credit Date : </div>
-                    <div>{{this.creditNoteData.creditDate}}</div>
+                    <div>{{this.creditDate}}</div>
                 </div>
                 <div class="flex justify-between w-200">
                     <div class="right">Ref# : </div>
@@ -222,7 +223,7 @@
                     <div class="right bold">Credit Remaining : </div>
                     <div class="bold">₹{{this.creditNoteData.balance}}</div>
                 </div>
-                
+
             </div>
         </div>
 

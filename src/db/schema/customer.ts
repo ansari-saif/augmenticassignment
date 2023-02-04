@@ -8,8 +8,9 @@ interface Address {
   city: string;
   state: string;
   zipcode: string;
-  phone: string;
-  fax: string;
+  Pzipcode: string;
+  Pstate: string;  
+  Pcity: string;
 }
 
 interface contactPersons {
@@ -32,6 +33,7 @@ interface ICustomer extends Document {
   customerType: string;
   customerId: string;
   salutation: string;
+  isChecked:string;
   firstName: string;
   lastName: string;
   displayName: string;
@@ -67,6 +69,7 @@ const customerSchema = new Schema<ICustomer>(
   {
     customerType: String,
     salutation: String,
+  isChecked:String,
     firstName: String,
     lastName: String,
     displayName: String,
@@ -93,7 +96,9 @@ const customerSchema = new Schema<ICustomer>(
       state: String,
       zipcode: String,
       phone: String,
-      fax: String,    
+      Pzipcode: String,
+      Pstate: String,  
+      Pcity:  String, 
     },
     shippingAddress: {
       attention: String,
@@ -103,7 +108,8 @@ const customerSchema = new Schema<ICustomer>(
       state: String,
       zipcode: String,
       phone: String,
-      fax: String,    
+      Pstate: String, 
+      Pcity:  String,  
     },
     lead: { type: Schema.Types.ObjectId, ref: "Lead" },
     contactPersons: [

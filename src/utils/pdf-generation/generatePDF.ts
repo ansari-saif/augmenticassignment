@@ -172,6 +172,7 @@ export const generateSaleEstimatePDF = async (estimate: any) => {
       template: html,
       context: {
         saleEstimateData : estimate,
+        estimateDate: JSON.stringify(estimate.estimateDate).slice(1,11)
       },
       path: path.join(__dirname , `generated/${estimate._id}.pdf`),
     };
@@ -208,6 +209,7 @@ export const generateSalesOrderPDF = async (order: any) => {
     template: html,
     context: {
       saleOrderData : order,
+      orderDate: JSON.stringify(order.orderDate).slice(1,11)
     },
     path: path.join(__dirname , `generated/${order._id}.pdf`),    // it is not required if type is buffer
   };
@@ -267,12 +269,13 @@ export const generateCreditNotePDF = async (note: any) => {
     type: 'file',     // 'file' or 'buffer'
     template: html,
     context: {
-      creditNoteData: note
+      creditNoteData: note,
+      creditDate:JSON.stringify(note?.creditDate).slice(1,11)
     },
     path: path.join(__dirname , `generated/${note._id}.pdf`),    // it is not required if type is buffer
   };
   const res = await pdf.create(document, options);
-  console.log("FILE CREATED")
+  console.log("FILE CREATED creditNoteData")
   return document.path;
 };
 
@@ -283,6 +286,7 @@ export const generateSaleInvoicePDF = async (invoice: any) => {
     template: html,
     context: {
       saleInvoiceData : invoice,
+      invoiceDate:JSON.stringify(invoice.invoiceDate).slice(1,11),
     },
     path: path.join(__dirname , `generated/${invoice._id}.pdf`),
   };
@@ -298,7 +302,7 @@ export const generateSaleInvoicePDF = async (invoice: any) => {
     }
   };
   const res = await pdf.create(document, options);
-  console.log("FILE CREATED")
+  console.log("FILE CREATED11")
   return document.path;
 };
 
@@ -309,6 +313,7 @@ export const generateSalePayment = async (payment: any) => {
     template: html,
     context: {
       salePayment : payment,
+      paymentDate: JSON.stringify(payment?.paymentDate).slice(1,11)
     },
     path: path.join(__dirname , `generated/${payment._id}.pdf`),
   };

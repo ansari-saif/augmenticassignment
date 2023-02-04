@@ -137,7 +137,7 @@
                 <b>KN Multi Projects</b>
                 <p>Plot No 31, Basundhara Complex,
                     <br>
-         
+
                     Hanspal, Bhubaneshwar, Odisha 752101
                 </p>
             </div>
@@ -152,10 +152,11 @@
                 <div>
                     <p>Bill To</p>
                     <b>{{this.salePayment.customer.displayName}}</b>
-                    <p>{{this.salePayment.customer.billingAddress.addressLine1}} ,<br> 
+                    <p>{{this.salePayment.customer.billingAddress.addressLine1}} ,<br>
                         {{this.salePayment.customer.billingAddress.addressLine2}} , <br>
-                        {{this.salePayment.customer.billingAddress.city}},<br> 
-                        {{this.salePayment.customer.billingAddress.zipcode}} ,{{this.salePayment.customer.billingAddress.state}}<br>
+                        {{this.salePayment.customer.billingAddress.city}},<br>
+                        {{this.salePayment.customer.billingAddress.zipcode}}
+                        ,{{this.salePayment.customer.billingAddress.state}}<br>
                         India</p>
                     <br />
                 </div>
@@ -164,7 +165,7 @@
         <div class="info_2">
             <div class="flex justify-between w-200">
                 <div class="right">Payment Date : </div>
-                <div>{{this.salePayment.paymentDate}}</div>
+                <div>{{this.paymentDate}}</div>
             </div>
             <div class="flex justify-between w-200">
                 <div class="right">Payment Mode : </div>
@@ -208,32 +209,32 @@
                     <div class="right">Paid Amount : </div>
                     <div>-{{this.salePayment.paymentAmount}}</div>
                 </div>
-                </div>
-                <div class="flex justify-between w-200">
-                    <div class="right bold">Excess Amount : </div>
-                    <div class="bold">₹{{this.salePayment.excessAmount}}</div>
-                </div>
+            </div>
+            <div class="flex justify-between w-200">
+                <div class="right bold">Excess Amount : </div>
+                <div class="bold">₹{{this.salePayment.excessAmount}}</div>
             </div>
         </div>
+    </div>
 
+    <div>
         <div>
-            <div>
-                Notes
-            </div>
-            <div>{{this.salePayment.customerNotes}}</div>
+            Notes
         </div>
-        <br />
+        <div>{{this.salePayment.customerNotes}}</div>
+    </div>
+    <br />
+    <div>
         <div>
-            <div>
-                Terms & Conditions
-            </div>
-            <div>{{this.salePayment.termsAndConditions}}</div>
+            Terms & Conditions
         </div>
+        <div>{{this.salePayment.termsAndConditions}}</div>
+    </div>
 
-        <div class="signature">
+    <div class="signature">
 
-            Authorized Signature _________________________
-        </div>
+        Authorized Signature _________________________
+    </div>
 
     </div>
 

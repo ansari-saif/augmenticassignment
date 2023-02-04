@@ -143,8 +143,8 @@
             <div class="overview">
                 <h1>Estimate</h1>
                 <p>Estimate # {{this.saleEstimateData.estimate}}</p>
-                <p>Estimate Date: {{this.saleEstimateData.estimateDate}}</p>
-                <p>Estimate Expiry Date: {{this.saleEstimateData.expiryDate}}</p>
+                <p>Estimate Date: {{this.estimateDate}}</p>
+                <!-- <p>Estimate Expiry Date: {{this.saleEstimateData.expiryDate}}</p> -->
                 <!-- <span>Balance Due</span>
                 <h2>₹{{this.purchaseOrderData.balanceDue}}</h2> -->
             </div>
@@ -154,10 +154,11 @@
             <div>
                 <p>Bill To</p>
                 <b>{{this.saleEstimateData.customer.displayName}}</b>
-                <p>{{this.saleEstimateData.customer.billingAddress.addressLine1}} ,<br> 
+                <p>{{this.saleEstimateData.customer.billingAddress.addressLine1}} ,<br>
                     {{this.saleEstimateData.customer.billingAddress.addressLine2}} , <br>
-                    {{this.saleEstimateData.customer.billingAddress.city}},<br> 
-                    {{this.saleEstimateData.customer.billingAddress.zipcode}} ,{{this.saleEstimateData.customer.billingAddress.state}}<br>
+                    {{this.saleEstimateData.customer.billingAddress.city}},<br>
+                    {{this.saleEstimateData.customer.billingAddress.zipcode}}
+                    ,{{this.saleEstimateData.customer.billingAddress.state}}<br>
                     India</p>
                 <br />
             </div>
