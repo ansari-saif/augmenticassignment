@@ -6,6 +6,7 @@ import { Employee } from "../../models/employee";
 interface IPayroll extends Document {
   employeeId: number;
   fromDate: Date;
+  Payroll_status:String;
   toDate: Date;
   salaryRate: {
     basicSalary: number;
@@ -47,6 +48,7 @@ const payrollSchema = new Schema<IPayroll>({
   },
   
   fromDate: Date,
+  Payroll_status:String,
   toDate: Date,
   salaryRate: {
     basicSalary: Number,

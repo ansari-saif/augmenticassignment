@@ -6,6 +6,7 @@ export default async function controllerPut(req: Request, res: Response) {
     
     const { id } = req.params;
     const payrollData = await Payroll.findByIdAndUpdate(id, req.body, { new: true });
+    console.log('200')
     res.status(200).json(payrollData);
 
   } catch (err) {
