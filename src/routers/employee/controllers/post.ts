@@ -12,7 +12,7 @@ export default async function controllerPost(req: Request, res: Response) {
     return;
   }
   data.password = await bcrypt.hash(data.password, 10);
-  try {
+  try { 
     const employee = await Employee.create(data);
     res.status(201).json(employee);
   } catch (err) {
