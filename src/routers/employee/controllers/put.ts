@@ -21,7 +21,7 @@ export default async function controllerPut(req: Request, res: Response) {
     // console.log('data',data);
     const employee = await Employee.findByIdAndUpdate(id, data);
     if (employee) {
-      // console.log("employee",id)
+      //console.log("employee",id)
       res.status(200).json(employee);
     } else {
       res.status(404).json({ message: "Employee not found" });

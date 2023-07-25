@@ -333,7 +333,7 @@ const employeeSchema = new Schema<IEmployee>(
     profile_url: {
       fileName: String,
       filePath: String,
-    },
+    }
   },
   { _id: false, timestamps: true }
 );
